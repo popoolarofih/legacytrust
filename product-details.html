@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GroceryHub - Product Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+  />
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="main.css" />
+
+  <style>
+    .carousel-item img {
+      max-height: 400px;
+      object-fit: cover;
+      width: 100%;
+    }
+    .trust-badge {
+      width: 60px;
+      height: auto;
+      margin-right: 10px;
+    }
+    .review-card {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+    <div class="container">
+      <a class="navbar-brand text-success font-weight-bold" href="index.html">
+        <i class="bi bi-bag" style="font-size: 2rem;"></i>
+        GroceryHub
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto align-items-center">
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="product-catalog.html"
+              >Catalog</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="./contact.html">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-secondary mr-2" href="signup.html"
+              >Login</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-success" href="signup.html">Sign Up</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Product Details -->
+  <div class="container my-5">
+    <div class="row">
+      <!-- Image Carousel -->
+      <div class="col-md-6">
+        <div
+          id="productCarousel"
+          class="carousel slide"
+          data-ride="carousel"
+        >
+          <ol class="carousel-indicators">
+            <li data-target="#productCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#productCarousel" data-slide-to="1"></li>
+            <li data-target="#productCarousel" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img
+                src="https://via.placeholder.com/600x400?text=Product+Image+1"
+                alt="Product Image 1"
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://via.placeholder.com/600x400?text=Product+Image+2"
+                alt="Product Image 2"
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://via.placeholder.com/600x400?text=Product+Image+3"
+                alt="Product Image 3"
+              />
+            </div>
+          </div>
+          <a
+            class="carousel-control-prev"
+            href="#productCarousel"
+            role="button"
+            data-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a
+            class="carousel-control-next"
+            href="#productCarousel"
+            role="button"
+            data-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+      <!-- Product Info -->
+      <div class="col-md-6">
+        <h1 id="productName">Fresh Organic Apples</h1>
+        <p id="productDescription">
+          Crisp, juicy, and 100% organic apples directly sourced from local
+          orchards. Perfect for snacking or making healthy desserts.
+        </p>
+        <h3 id="productPrice">$2.99 / lb</h3>
+
+        <!-- Trust Badges -->
+        <div class="my-3">
+          <img
+            src="https://via.placeholder.com/60?text=Certified"
+            alt="Certified Quality"
+            class="trust-badge"
+          />
+          <img
+            src="https://via.placeholder.com/60?text=Eco-Friendly"
+            alt="Eco-Friendly"
+            class="trust-badge"
+          />
+          <img
+            src="https://via.placeholder.com/60?text=Fresh"
+            alt="Fresh Guarantee"
+            class="trust-badge"
+          />
+        </div>
+
+        <!-- Add to Cart -->
+        <button id="addToCartBtn" class="btn btn-primary btn-lg">
+          Add to Cart
+        </button>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="mt-5">
+      <h3>Customer Reviews</h3>
+      <div id="reviewsSection">
+        <!-- Static example -->
+        <div class="card review-card">
+          <div class="card-body">
+            <h5 class="card-title">John Doe</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Rating: ★★★★☆</h6>
+            <p class="card-text">
+              The apples were super fresh and really tasty. Will buy again!
+            </p>
+          </div>
+        </div>
+        <div class="card review-card">
+          <div class="card-body">
+            <h5 class="card-title">Jane Smith</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Rating: ★★★★★</h6>
+            <p class="card-text">
+              Excellent quality and great service. Highly recommended.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-light py-4">
+    <div class="container text-center">
+      <p class="mb-0">&copy; 2025 GroceryHub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- jQuery, Popper.js, Bootstrap JS -->
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+  ></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+  ></script>
+
+  <!-- Firebase Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
+  authDomain: "gofundz-5b149.firebaseapp.com",
+  databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
+  projectId: "gofundz-5b149",
+  storageBucket: "gofundz-5b149.firebasestorage.app",
+  messagingSenderId: "228985745417",
+  appId: "1:228985745417:web:e1d9f455196fd1684948d8",
+  measurementId: "G-K9GV667K53"
+};
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+
+  <script>
+    const product = {
+      id: "prod123",
+      name: "Fresh Organic Apples",
+      price: 2.99,
+    };
+
+    document.getElementById("addToCartBtn").addEventListener("click", function() {
+      alert(`Added ${product.name} to cart!`);
+      // Optionally store to Firestore or localStorage
+    });
+  </script>
+</body>
+</html>

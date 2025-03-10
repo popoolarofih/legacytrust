@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GroceryHub - About Us</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <!-- Main CSS (Oxanium font and shared styles) -->
+  <link rel="stylesheet" href="main.css">
+  
+  <style>
+    .about-container {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+    .about-section {
+      margin-bottom: 2rem;
+    }
+    .about-section h3 {
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .about-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .icon-row {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .icon-item {
+      display: flex;
+      align-items: center;
+    }
+    .icon-item i {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar (consistent with landing page) -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+    <div class="container">
+      <a class="navbar-brand text-success font-weight-bold" href="index.html">
+        <i class="bi bi-bag" style="font-size: 2rem;"></i>
+        GroceryHub
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto align-items-center">
+          <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
+          <li class="nav-item active"><a class="nav-link text-dark" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
+          <li class="nav-item">
+            <a class="btn btn-outline-secondary mr-2" href="signup.html">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-success" href="signup.html">Sign Up</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- About Content -->
+  <div class="container about-container">
+    <h2 class="text-center mb-4">About GroceryHub</h2>
+    
+    <div class="about-section row">
+      <div class="col-md-6">
+        <h3>Our Story</h3>
+        <p>
+          GroceryHub was born from a passion for fresh, high-quality groceries and a belief in the charm of traditional markets. We set out to reimagine grocery shopping by combining the best of local produce with modern convenience. Our mission is to deliver fresh, organic products right to your doorstep.
+        </p>
+        <div class="icon-row">
+          <div class="icon-item">
+            <i class="bi bi-heart"></i>
+            <span>Passion</span>
+          </div>
+          <div class="icon-item">
+            <i class="bi bi-check2-circle"></i>
+            <span>Quality</span>
+          </div>
+          <div class="icon-item">
+            <i class="bi bi-truck"></i>
+            <span>Fast Delivery</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <img src="https://via.placeholder.com/500x350?text=Our+Story" alt="Our Story" class="about-image">
+      </div>
+    </div>
+    
+    <div class="about-section row">
+      <div class="col-md-6 order-md-2">
+        <h3>Our Values</h3>
+        <p>
+          We are committed to sustainability, community, and excellence. From sourcing organic produce to ensuring responsible packaging, every step is designed with our customers and the planet in mind.
+        </p>
+        <div class="icon-row">
+          <div class="icon-item">
+            <i class="bi bi-recycle"></i>
+            <span>Sustainability</span>
+          </div>
+          <div class="icon-item">
+            <i class="bi bi-people"></i>
+            <span>Community</span>
+          </div>
+          <div class="icon-item">
+            <i class="bi bi-star"></i>
+            <span>Excellence</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 order-md-1">
+        <img src="https://via.placeholder.com/500x350?text=Our+Values" alt="Our Values" class="about-image">
+      </div>
+    </div>
+    
+    <div class="about-section text-center">
+      <h3>Meet Our Team</h3>
+      <p>
+        Our dedicated team of grocery experts, nutritionists, and delivery professionals work together to bring you the freshest products. We believe in transparency, trust, and the joy of a well-stocked kitchen.
+      </p>
+      <img src="https://via.placeholder.com/800x200?text=Team+Photo" alt="Team Photo" class="img-fluid rounded">
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-light py-4 mt-5">
+    <div class="container text-center">
+      <p>&copy; 2025 GroceryHub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- jQuery, Popper.js, Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Firebase Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
+      authDomain: "gofundz-5b149.firebaseapp.com",
+      databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
+      projectId: "gofundz-5b149",
+      storageBucket: "gofundz-5b149.firebasestorage.app",
+      messagingSenderId: "228985745417",
+      appId: "1:228985745417:web:e1d9f455196fd1684948d8",
+      measurementId: "G-K9GV667K53"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+</body>
+</html>
