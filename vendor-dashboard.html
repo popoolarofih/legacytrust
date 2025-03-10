@@ -16,7 +16,6 @@
     .dashboard-container { margin-top: 2rem; }
     .dashboard-heading { margin-bottom: 1rem; }
     .table thead th { background-color: #f8f9fa; }
-    .upload-preview { max-width: 100px; margin-top: 0.5rem; }
   </style>
 </head>
 <body>
@@ -63,9 +62,8 @@
             <input type="text" class="form-control" id="productCategoryInput" required />
           </div>
           <div class="form-group">
-            <label for="productImageInput">Product Image</label>
-            <input type="file" class="form-control-file" id="productImageInput" accept="image/*" required />
-            <img id="imagePreview" class="upload-preview" src="" alt="Image Preview" style="display:none;" />
+            <label for="productImageURL">Product Image URL</label>
+            <input type="url" class="form-control" id="productImageURL" placeholder="Enter image URL" required />
           </div>
           <button type="submit" class="btn btn-primary">Add Product</button>
         </form>
@@ -74,7 +72,7 @@
             <tr>
               <th>Name</th>
               <th>Price</th>
-              <th>Cat</th>
+              <th>Category</th>
               <th>Image</th>
               <th>Action</th>
             </tr>
@@ -115,7 +113,7 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <!-- Firebase Config, Firestore, Auth & Storage -->
+  <!-- Firebase Config, Firestore, Auth (No Storage upload now) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
@@ -124,20 +122,13 @@
       collection,
       addDoc,
       getDocs,
-      deleteDoc,
-      doc,
       updateDoc,
+      doc,
       onSnapshot,
       query,
       where
     } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-    import {
-      getStorage,
-      ref,
-      uploadBytes,
-      getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
@@ -154,149 +145,119 @@
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
     const auth = getAuth();
-    const storage = getStorage(app);
 
-    // Redirect if not authenticated
+    // Restrict access: if not authenticated, redirect to signup page.
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
-      }
-    });
+      } else {
+        // Use authenticated vendor's UID
+        const vendorId = user.uid;
 
-    // Use authenticated vendor's UID (for demo, a fixed vendor ID is used)
-    const vendorId = "vendorXYZ";
-
-    // --- Product Management ---
-    const addProductForm = document.getElementById("addProductForm");
-    const vendorProductTableBody = document.querySelector("#vendorProductTable tbody");
-    const productImageInput = document.getElementById("productImageInput");
-    const imagePreview = document.getElementById("imagePreview");
-    let uploadedImageURL = "";
-
-    // Preview image when file is selected
-    productImageInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          imagePreview.style.display = "block";
-          imagePreview.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    addProductForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("productNameInput").value;
-      const price = parseFloat(document.getElementById("productPriceInput").value);
-      const category = document.getElementById("productCategoryInput").value;
-      const file = productImageInput.files[0];
-
-      if (file) {
-        // Upload image to Firebase Storage
-        const storageRef = ref(storage, `productImages/${vendorId}/${file.name}`);
-        await uploadBytes(storageRef, file);
-        uploadedImageURL = await getDownloadURL(storageRef);
-      }
-
-      // Add product document in Firestore
-      await addDoc(collection(db, "products"), {
-        name,
-        price,
-        category,
-        vendorId,
-        imageUrl: uploadedImageURL,
-        createdAt: new Date()
-      });
-
-      alert("Product added!");
-      addProductForm.reset();
-      imagePreview.style.display = "none";
-      loadVendorProducts();
-    });
-
-    async function loadVendorProducts() {
-      const qSnap = await getDocs(collection(db, "products"));
-      vendorProductTableBody.innerHTML = "";
-      qSnap.forEach((docSnap) => {
-        const data = docSnap.data();
-        if (data.vendorId === vendorId && !data.removed) {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${data.name}</td>
-            <td>$${data.price.toFixed(2)}</td>
-            <td>${data.category}</td>
-            <td><img src="${data.imageUrl}" style="max-width:80px; height:auto;" alt="${data.name}" /></td>
-            <td>
-              <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">
-                Delete
-              </button>
-            </td>
-          `;
-          vendorProductTableBody.appendChild(tr);
+        // --- Load Vendor's Products ---
+        async function loadVendorProducts() {
+          const qSnap = await getDocs(collection(db, "products"));
+          const vendorProductTableBody = document.querySelector("#vendorProductTable tbody");
+          vendorProductTableBody.innerHTML = "";
+          qSnap.forEach((docSnap) => {
+            const data = docSnap.data();
+            if (data.vendorId === vendorId && !data.removed) {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${data.name}</td>
+                <td>$${data.price.toFixed(2)}</td>
+                <td>${data.category}</td>
+                <td><img src="${data.imageUrl}" style="max-width:80px; height:auto;" alt="${data.name}" /></td>
+                <td>
+                  <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">Delete</button>
+                </td>
+              `;
+              vendorProductTableBody.appendChild(tr);
+            }
+          });
         }
-      });
-    }
 
-    vendorProductTableBody.addEventListener("click", async (e) => {
-      if (e.target.matches("button.btn-danger")) {
-        const docId = e.target.getAttribute("data-id");
-        await updateDoc(doc(db, "products", docId), { removed: true });
-        alert("Product flagged as removed!");
+        // --- Add Product (Using image URL input instead of upload) ---
+        const addProductForm = document.getElementById("addProductForm");
+        addProductForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const name = document.getElementById("productNameInput").value;
+          const price = parseFloat(document.getElementById("productPriceInput").value);
+          const category = document.getElementById("productCategoryInput").value;
+          const imageUrl = document.getElementById("productImageURL").value;
+          
+          await addDoc(collection(db, "products"), {
+            name,
+            price,
+            category,
+            vendorId,
+            imageUrl,
+            createdAt: new Date()
+          });
+          alert("Product added!");
+          addProductForm.reset();
+          loadVendorProducts();
+        });
+
+        // --- Delete Product ---
+        document.querySelector("#vendorProductTable tbody").addEventListener("click", async (e) => {
+          if (e.target.matches("button.btn-danger")) {
+            const docId = e.target.getAttribute("data-id");
+            await updateDoc(doc(db, "products", docId), { removed: true });
+            alert("Product flagged as removed!");
+            loadVendorProducts();
+          }
+        });
+
+        // --- Order Tracking ---
+        async function loadVendorOrders() {
+          const qSnap = await getDocs(collection(db, "orders"));
+          const vendorOrdersTableBody = document.querySelector("#vendorOrdersTable tbody");
+          vendorOrdersTableBody.innerHTML = "";
+          qSnap.forEach((docSnap) => {
+            const data = docSnap.data();
+            if (data.vendorId === vendorId) {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${docSnap.id}</td>
+                <td>${data.status || "Pending"}</td>
+                <td>
+                  <button class="btn btn-sm btn-secondary" data-id="${docSnap.id}">Mark Shipped</button>
+                </td>
+              `;
+              vendorOrdersTableBody.appendChild(tr);
+            }
+          });
+        }
+        loadVendorOrders();
+
+        document.querySelector("#vendorOrdersTable tbody").addEventListener("click", async (e) => {
+          if (e.target.matches("button.btn-secondary")) {
+            const orderId = e.target.getAttribute("data-id");
+            await updateDoc(doc(db, "orders", orderId), { status: "Shipped" });
+            alert("Order marked as shipped!");
+            loadVendorOrders();
+          }
+        });
+
+        // --- Trust/Rep Score ---
+        function loadVendorTrustScore() {
+          const docRef = doc(db, "vendors", vendorId);
+          onSnapshot(docRef, (docSnap) => {
+            const vendorTrustScore = document.getElementById("vendorTrustScore");
+            if (docSnap.exists()) {
+              vendorTrustScore.textContent = docSnap.data().trustScore || "N/A";
+            } else {
+              vendorTrustScore.textContent = "No Score";
+            }
+          });
+        }
+        loadVendorTrustScore();
+
+        // --- Load Products on page load ---
         loadVendorProducts();
       }
     });
-
-    // --- Order Tracking ---
-    const vendorOrdersTableBody = document.querySelector("#vendorOrdersTable tbody");
-    async function loadVendorOrders() {
-      const qSnap = await getDocs(collection(db, "orders"));
-      vendorOrdersTableBody.innerHTML = "";
-      qSnap.forEach((docSnap) => {
-        const data = docSnap.data();
-        if (data.vendorId === vendorId) {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${docSnap.id}</td>
-            <td>${data.status || "Pending"}</td>
-            <td>
-              <button class="btn btn-sm btn-secondary" data-id="${docSnap.id}">
-                Mark Shipped
-              </button>
-            </td>
-          `;
-          vendorOrdersTableBody.appendChild(tr);
-        }
-      });
-    }
-
-    vendorOrdersTableBody.addEventListener("click", async (e) => {
-      if (e.target.matches("button.btn-secondary")) {
-        const docId = e.target.getAttribute("data-id");
-        await updateDoc(doc(db, "orders", docId), { status: "Shipped" });
-        alert("Order marked as shipped!");
-        loadVendorOrders();
-      }
-    });
-
-    // --- Trust/Rep Score ---
-    const vendorTrustScore = document.getElementById("vendorTrustScore");
-    async function loadVendorTrustScore() {
-      const docRef = doc(db, "vendors", vendorId);
-      onSnapshot(docRef, (docSnap) => {
-        if (docSnap.exists()) {
-          vendorTrustScore.textContent = docSnap.data().trustScore || "N/A";
-        } else {
-          vendorTrustScore.textContent = "No Score";
-        }
-      });
-    }
-    loadVendorTrustScore();
-
-    // --- On Load ---
-    loadVendorProducts();
-    loadVendorOrders();
   </script>
 </body>
 </html>

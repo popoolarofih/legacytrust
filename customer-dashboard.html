@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>GroceryHub - Customer Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <!-- Bootstrap Icons -->
@@ -45,7 +44,10 @@
         <ul class="navbar-nav ml-auto align-items-center">
           <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="about.html">About</a>
+          </li>
           <li class="nav-item">
             <a class="btn btn-outline-secondary mr-2" href="signup.html">Logout</a>
           </li>
@@ -72,7 +74,7 @@
         <div class="profile-card">
           <h5>Saved Carts</h5>
           <ul id="savedCartsList" class="list-group">
-            <!-- Populated from Firestore -->
+            <!-- Saved carts will be loaded here -->
           </ul>
         </div>
       </div>
@@ -91,7 +93,7 @@
               </tr>
             </thead>
             <tbody id="orderHistoryBody">
-              <!-- Order rows go here -->
+              <!-- Order history rows go here -->
             </tbody>
           </table>
         </div>
@@ -196,101 +198,101 @@
     const db = getFirestore(app);
     const auth = getAuth();
 
-    // Restrict access: If no authenticated user, redirect to signup page
+    // Ensure the user is authenticated. If not, redirect to signup page.
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
-      }
-    });
+      } else {
+        // Use authenticated user's UID
+        const userId = user.uid;
 
-    // For demonstration, we use a fixed user ID (in production, use auth.currentUser.uid)
-    const userId = "customer123";
+        // Real-time Profile Listener
+        const profileDoc = doc(db, "users", userId);
+        onSnapshot(profileDoc, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            document.getElementById("customerName").textContent = data.name || "No Name";
+            document.getElementById("customerEmail").textContent = data.email || "No Email";
+            document.getElementById("customerAddress").textContent = data.address || "No Address";
+            // Pre-fill update form fields
+            document.getElementById("updateName").value = data.name || "";
+            document.getElementById("updateEmail").value = data.email || "";
+            document.getElementById("updateAddress").value = data.address || "";
+          }
+        });
 
-    // Real-time Profile Listener
-    const profileDoc = doc(db, "users", userId);
-    onSnapshot(profileDoc, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById("customerName").textContent = data.name || "No Name";
-        document.getElementById("customerEmail").textContent = data.email || "No Email";
-        document.getElementById("customerAddress").textContent = data.address || "No Address";
-        // Pre-fill update form fields
-        document.getElementById("updateName").value = data.name || "";
-        document.getElementById("updateEmail").value = data.email || "";
-        document.getElementById("updateAddress").value = data.address || "";
-      }
-    });
+        // Update Profile Form Submission
+        const updateProfileForm = document.getElementById("updateProfileForm");
+        updateProfileForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const updatedName = document.getElementById("updateName").value;
+          const updatedEmail = document.getElementById("updateEmail").value;
+          const updatedAddress = document.getElementById("updateAddress").value;
+          await updateDoc(profileDoc, {
+            name: updatedName,
+            email: updatedEmail,
+            address: updatedAddress,
+          });
+          alert("Profile updated successfully!");
+          $('#updateProfileModal').modal('hide');
+        });
 
-    // Update Profile Form Submission
-    const updateProfileForm = document.getElementById("updateProfileForm");
-    updateProfileForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const updatedName = document.getElementById("updateName").value;
-      const updatedEmail = document.getElementById("updateEmail").value;
-      const updatedAddress = document.getElementById("updateAddress").value;
-      await updateDoc(profileDoc, {
-        name: updatedName,
-        email: updatedEmail,
-        address: updatedAddress,
-      });
-      alert("Profile updated successfully!");
-      $('#updateProfileModal').modal('hide');
-    });
-
-    // Load Saved Carts (example)
-    async function loadSavedCarts() {
-      const cartsRef = collection(db, "users", userId, "savedCarts");
-      const qSnap = await getDocs(cartsRef);
-      const savedCartsList = document.getElementById("savedCartsList");
-      savedCartsList.innerHTML = "";
-      qSnap.forEach((cartDoc) => {
-        const li = document.createElement("li");
-        li.classList.add("list-group-item");
-        li.textContent = `Cart: ${cartDoc.id} - Items: ${JSON.stringify(cartDoc.data().items)}`;
-        savedCartsList.appendChild(li);
-      });
-    }
-    loadSavedCarts();
-
-    // Load Order History (example)
-    async function loadOrderHistory() {
-      const ordersRef = collection(db, "orders");
-      const qSnap = await getDocs(ordersRef);
-      const orderHistoryBody = document.getElementById("orderHistoryBody");
-      orderHistoryBody.innerHTML = "";
-      qSnap.forEach((orderDoc) => {
-        const data = orderDoc.data();
-        if(data.userId === userId) {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${orderDoc.id}</td>
-            <td>${data.date || "N/A"}</td>
-            <td>$${data.total || "0.00"}</td>
-            <td>${data.status || "Pending"}</td>
-          `;
-          orderHistoryBody.appendChild(tr);
+        // Load Saved Carts
+        async function loadSavedCarts() {
+          const cartsRef = collection(db, "users", userId, "savedCarts");
+          const qSnap = await getDocs(cartsRef);
+          const savedCartsList = document.getElementById("savedCartsList");
+          savedCartsList.innerHTML = "";
+          qSnap.forEach((cartDoc) => {
+            const li = document.createElement("li");
+            li.classList.add("list-group-item");
+            li.textContent = `Cart: ${cartDoc.id} - Items: ${JSON.stringify(cartDoc.data().items)}`;
+            savedCartsList.appendChild(li);
+          });
         }
-      });
-    }
-    loadOrderHistory();
+        loadSavedCarts();
 
-    // Review Submission
-    const reviewForm = document.getElementById("reviewForm");
-    reviewForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const productId = document.getElementById("reviewProduct").value;
-      const rating = parseInt(document.getElementById("reviewRating").value);
-      const text = document.getElementById("reviewText").value;
-      const reviewData = {
-        productId,
-        rating,
-        text,
-        userId,
-        timestamp: new Date(),
-      };
-      await addDoc(collection(db, "reviews"), reviewData);
-      alert("Review submitted successfully!");
-      reviewForm.reset();
+        // Load Order History
+        async function loadOrderHistory() {
+          const ordersRef = collection(db, "orders");
+          const qSnap = await getDocs(ordersRef);
+          const orderHistoryBody = document.getElementById("orderHistoryBody");
+          orderHistoryBody.innerHTML = "";
+          qSnap.forEach((orderDoc) => {
+            const data = orderDoc.data();
+            if (data.userId === userId) {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${orderDoc.id}</td>
+                <td>${data.date || "N/A"}</td>
+                <td>$${data.total || "0.00"}</td>
+                <td>${data.status || "Pending"}</td>
+              `;
+              orderHistoryBody.appendChild(tr);
+            }
+          });
+        }
+        loadOrderHistory();
+
+        // Review Submission
+        const reviewForm = document.getElementById("reviewForm");
+        reviewForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const productId = document.getElementById("reviewProduct").value;
+          const rating = parseInt(document.getElementById("reviewRating").value);
+          const text = document.getElementById("reviewText").value;
+          const reviewData = {
+            productId,
+            rating,
+            text,
+            userId,
+            timestamp: new Date(),
+          };
+          await addDoc(collection(db, "reviews"), reviewData);
+          alert("Review submitted successfully!");
+          reviewForm.reset();
+        });
+      }
     });
   </script>
 </body>

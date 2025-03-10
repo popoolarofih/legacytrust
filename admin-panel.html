@@ -16,6 +16,13 @@
     .admin-container { margin-top: 2rem; }
     .admin-heading { margin-bottom: 1rem; }
     .table thead th { background-color: #f8f9fa; }
+    .link-trust { margin-bottom: 1.5rem; }
+    .admin-details {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
   </style>
 </head>
 <body>
@@ -32,7 +39,7 @@
         <ul class="navbar-nav ml-auto align-items-center">
           <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
           <li class="nav-item">
             <a class="btn btn-outline-secondary mr-2" href="signup.html">Logout</a>
           </li>
@@ -44,6 +51,24 @@
   <!-- Admin Panel Content -->
   <div class="container admin-container">
     <h2 class="admin-heading">Admin Panel</h2>
+    <!-- Link to Trust Management Dashboard -->
+    <div class="link-trust text-right mb-3">
+      <a href="trust-management.html" class="btn btn-info">
+        Go to Trust Management Dashboard <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+    
+    <!-- Admin Details Section -->
+    <div class="admin-details" id="adminDetails">
+      <h5>Admin Details</h5>
+      <p><strong>Name:</strong> <span id="adminName">Loading...</span></p>
+      <p><strong>Email:</strong> <span id="adminEmail">Loading...</span></p>
+      <p><strong>Role:</strong> <span id="adminRole">Loading...</span></p>
+      <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editAdminModal">
+        Edit Admin Profile
+      </button>
+    </div>
+    
     <div class="row">
       <!-- Left Column: Users & Vendors Management -->
       <div class="col-md-6 mb-4">
@@ -57,7 +82,7 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody><!-- dynamically filled --></tbody>
+          <tbody><!-- Dynamically filled --></tbody>
         </table>
       </div>
 
@@ -73,7 +98,7 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody><!-- dynamically filled --></tbody>
+          <tbody><!-- Dynamically filled --></tbody>
         </table>
 
         <h5>Order Processing</h5>
@@ -86,8 +111,40 @@
               <th>Status</th>
             </tr>
           </thead>
-          <tbody><!-- dynamically filled --></tbody>
+          <tbody><!-- Dynamically filled --></tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Admin Modal -->
+  <div class="modal fade" id="editAdminModal" tabindex="-1" role="dialog" aria-labelledby="editAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="editAdminForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editAdminModalLabel">Edit Admin Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="editAdminName">Name</label>
+              <input type="text" class="form-control" id="editAdminName" required>
+            </div>
+            <div class="form-group">
+              <label for="editAdminEmail">Email</label>
+              <input type="email" class="form-control" id="editAdminEmail" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -134,98 +191,154 @@
     const db = getFirestore(app);
     const auth = getAuth();
 
-    // Restrict access: if not authenticated, redirect to signup page
+    // Restrict access: only allow admins to view this page.
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
+      } else {
+        const userDocRef = doc(db, "users", user.uid);
+        onSnapshot(userDocRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.role !== "admin") {
+              window.location.href = "signup.html";
+            } else {
+              // Populate admin details and load dashboard data.
+              document.getElementById("adminName").textContent = data.name || "No Name";
+              document.getElementById("adminEmail").textContent = data.email || "No Email";
+              document.getElementById("adminRole").textContent = data.role || "user";
+              loadUsers();
+              loadAllProducts();
+              loadAllOrders();
+            }
+          } else {
+            window.location.href = "signup.html";
+          }
+        });
       }
+    });
+
+    // ---- Admin Details Editing ----
+    const editAdminForm = document.getElementById("editAdminForm");
+    editAdminForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const newName = document.getElementById("editAdminName").value;
+      const newEmail = document.getElementById("editAdminEmail").value;
+      const userId = auth.currentUser.uid;
+      await updateDoc(doc(db, "users", userId), {
+        name: newName,
+        email: newEmail
+      });
+      alert("Admin details updated successfully!");
+      $('#editAdminModal').modal('hide');
+    });
+
+    // Pre-fill admin edit form when modal is shown.
+    $('#editAdminModal').on('show.bs.modal', () => {
+      document.getElementById("editAdminName").value = document.getElementById("adminName").textContent;
+      document.getElementById("editAdminEmail").value = document.getElementById("adminEmail").textContent;
     });
 
     // ---- Users & Vendors Management ----
     const usersTableBody = document.querySelector("#usersTable tbody");
     async function loadUsers() {
-      const usersSnap = await getDocs(collection(db, "users"));
-      usersTableBody.innerHTML = "";
-      usersSnap.forEach((userDoc) => {
-        const data = userDoc.data();
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${userDoc.id}</td>
-          <td>${data.email || "No Email"}</td>
-          <td>${data.role || "user"}</td>
-          <td>
-            <button class="btn btn-sm btn-secondary" data-id="${userDoc.id}">
-              Promote to Vendor
-            </button>
-          </td>
-        `;
-        usersTableBody.appendChild(tr);
-      });
+      try {
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        usersTableBody.innerHTML = "";
+        usersSnapshot.forEach((userDoc) => {
+          const data = userDoc.data();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${userDoc.id}</td>
+            <td>${data.email || "No Email"}</td>
+            <td>${data.role || "user"}</td>
+            <td>
+              <button class="btn btn-sm btn-secondary" data-id="${userDoc.id}">
+                Promote to Vendor
+              </button>
+            </td>
+          `;
+          usersTableBody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error("Error loading users: ", error);
+      }
     }
-
     usersTableBody.addEventListener("click", async (e) => {
       if (e.target.matches("button.btn-secondary")) {
         const userId = e.target.getAttribute("data-id");
-        await updateDoc(doc(db, "users", userId), { role: "vendor" });
-        alert("User promoted to vendor!");
-        loadUsers();
+        try {
+          await updateDoc(doc(db, "users", userId), { role: "vendor" });
+          alert("User promoted to vendor!");
+          loadUsers();
+        } catch (error) {
+          console.error("Error updating user role: ", error);
+        }
       }
     });
-    loadUsers();
 
     // ---- Product Curation ----
     const adminProductTableBody = document.querySelector("#adminProductTable tbody");
     async function loadAllProducts() {
-      const prodSnap = await getDocs(collection(db, "products"));
-      adminProductTableBody.innerHTML = "";
-      prodSnap.forEach((docSnap) => {
-        const data = docSnap.data();
-        if (!data.removed) {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${data.name}</td>
-            <td>${data.vendorId || "N/A"}</td>
-            <td>$${data.price.toFixed(2)}</td>
-            <td>
-              <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">
-                Remove
-              </button>
-            </td>
-          `;
-          adminProductTableBody.appendChild(tr);
-        }
-      });
+      try {
+        const prodSnap = await getDocs(collection(db, "products"));
+        adminProductTableBody.innerHTML = "";
+        prodSnap.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (!data.removed) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${data.name}</td>
+              <td>${data.vendorId || "N/A"}</td>
+              <td>$${data.price.toFixed(2)}</td>
+              <td>
+                <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">
+                  Remove
+                </button>
+              </td>
+            `;
+            adminProductTableBody.appendChild(tr);
+          }
+        });
+      } catch (error) {
+        console.error("Error loading products: ", error);
+      }
     }
-
     adminProductTableBody.addEventListener("click", async (e) => {
       if (e.target.matches("button.btn-danger")) {
         const docId = e.target.getAttribute("data-id");
-        await updateDoc(doc(db, "products", docId), { removed: true });
-        alert("Product flagged as removed!");
-        loadAllProducts();
+        try {
+          await updateDoc(doc(db, "products", docId), { removed: true });
+          alert("Product flagged as removed!");
+          loadAllProducts();
+        } catch (error) {
+          console.error("Error removing product: ", error);
+        }
       }
     });
-    loadAllProducts();
 
     // ---- Order Processing ----
     const adminOrdersTableBody = document.querySelector("#adminOrdersTable tbody");
     async function loadAllOrders() {
-      const ordersSnap = await getDocs(collection(db, "orders"));
-      adminOrdersTableBody.innerHTML = "";
-      ordersSnap.forEach((orderDoc) => {
-        const data = orderDoc.data();
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${orderDoc.id}</td>
-          <td>${data.userId || "Unknown"}</td>
-          <td>$${data.total || "0.00"}</td>
-          <td>${data.status || "Pending"}</td>
-        `;
-        adminOrdersTableBody.appendChild(tr);
-      });
+      try {
+        const ordersSnap = await getDocs(collection(db, "orders"));
+        adminOrdersTableBody.innerHTML = "";
+        ordersSnap.forEach((orderDoc) => {
+          const data = orderDoc.data();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${orderDoc.id}</td>
+            <td>${data.userId || "Unknown"}</td>
+            <td>$${data.total || "0.00"}</td>
+            <td>${data.status || "Pending"}</td>
+          `;
+          adminOrdersTableBody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error("Error loading orders: ", error);
+      }
     }
     loadAllOrders();
-
   </script>
 </body>
 </html>

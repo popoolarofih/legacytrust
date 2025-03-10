@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>GroceryHub - Trust Management Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  
   <!-- Bootstrap CSS CDN -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <!-- Bootstrap Icons -->
@@ -54,7 +54,7 @@
         <ul class="navbar-nav ml-auto align-items-center">
           <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="./contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
           <li class="nav-item">
             <a class="btn btn-outline-secondary mr-2" href="signup.html">Logout</a>
           </li>
@@ -149,7 +149,7 @@
     <div class="mt-4">
       <h3 class="section-header">Flagged Reviews</h3>
       <div id="flaggedReviews">
-        <!-- Display flagged reviews here -->
+        <!-- Flagged reviews will be displayed here -->
       </div>
     </div>
   </div>
@@ -166,7 +166,7 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <!-- Firebase Config & Firestore Initialization -->
+  <!-- Firebase Config & Firestore, Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
@@ -176,9 +176,12 @@
       addDoc,
       getDocs,
       onSnapshot,
+      doc,
+      updateDoc,
       query,
       where
     } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
@@ -194,13 +197,39 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
+    const auth = getAuth();
+
+    // Restrict access: only allow admins
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "signup.html";
+      } else {
+        // Get admin info from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        onSnapshot(userDocRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.role !== "admin") {
+              // If the user's role is not admin, redirect them
+              window.location.href = "signup.html";
+            } else {
+              // If admin, load the rest of the dashboard
+              loadPolicies();
+              loadAnalytics();
+            }
+          } else {
+            // No user document found; redirect
+            window.location.href = "signup.html";
+          }
+        });
+      }
+    });
 
     // ---- Policy Configuration Module ----
     const policyForm = document.getElementById("policyForm");
     const policiesList = document.getElementById("policiesList");
 
     async function loadPolicies() {
-      // For demo, assume policies are stored in a "trustPolicies" collection
       const policiesSnap = await getDocs(collection(db, "trustPolicies"));
       policiesList.innerHTML = "";
       policiesSnap.forEach((docSnap) => {
@@ -219,7 +248,7 @@
       await addDoc(collection(db, "trustPolicies"), {
         name,
         rule,
-        createdAt: new Date(),
+        createdAt: new Date()
       });
       alert("Policy added!");
       policyForm.reset();
@@ -233,9 +262,8 @@
     interpretForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const rating = parseInt(document.getElementById("actionRating").value);
-      // Fetch policies from local variable (in production, use loadPolicies result)
-      // For demo, we simulate with a fixed rule: "rating >= 3" (pass if rating is 3 or more)
-      let compliant = rating >= 3;
+      // For demo: use a fixed rule ("rating >= 3")
+      const compliant = rating >= 3;
       interpretResult.style.display = "block";
       interpretResult.className = compliant ? "alert alert-success" : "alert alert-danger";
       interpretResult.textContent = compliant
@@ -243,32 +271,31 @@
         : "Action is NOT compliant with trust policies.";
     });
 
-    // ---- Reputation & Feedback System (Review Submission) ----
+    // ---- Review & Rating Module ----
     const reviewSubmissionForm = document.getElementById("reviewSubmissionForm");
     reviewSubmissionForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const productId = document.getElementById("reviewProduct").value;
       const rating = parseInt(document.getElementById("reviewRating").value);
       const text = document.getElementById("reviewText").value;
+      // Here we assume reviews are stored with a field for admin oversight if needed.
       const reviewData = {
         productId,
         rating,
         text,
-        userId: "customer123", // replace with authenticated customer ID
-        timestamp: new Date(),
+        adminReviewed: false,
+        timestamp: new Date()
       };
       await addDoc(collection(db, "reviews"), reviewData);
       alert("Review submitted!");
       reviewSubmissionForm.reset();
-      // Optionally, update reputation metrics here.
     });
 
-    // ---- Fraud Detection & Dispute Resolution ----
-    // Simulate fetching flagged reviews (for example, reviews with rating <= 2 might be flagged)
+    // ---- Fraud Detection & Dispute Resolution (Flagged Reviews) ----
     function loadFlaggedReviews() {
       const flaggedContainer = document.getElementById("flaggedReviews");
-      const q = query(collection(db, "reviews"), where("rating", "<=", 2));
-      onSnapshot(q, (querySnapshot) => {
+      const flaggedQuery = query(collection(db, "reviews"), where("rating", "<=", 2));
+      onSnapshot(flaggedQuery, (querySnapshot) => {
         flaggedContainer.innerHTML = "";
         querySnapshot.forEach((docSnap) => {
           const data = docSnap.data();
@@ -282,13 +309,11 @@
     loadFlaggedReviews();
 
     // ---- Trust Analytics Dashboard ----
-    // For demo, calculate average vendor rating from reviews
     function loadAnalytics() {
       let totalRating = 0;
       let count = 0;
       let flaggedCount = 0;
-      const q = collection(db, "reviews");
-      onSnapshot(q, (snapshot) => {
+      onSnapshot(collection(db, "reviews"), (snapshot) => {
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
           totalRating += data.rating;
@@ -298,15 +323,12 @@
         const avgRating = count ? (totalRating / count).toFixed(1) : "--";
         document.getElementById("avgVendorRating").textContent = avgRating;
         document.getElementById("flaggedCount").textContent = flaggedCount;
-        // Overall trust score can be simulated as a function of average rating and flagged reviews.
+        // Simulate overall trust score as a function of average rating and flagged reviews.
         const overall = count ? Math.max(0, (avgRating - flaggedCount * 0.1).toFixed(1)) : "--";
         document.getElementById("overallTrustScore").textContent = overall;
       });
     }
     loadAnalytics();
-
-    // Load policies on page load
-    loadPolicies();
   </script>
 </body>
 </html>

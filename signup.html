@@ -57,12 +57,10 @@
             <a class="nav-link text-dark" href="index.html">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark" href="product-catalog.html"
-              >Catalog</a
-            >
+            <a class="nav-link text-dark" href="product-catalog.html">Catalog</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark" href="./contact.html">Contact</a>
+            <a class="nav-link text-dark" href="contact.html">Contact</a>
           </li>
         </ul>
       </div>
@@ -75,19 +73,19 @@
     <!-- Nav tabs -->
     <ul class="nav nav-tabs justify-content-center" id="authTab" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab"
-          >Login</a
-        >
+        <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab">
+          Login
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="signup-tab" data-toggle="tab" href="#signup" role="tab"
-          >Signup</a
-        >
+        <a class="nav-link" id="signup-tab" data-toggle="tab" href="#signup" role="tab">
+          Signup
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="recover-tab" data-toggle="tab" href="#recover" role="tab"
-          >Password Recovery</a
-        >
+        <a class="nav-link" id="recover-tab" data-toggle="tab" href="#recover" role="tab">
+          Password Recovery
+        </a>
       </li>
     </ul>
 
@@ -98,23 +96,11 @@
         <form id="loginForm">
           <div class="form-group">
             <label for="loginEmail">Email address</label>
-            <input
-              type="email"
-              class="form-control"
-              id="loginEmail"
-              placeholder="Enter email"
-              required
-            />
+            <input type="email" class="form-control" id="loginEmail" placeholder="Enter email" required>
           </div>
           <div class="form-group">
             <label for="loginPassword">Password</label>
-            <input
-              type="password"
-              class="form-control"
-              id="loginPassword"
-              placeholder="Password"
-              required
-            />
+            <input type="password" class="form-control" id="loginPassword" placeholder="Password" required>
           </div>
           <div class="form-group">
             <label for="loginRole">Select Role</label>
@@ -134,33 +120,15 @@
         <form id="signupForm">
           <div class="form-group">
             <label for="signupName">Full Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="signupName"
-              placeholder="Your full name"
-              required
-            />
+            <input type="text" class="form-control" id="signupName" placeholder="Your full name" required>
           </div>
           <div class="form-group">
             <label for="signupEmail">Email address</label>
-            <input
-              type="email"
-              class="form-control"
-              id="signupEmail"
-              placeholder="Enter email"
-              required
-            />
+            <input type="email" class="form-control" id="signupEmail" placeholder="Enter email" required>
           </div>
           <div class="form-group">
             <label for="signupPassword">Password</label>
-            <input
-              type="password"
-              class="form-control"
-              id="signupPassword"
-              placeholder="Password"
-              required
-            />
+            <input type="password" class="form-control" id="signupPassword" placeholder="Password" required>
           </div>
           <div class="form-group">
             <label for="signupRole">Select Role</label>
@@ -180,17 +148,9 @@
         <form id="recoverForm">
           <div class="form-group">
             <label for="recoverEmail">Enter your email to reset password</label>
-            <input
-              type="email"
-              class="form-control"
-              id="recoverEmail"
-              placeholder="Your email"
-              required
-            />
+            <input type="email" class="form-control" id="recoverEmail" placeholder="Your email" required>
           </div>
-          <button type="submit" class="btn btn-warning btn-block">
-            Send Recovery Email
-          </button>
+          <button type="submit" class="btn btn-warning btn-block">Send Recovery Email</button>
           <div id="recoverMessage" class="mt-2"></div>
         </form>
       </div>
@@ -204,19 +164,12 @@
     </div>
   </footer>
 
-  <!-- jQuery, Popper.js, Bootstrap JS -->
-  <script
-    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    crossorigin="anonymous"
-  ></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-  ></script>
-  <script
-    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-  ></script>
+  <!-- jQuery, Popper.js, and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <!-- Firebase Config & Auth -->
+  <!-- Firebase Config & Modules -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
@@ -225,22 +178,29 @@
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
       sendPasswordResetEmail,
-      updateProfile,
+      updateProfile
     } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
     const firebaseConfig = {
-  apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
-  authDomain: "gofundz-5b149.firebaseapp.com",
-  databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
-  projectId: "gofundz-5b149",
-  storageBucket: "gofundz-5b149.firebasestorage.app",
-  messagingSenderId: "228985745417",
-  appId: "1:228985745417:web:e1d9f455196fd1684948d8",
-  measurementId: "G-K9GV667K53"
-};
+      apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
+      authDomain: "gofundz-5b149.firebaseapp.com",
+      databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
+      projectId: "gofundz-5b149",
+      storageBucket: "gofundz-5b149.firebasestorage.app",
+      messagingSenderId: "228985745417",
+      appId: "1:228985745417:web:e1d9f455196fd1684948d8",
+      measurementId: "G-K9GV667K53"
+    };
+
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const auth = getAuth();
+    const db = getFirestore(app);
 
     // Login
     const loginForm = document.getElementById("loginForm");
@@ -252,7 +212,11 @@
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           alert(`Logged in as ${role}: ${email}`);
-          // Redirect logic
+          // Redirect based on role
+          // For example:
+          if(role === "admin") window.location.href = "admin-panel.html";
+          else if(role === "vendor") window.location.href = "vendor-dashboard.html";
+          else window.location.href = "customer-dashboard.html";
         })
         .catch((err) => {
           document.getElementById("loginError").textContent = err.message;
@@ -261,23 +225,32 @@
 
     // Signup
     const signupForm = document.getElementById("signupForm");
-    signupForm.addEventListener("submit", (e) => {
+    signupForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = document.getElementById("signupName").value;
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPassword").value;
       const role = document.getElementById("signupRole").value;
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          return updateProfile(userCredential.user, { displayName: name });
-        })
-        .then(() => {
-          alert(`Signup successful as ${role}: ${email}`);
-          // Possibly store user role in Firestore
-        })
-        .catch((err) => {
-          document.getElementById("signupError").textContent = err.message;
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, { displayName: name });
+        // Store user role alongside info in Firestore under "users" collection.
+        // Use userCredential.user.uid for the document ID.
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          name,
+          email,
+          role,
+          createdAt: new Date()
         });
+        alert(`Signup successful as ${role}: ${email}`);
+        // Redirect based on role
+        if(role === "admin") window.location.href = "admin-panel.html";
+        else if(role === "vendor") window.location.href = "vendor-dashboard.html";
+        else window.location.href = "customer-dashboard.html";
+      } catch (err) {
+        document.getElementById("signupError").textContent = err.message;
+      }
     });
 
     // Password Recovery
@@ -287,8 +260,7 @@
       const email = document.getElementById("recoverEmail").value;
       sendPasswordResetEmail(auth, email)
         .then(() => {
-          document.getElementById("recoverMessage").textContent =
-            "Recovery email sent! Check your inbox.";
+          document.getElementById("recoverMessage").textContent = "Recovery email sent! Check your inbox.";
         })
         .catch((err) => {
           document.getElementById("recoverMessage").textContent = err.message;
