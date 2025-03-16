@@ -30,6 +30,10 @@
       background: #f8f9fa;
       border-radius: 4px;
     }
+    .vendor-badge {
+      font-size: 1.5rem;
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -80,7 +84,8 @@
       <div class="col-md-6">
         <h1 id="productName">Loading...</h1>
         <p id="productDescription"></p>
-        <h3 id="productPrice"></h3>
+        <!-- Price displayed in Naira -->
+        <h3 id="productPrice">₦0.00 / lb</h3>
         
         <!-- Vendor Info -->
         <div id="vendorInfo" class="vendor-info">
@@ -88,6 +93,8 @@
           <p><strong id="vendorName">Loading...</strong></p>
           <p id="vendorContact"></p>
           <p id="vendorLocation"></p>
+          <!-- Vendor Badge using Font Icon -->
+          <div id="vendorBadge" class="vendor-badge">Loading badge...</div>
         </div>
 
         <!-- Add to Cart Button -->
@@ -119,8 +126,16 @@
   <!-- Firebase Config, Firestore & Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      onSnapshot,
+      collection,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
@@ -135,14 +150,15 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth();
+    const auth = getAuth(app);
 
     // Get the product id from URL query parameters
     function getProductId() {
       const params = new URLSearchParams(window.location.search);
-      return params.get("id") || null;
+      return params.get("id") || "prod123"; // Default product id for testing
     }
 
+    // Load product details, images, vendor details, and reviews
     async function loadProductDetails(productId) {
       try {
         const productRef = doc(db, "products", productId);
@@ -154,7 +170,8 @@
           // Set product info
           document.getElementById("productName").textContent = productData.name;
           document.getElementById("productDescription").textContent = productData.description;
-          document.getElementById("productPrice").textContent = `$${productData.price} / lb`;
+          // Price in Naira
+          document.getElementById("productPrice").textContent = `₦${productData.price} / lb`;
 
           // Load images into the carousel
           const images = productData.images || [];
@@ -178,7 +195,7 @@
 
           // Load vendor details from "users" collection
           loadVendorDetails(productData.vendorId);
-          // Load reviews for this product
+          // Load product reviews
           loadProductReviews(productId);
         } else {
           console.error("Product not found");
@@ -189,25 +206,28 @@
       }
     }
 
+    // Load vendor details (including badge) from "users" and orders collection
     async function loadVendorDetails(vendorId) {
       try {
         const vendorRef = doc(db, "users", vendorId);
         const vendorSnap = await getDoc(vendorRef);
         if (vendorSnap.exists()) {
           const vendorData = vendorSnap.data();
-          // Populate vendor information
+          // Populate vendor info
           document.getElementById("vendorName").textContent = vendorData.name || "N/A";
           document.getElementById("vendorContact").textContent = vendorData.contact ? `Contact: ${vendorData.contact}` : "";
           document.getElementById("vendorLocation").textContent = vendorData.location ? `Location: ${vendorData.location}` : "";
+          // Load vendor badge based on successful orders
+          loadVendorBadge(vendorId);
         }
       } catch (error) {
         console.error("Error loading vendor details:", error);
       }
     }
 
+    // Load product reviews from "reviews" collection
     function loadProductReviews(productId) {
       const reviewsSection = document.getElementById("reviewsSection");
-      // Listen to reviews where productId equals the given id
       const reviewsQuery = query(collection(db, "reviews"), where("productId", "==", productId));
       onSnapshot(reviewsQuery, (snapshot) => {
         reviewsSection.innerHTML = "";
@@ -226,7 +246,45 @@
       });
     }
 
-    // Initialize when page loads
+    // Calculate and display vendor badge using a font icon based on successful orders
+    function loadVendorBadge(vendorId) {
+      // Query orders where vendorId matches and status is "Shipped"
+      const ordersQuery = query(
+        collection(db, "orders"),
+        where("vendorId", "==", vendorId),
+        where("status", "==", "Shipped")
+      );
+      onSnapshot(ordersQuery, (snapshot) => {
+        let successfulOrders = snapshot.size;
+        let customers = new Set();
+        snapshot.forEach((docSnap) => {
+          const orderData = docSnap.data();
+          if (orderData.userId) {
+            customers.add(orderData.userId);
+          }
+        });
+        let customerCount = customers.size;
+        // Set badge color thresholds
+        let badgeColor = "";
+        if (successfulOrders < 5) {
+          badgeColor = "red";
+        } else if (successfulOrders < 10) {
+          badgeColor = "purple";
+        } else if (successfulOrders < 20) {
+          badgeColor = "blue";
+        } else if (successfulOrders < 50) {
+          badgeColor = "gold";
+        } else {
+          badgeColor = "green";
+        }
+        document.getElementById("vendorBadge").innerHTML = `
+          <i class="bi bi-award-fill" style="color: ${badgeColor};"></i>
+          <span>${badgeColor.toUpperCase()} - ${successfulOrders} Orders / ${customerCount} Customers</span>
+        `;
+      });
+    }
+
+    // Initialize on page load
     window.onload = () => {
       const productId = getProductId();
       if (productId) {
@@ -236,10 +294,9 @@
       }
     };
 
-    // Add to Cart (example functionality)
+    // Example Add to Cart Button (implement as needed)
     document.getElementById("addToCartBtn").addEventListener("click", function() {
       alert("Product added to cart!");
-      // Additional logic to add product to cart (localStorage or Firestore) can be added here.
     });
   </script>
 </body>
