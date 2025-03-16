@@ -55,17 +55,13 @@
             <a class="nav-link text-dark" href="index.html">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark" href="product-catalog.html"
-              >Catalog</a
-            >
+            <a class="nav-link text-dark" href="product-catalog.html">Catalog</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-dark" href="#">Contact</a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html"
-              >Login</a
-            >
+            <a class="btn btn-outline-secondary mr-2" href="signup.html">Login</a>
           </li>
           <li class="nav-item">
             <a class="btn btn-success" href="signup.html">Sign Up</a>
@@ -114,6 +110,7 @@
           <label for="phone">Phone Number</label>
           <input type="tel" class="form-control" id="phone" required />
         </div>
+        <!-- Next button: On click, fetch product details and store order -->
         <button type="button" id="toStep2" class="btn btn-primary">Next</button>
       </form>
     </div>
@@ -131,37 +128,10 @@
         </div>
       </div>
 
-      <!-- Example Order Summary -->
       <div class="card mb-4">
-        <div class="card-header">Order Summary</div>
-        <div class="card-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Fresh Organic Apples</td>
-                <td>2 lb</td>
-                <td>$5.98</td>
-              </tr>
-              <tr>
-                <td>Organic Milk</td>
-                <td>1 gallon</td>
-                <td>$3.49</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th colspan="2">Total</th>
-                <th>$9.47</th>
-              </tr>
-            </tfoot>
-          </table>
+        <div class="card-header">Product Details</div>
+        <div class="card-body" id="productSummary">
+          <!-- Filled dynamically with product details and price info -->
         </div>
       </div>
 
@@ -196,25 +166,45 @@
     src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
   ></script>
 
-  <!-- Firebase Config -->
+  <!-- Firebase Config, Firestore & Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      addDoc
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+    // Firebase configuration
     const firebaseConfig = {
-  apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
-  authDomain: "gofundz-5b149.firebaseapp.com",
-  databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
-  projectId: "gofundz-5b149",
-  storageBucket: "gofundz-5b149.firebasestorage.app",
-  messagingSenderId: "228985745417",
-  appId: "1:228985745417:web:e1d9f455196fd1684948d8",
-  measurementId: "G-K9GV667K53"
-};
+      apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
+      authDomain: "gofundz-5b149.firebaseapp.com",
+      databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
+      projectId: "gofundz-5b149",
+      storageBucket: "gofundz-5b149.firebasestorage.app",
+      messagingSenderId: "228985745417",
+      appId: "1:228985745417:web:e1d9f455196fd1684948d8",
+      measurementId: "G-K9GV667K53"
+    };
+
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
-  </script>
+    const db = getFirestore(app);
+    const auth = getAuth();
 
-  <script>
+    // Optional: Ensure user is authenticated
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // Redirect to signup/login if not authenticated
+        window.location.href = "signup.html";
+      }
+    });
+
+    // Utility functions for progress and step display
     function updateProgress(step) {
       const progressBar = document.getElementById("progressBar");
       if (step === 1) {
@@ -232,30 +222,106 @@
       document.getElementById(stepId).classList.add("active");
     }
 
-    document.getElementById("toStep2").addEventListener("click", function () {
+    // Global variable to store created order details (if needed)
+    let createdOrder = null;
+
+    // Event listener for "Next" button on shipping details
+    document.getElementById("toStep2").addEventListener("click", async function () {
       const form = document.getElementById("shippingForm");
-      if (form.checkValidity()) {
-        document.getElementById("reviewName").textContent = document.getElementById("fullName").value;
-        document.getElementById("reviewAddress").textContent = document.getElementById("address").value;
-        document.getElementById("reviewCityStateZip").textContent =
-          document.getElementById("city").value +
-          ", " +
-          document.getElementById("state").value +
-          " " +
-          document.getElementById("zip").value;
-        document.getElementById("reviewPhone").textContent = document.getElementById("phone").value;
-        updateProgress(2);
-        showStep("step2");
-      } else {
+      if (!form.checkValidity()) {
         form.reportValidity();
+        return;
       }
+      // Retrieve shipping details
+      const fullName = document.getElementById("fullName").value;
+      const address = document.getElementById("address").value;
+      const city = document.getElementById("city").value;
+      const state = document.getElementById("state").value;
+      const zip = document.getElementById("zip").value;
+      const phone = document.getElementById("phone").value;
+
+      // For this example, assume the product ID is passed as a query parameter "productId"
+      const params = new URLSearchParams(window.location.search);
+      const productId = params.get("productId");
+      if (!productId) {
+        alert("No product selected!");
+        return;
+      }
+
+      // Fetch product details from Firestore
+      const productRef = doc(db, "products", productId);
+      const productSnap = await getDoc(productRef);
+      if (!productSnap.exists()) {
+        alert("Selected product not found!");
+        return;
+      }
+      const productData = productSnap.data();
+
+      // Build the order data
+      const orderData = {
+        productId: productId,
+        productName: productData.name || "Unnamed Product",
+        productPrice: productData.price || 0,
+        productImageUrl: productData.imageUrl || "placeholder.jpg",
+        shipping: {
+          fullName,
+          address,
+          city,
+          state,
+          zip,
+          phone
+        },
+        // For simplicity, set quantity to 1 (or retrieve from elsewhere)
+        quantity: 1,
+        total: (productData.price || 0) * 1,
+        createdAt: new Date(),
+        status: "Pending"
+      };
+
+      try {
+        // Store the order in the "orders" collection
+        const orderDoc = await addDoc(collection(db, "orders"), orderData);
+        createdOrder = { id: orderDoc.id, ...orderData };
+        console.log("Order created with ID:", orderDoc.id);
+      } catch (error) {
+        console.error("Error creating order:", error);
+        alert("Failed to create order. Please try again.");
+        return;
+      }
+
+      // Fill in the order review details
+      document.getElementById("reviewName").textContent = fullName;
+      document.getElementById("reviewAddress").textContent = address;
+      document.getElementById("reviewCityStateZip").textContent = `${city}, ${state} ${zip}`;
+      document.getElementById("reviewPhone").textContent = phone;
+      // Also fill in product summary
+      document.getElementById("productSummary").innerHTML = `
+        <p><strong>Product:</strong> ${productData.name}</p>
+        <p><strong>Price:</strong> ₦${(productData.price || 0).toFixed(2)}</p>
+        <p><strong>Quantity:</strong> 1</p>
+        <p><strong>Subtotal:</strong> ₦${(productData.price || 0).toFixed(2)}</p>
+      `;
+
+      updateProgress(2);
+      showStep("step2");
     });
+
+    // Event listener for "Back" button
     document.getElementById("backToStep1").addEventListener("click", function () {
       updateProgress(1);
       showStep("step1");
     });
+
+    // Event listener for "Confirm Order" button
     document.getElementById("confirmOrder").addEventListener("click", function () {
+      // In a real scenario you might update order status here.
+      // For now, we simply show the confirmation step and then redirect.
       showStep("orderConfirmation");
+
+      // Redirect to a checkout/confirmation page after a short delay (or immediately)
+      setTimeout(() => {
+        window.location.href = "checkout.html"; // Adjust URL as needed
+      }, 2000);
     });
   </script>
 </body>

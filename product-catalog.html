@@ -24,7 +24,7 @@
     }
     /* Styling for vendor badge */
     .vendor-badge {
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: bold;
       margin-top: 0.5rem;
     }
@@ -71,30 +71,15 @@
       <!-- Sidebar for filters & sorting -->
       <aside class="col-md-3 sidebar">
         <h5>Search</h5>
-        <input
-          type="text"
-          id="searchInput"
-          class="form-control mb-3"
-          placeholder="Search products..."
-        />
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search products..." />
 
         <h5>Categories</h5>
         <ul class="list-group mb-3" id="categoryList">
-          <li class="list-group-item category-item active" data-category="all">
-            All
-          </li>
-          <li class="list-group-item category-item" data-category="fruits">
-            Fruits
-          </li>
-          <li class="list-group-item category-item" data-category="vegetables">
-            Vegetables
-          </li>
-          <li class="list-group-item category-item" data-category="dairy">
-            Dairy
-          </li>
-          <li class="list-group-item category-item" data-category="bakery">
-            Bakery
-          </li>
+          <li class="list-group-item category-item active" data-category="all">All</li>
+          <li class="list-group-item category-item" data-category="fruits">Fruits</li>
+          <li class="list-group-item category-item" data-category="vegetables">Vegetables</li>
+          <li class="list-group-item category-item" data-category="dairy">Dairy</li>
+          <li class="list-group-item category-item" data-category="bakery">Bakery</li>
         </ul>
 
         <h5>Sort By</h5>
@@ -132,8 +117,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-
+    // For this public catalog, auth is not required to load products and vendor info.
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
       authDomain: "gofundz-5b149.firebaseapp.com",
@@ -147,7 +131,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth();
 
     // Load products dynamically from Firestore
     function loadProducts() {
@@ -160,11 +143,11 @@
           // Create a container for each product card
           const colDiv = document.createElement("div");
           colDiv.classList.add("col-md-4", "mb-4", "product-card");
-          // Add custom attributes for filtering/sorting (if needed)
+          // Set attributes for filtering/sorting if needed
           colDiv.setAttribute("data-category", data.category.toLowerCase());
           colDiv.setAttribute("data-name", data.name);
           colDiv.setAttribute("data-price", data.price);
-          // Create the card with an extra vendor badge span
+          // Create the card HTML
           colDiv.innerHTML = `
             <div class="card">
               <img class="card-img-top" src="${data.imageUrl}" alt="${data.name}" />
@@ -178,7 +161,7 @@
             </div>
           `;
           catalog.appendChild(colDiv);
-          // Load the vendor's badge for this product
+          // Load vendor badge for this product using the vendorId stored in the product doc
           loadVendorBadgeForProduct(data.vendorId, "vendorBadge-" + docSnap.id);
         });
       });
@@ -201,6 +184,7 @@
           }
         });
         let customerCount = customers.size;
+        // Define badge color thresholds
         let badgeColor = "";
         if (successfulOrders < 5) {
           badgeColor = "red";
@@ -220,7 +204,7 @@
       });
     }
 
-    // Basic search, filter, and sort functionality (if needed)
+    // Basic search, filter, and sort functionality
     const searchInput = document.getElementById('searchInput');
     const sortSelect = document.getElementById('sortSelect');
     const categoryItems = document.querySelectorAll('.category-item');

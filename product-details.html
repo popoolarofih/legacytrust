@@ -11,15 +11,10 @@
   <!-- Main CSS -->
   <link rel="stylesheet" href="main.css" />
   <style>
-    .carousel-item img {
+    .product-image {
       max-height: 400px;
       object-fit: cover;
       width: 100%;
-    }
-    .trust-badge {
-      width: 60px;
-      height: auto;
-      margin-right: 10px;
     }
     .review-card {
       margin-bottom: 1rem;
@@ -52,6 +47,7 @@
           <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="btn btn-outline-secondary mr-2" href="signup.html">Login</a></li>
+          <li class="nav-item"><a class="btn btn-outline-secondary mr-2" href="shopping-cart.html">Cart</a></li>
           <li class="nav-item"><a class="btn btn-success" href="signup.html">Sign Up</a></li>
         </ul>
       </div>
@@ -61,28 +57,15 @@
   <!-- Product Details Container -->
   <div class="container my-5">
     <div class="row">
-      <!-- Image Carousel -->
+      <!-- Single Product Image -->
       <div class="col-md-6">
-        <div id="productCarousel" class="carousel slide" data-ride="carousel">
-          <ol class="carousel-indicators" id="carouselIndicators">
-            <!-- Indicators will be added dynamically -->
-          </ol>
-          <div class="carousel-inner" id="carouselInner">
-            <!-- Images will be added dynamically -->
-          </div>
-          <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </a>
-        </div>
+        <img id="productImage" class="product-image" alt="Product Image" />
       </div>
       <!-- Product & Vendor Info -->
       <div class="col-md-6">
         <h1 id="productName">Loading...</h1>
+        <!-- Display Product ID -->
+        <p id="productIdText" class="text-muted"></p>
         <p id="productDescription"></p>
         <!-- Price displayed in Naira -->
         <h3 id="productPrice">₦0.00 / lb</h3>
@@ -133,10 +116,12 @@
       onSnapshot,
       collection,
       query,
-      where
+      where,
+      addDoc
     } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
+    // Your Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
       authDomain: "gofundz-5b149.firebaseapp.com",
@@ -148,6 +133,7 @@
       measurementId: "G-K9GV667K53"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
@@ -155,50 +141,37 @@
     // Get the product id from URL query parameters
     function getProductId() {
       const params = new URLSearchParams(window.location.search);
-      return params.get("id") || "prod123"; // Default product id for testing
+      return params.get("id"); // expecting an 'id' parameter in the URL
     }
 
-    // Load product details, images, vendor details, and reviews
+    // Load product details, vendor details, and reviews
     async function loadProductDetails(productId) {
       try {
+        console.log("Loading product details for ID:", productId);
         const productRef = doc(db, "products", productId);
         const productSnap = await getDoc(productRef);
 
+        // Show the product ID on the page
+        document.getElementById("productIdText").textContent = `Product ID: ${productId}`;
+
         if (productSnap.exists()) {
           const productData = productSnap.data();
+          console.log("Product data:", productData);
 
-          // Set product info
-          document.getElementById("productName").textContent = productData.name;
-          document.getElementById("productDescription").textContent = productData.description;
-          // Price in Naira
+          // Populate product info
+          document.getElementById("productName").textContent = productData.name || "N/A";
+          document.getElementById("productDescription").textContent = productData.description || "";
           document.getElementById("productPrice").textContent = `₦${productData.price} / lb`;
 
-          // Load images into the carousel
-          const images = productData.images || [];
-          const carouselIndicators = document.getElementById("carouselIndicators");
-          const carouselInner = document.getElementById("carouselInner");
-          carouselIndicators.innerHTML = "";
-          carouselInner.innerHTML = "";
-          images.forEach((imgUrl, index) => {
-            const indicator = document.createElement("li");
-            indicator.setAttribute("data-target", "#productCarousel");
-            indicator.setAttribute("data-slide-to", index);
-            if (index === 0) indicator.classList.add("active");
-            carouselIndicators.appendChild(indicator);
+          // Load product image
+          const productImageElement = document.getElementById("productImage");
+          productImageElement.src = productData.imageUrl || "default-image.jpg";
 
-            const carouselItem = document.createElement("div");
-            carouselItem.classList.add("carousel-item");
-            if (index === 0) carouselItem.classList.add("active");
-            carouselItem.innerHTML = `<img src="${imgUrl}" alt="Product Image ${index + 1}" />`;
-            carouselInner.appendChild(carouselItem);
-          });
-
-          // Load vendor details from "users" collection
+          // Load vendor details and reviews
           loadVendorDetails(productData.vendorId);
-          // Load product reviews
           loadProductReviews(productId);
         } else {
-          console.error("Product not found");
+          console.error("Product not found in Firestore!");
           document.getElementById("productName").textContent = "Product Not Found";
         }
       } catch (error) {
@@ -206,54 +179,84 @@
       }
     }
 
-    // Load vendor details (including badge) from "users" and orders collection
+    // Load vendor details (including badge)
     async function loadVendorDetails(vendorId) {
       try {
+        if (!vendorId) {
+          console.log("No vendorId found in product data.");
+          return;
+        }
+        console.log("Loading vendor details for vendor ID:", vendorId);
+
         const vendorRef = doc(db, "users", vendorId);
         const vendorSnap = await getDoc(vendorRef);
+
         if (vendorSnap.exists()) {
           const vendorData = vendorSnap.data();
-          // Populate vendor info
+          console.log("Vendor data:", vendorData);
+
           document.getElementById("vendorName").textContent = vendorData.name || "N/A";
-          document.getElementById("vendorContact").textContent = vendorData.contact ? `Contact: ${vendorData.contact}` : "";
-          document.getElementById("vendorLocation").textContent = vendorData.location ? `Location: ${vendorData.location}` : "";
-          // Load vendor badge based on successful orders
+          document.getElementById("vendorContact").textContent = vendorData.email
+            ? `Email: ${vendorData.email}`
+            : "";
+          document.getElementById("vendorLocation").textContent = vendorData.address
+            ? `Location: ${vendorData.address}`
+            : "";
+
+          // Load vendor badge
           loadVendorBadge(vendorId);
+        } else {
+          console.log("Vendor document not found for ID:", vendorId);
         }
       } catch (error) {
         console.error("Error loading vendor details:", error);
       }
     }
 
-    // Load product reviews from "reviews" collection
+    // Load reviews from "reviews" collection
     function loadProductReviews(productId) {
+      console.log("Loading reviews for product ID:", productId);
       const reviewsSection = document.getElementById("reviewsSection");
-      const reviewsQuery = query(collection(db, "reviews"), where("productId", "==", productId));
+      const reviewsQuery = query(
+        collection(db, "reviews"),
+        where("productId", "==", productId)
+      );
+
       onSnapshot(reviewsQuery, (snapshot) => {
+        console.log("Reviews found:", snapshot.size);
         reviewsSection.innerHTML = "";
-        snapshot.forEach((docSnap) => {
-          const review = docSnap.data();
-          reviewsSection.innerHTML += `
-            <div class="card review-card">
-              <div class="card-body">
-                <h5 class="card-title">${review.name}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Rating: ${"★".repeat(review.rating)}${"☆".repeat(5 - review.rating)}</h6>
-                <p class="card-text">${review.comment}</p>
+
+        if (snapshot.empty) {
+          reviewsSection.innerHTML = "<p>No reviews available.</p>";
+        } else {
+          snapshot.forEach((docSnap) => {
+            const review = docSnap.data();
+            console.log("Review data:", review);
+            const rating = review.rating || 0;
+            reviewsSection.innerHTML += `
+              <div class="card review-card">
+                <div class="card-body">
+                  <h5 class="card-title">${review.userId || "Anonymous User"}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    Rating: ${"★".repeat(rating)}${"☆".repeat(5 - rating)}
+                  </h6>
+                  <p class="card-text">${review.text || ""}</p>
+                </div>
               </div>
-            </div>
-          `;
-        });
+            `;
+          });
+        }
       });
     }
 
-    // Calculate and display vendor badge using a font icon based on successful orders
+    // Display vendor badge based on shipped orders
     function loadVendorBadge(vendorId) {
-      // Query orders where vendorId matches and status is "Shipped"
       const ordersQuery = query(
         collection(db, "orders"),
         where("vendorId", "==", vendorId),
         where("status", "==", "Shipped")
       );
+
       onSnapshot(ordersQuery, (snapshot) => {
         let successfulOrders = snapshot.size;
         let customers = new Set();
@@ -264,7 +267,6 @@
           }
         });
         let customerCount = customers.size;
-        // Set badge color thresholds
         let badgeColor = "";
         if (successfulOrders < 5) {
           badgeColor = "red";
@@ -284,6 +286,30 @@
       });
     }
 
+    // Function to add product to cart if the user is signed in
+    async function addToCart() {
+      const productId = getProductId();
+      // Check if user is signed in
+      if (!auth.currentUser) {
+        alert("Please sign in to add product to cart!");
+        window.location.href = "login.html";
+        return;
+      }
+      try {
+        // Add a new document to the "carts" collection
+        await addDoc(collection(db, "carts"), {
+          userId: auth.currentUser.uid,
+          productId: productId,
+          quantity: 1,
+          addedAt: new Date()
+        });
+        alert("Product added to cart!");
+      } catch (error) {
+        console.error("Error adding product to cart:", error);
+        alert("Error adding product to cart. Please try again.");
+      }
+    }
+
     // Initialize on page load
     window.onload = () => {
       const productId = getProductId();
@@ -294,10 +320,8 @@
       }
     };
 
-    // Example Add to Cart Button (implement as needed)
-    document.getElementById("addToCartBtn").addEventListener("click", function() {
-      alert("Product added to cart!");
-    });
+    // Attach event listener to the Add to Cart button
+    document.getElementById("addToCartBtn").addEventListener("click", addToCart);
   </script>
 </body>
 </html>

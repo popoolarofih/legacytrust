@@ -27,8 +27,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
       <a class="navbar-brand text-success font-weight-bold" href="index.html">
-        <i class="bi bi-bag" style="font-size: 2rem;"></i>
-        GroceryHub
+        <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -67,7 +66,10 @@
         <tbody id="cartTableBody"><!-- Dynamically filled --></tbody>
       </table>
       <div class="text-right">
-        <h4 id="totalPrice">Total: $0.00</h4>
+        <h4 id="totalPrice">Total: ₦0.00</h4>
+      </div>
+      <div class="text-right mt-3">
+        <button id="checkoutBtn" class="btn btn-success">Checkout</button>
       </div>
     </div>
     <div id="emptyCart" class="text-center" style="display: none;">
@@ -97,10 +99,16 @@
       onSnapshot,
       doc,
       updateDoc,
-      deleteDoc
+      deleteDoc,
+      getDoc,
+      getDocs,
+      addDoc,
+      query,
+      where
     } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
       authDomain: "gofundz-5b149.firebaseapp.com",
@@ -112,87 +120,193 @@
       measurementId: "G-K9GV667K53"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
     const auth = getAuth();
 
-    // Ensure user is authenticated
+    // Ensure user is authenticated before accessing cart
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
       } else {
-        // Use authenticated user's UID
         loadCartItems(user.uid);
       }
     });
 
-    // Function to load cart items in realtime from Firestore under "users/{uid}/cart"
+    // Load cart items from top-level "carts" collection, filtered by userId
     function loadCartItems(uid) {
-      const cartRef = collection(db, "users", uid, "cart");
-      onSnapshot(cartRef, (snapshot) => {
+      const cartQuery = query(collection(db, "carts"), where("userId", "==", uid));
+
+      onSnapshot(cartQuery, async (snapshot) => {
         const tbody = document.getElementById("cartTableBody");
         let total = 0;
         tbody.innerHTML = "";
+
         if (snapshot.empty) {
+          // Cart is empty
           document.getElementById("cartContainer").style.display = "none";
           document.getElementById("emptyCart").style.display = "block";
-          document.getElementById("totalPrice").textContent = "Total: #0.00";
+          document.getElementById("totalPrice").textContent = "Total: ₦0.00";
         } else {
           document.getElementById("cartContainer").style.display = "block";
           document.getElementById("emptyCart").style.display = "none";
-          snapshot.forEach((docSnap) => {
-            const item = docSnap.data();
-            const subtotal = item.price * item.quantity;
+
+          // We'll fetch product data for each cart item
+          for (const docSnap of snapshot.docs) {
+            const item = docSnap.data(); // e.g. { userId, productId, quantity, addedAt, ... }
+            const productRef = doc(db, "products", item.productId);
+            const productSnap = await getDoc(productRef);
+
+            let name = "Unnamed Product";
+            let price = 0;
+            let imageUrl = "placeholder.jpg";
+
+            if (productSnap.exists()) {
+              const productData = productSnap.data();
+              name = productData.name || "Unnamed Product";
+              price = productData.price || 0;
+              imageUrl = productData.imageUrl || "placeholder.jpg";
+            }
+
+            const quantity = item.quantity || 1;
+            const subtotal = price * quantity;
             total += subtotal;
+
+            // Build the table row
             const row = document.createElement("tr");
             row.innerHTML = `
               <td>
-                <img src="${item.imageUrl}" class="cart-item-img mr-2" alt="${item.name}">
-                ${item.name}
+                <img src="${imageUrl}" class="cart-item-img mr-2" alt="${name}">
+                ${name}
               </td>
-              <td>$${item.price.toFixed(2)}</td>
+              <td>₦${price.toFixed(2)}</td>
               <td>
-                <input type="number" value="${item.quantity}" min="1" class="form-control quantity-input" data-id="${docSnap.id}" style="width:80px;">
+                <input
+                  type="number"
+                  value="${quantity}"
+                  min="1"
+                  class="form-control quantity-input"
+                  data-cart-id="${docSnap.id}"
+                  style="width:80px;"
+                />
               </td>
-              <td>$${subtotal.toFixed(2)}</td>
+              <td>₦${subtotal.toFixed(2)}</td>
               <td>
-                <button class="btn btn-danger btn-sm remove-btn" data-id="${docSnap.id}">
+                <button class="btn btn-danger btn-sm remove-btn" data-cart-id="${docSnap.id}">
                   Remove
                 </button>
               </td>
             `;
             tbody.appendChild(row);
-          });
-          document.getElementById("totalPrice").textContent = `Total: $${total.toFixed(2)}`;
+          }
+
+          // Update total
+          document.getElementById("totalPrice").textContent = `Total: ₦${total.toFixed(2)}`;
         }
       });
     }
 
-    // Listen for quantity input changes and update Firestore accordingly
+    // Listen for quantity changes -> update that cart doc's quantity
     document.addEventListener("input", async (e) => {
       if (e.target.classList.contains("quantity-input")) {
-        const docId = e.target.getAttribute("data-id");
+        const cartId = e.target.getAttribute("data-cart-id");
         const newQty = parseInt(e.target.value);
         if (newQty > 0) {
           const user = auth.currentUser;
           if (user) {
-            const itemRef = doc(db, "users", user.uid, "cart", docId);
+            const itemRef = doc(db, "carts", cartId);
             await updateDoc(itemRef, { quantity: newQty });
           }
         }
       }
     });
 
-    // Listen for remove button clicks to delete an item from Firestore
+    // Listen for remove button -> delete that cart doc
     document.addEventListener("click", async (e) => {
       if (e.target.classList.contains("remove-btn")) {
-        const docId = e.target.getAttribute("data-id");
+        const cartId = e.target.getAttribute("data-cart-id");
         const user = auth.currentUser;
         if (user) {
-          const itemRef = doc(db, "users", user.uid, "cart", docId);
+          const itemRef = doc(db, "carts", cartId);
           await deleteDoc(itemRef);
         }
+      }
+    });
+
+    // Checkout: create an order & clear the user's cart, then redirect
+    document.getElementById("checkoutBtn").addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Please sign in to proceed with checkout!");
+        window.location.href = "signup.html";
+        return;
+      }
+      try {
+        // Query all cart items for this user
+        const userCartQuery = query(collection(db, "carts"), where("userId", "==", user.uid));
+        const cartSnapshot = await getDocs(userCartQuery);
+
+        const items = [];
+        let total = 0;
+
+        for (const docSnap of cartSnapshot.docs) {
+          const cartItem = docSnap.data();
+          // fetch product details
+          const productRef = doc(db, "products", cartItem.productId);
+          const productSnap = await getDoc(productRef);
+
+          let price = 0;
+          let name = "Unnamed Product";
+          if (productSnap.exists()) {
+            const productData = productSnap.data();
+            price = productData.price || 0;
+            name = productData.name || "Unnamed Product";
+          }
+
+          const quantity = cartItem.quantity || 1;
+          const subtotal = price * quantity;
+          total += subtotal;
+
+          items.push({
+            cartDocId: docSnap.id,
+            productId: cartItem.productId,
+            quantity: quantity,
+            name: name,
+            price: price
+          });
+        }
+
+        if (items.length === 0) {
+          alert("Your cart is empty.");
+          return;
+        }
+
+        // Create a new order in "orders"
+        const orderData = {
+          userId: user.uid,
+          items: items,
+          total: total,
+          createdAt: new Date(),
+          status: "Pending"
+        };
+        await addDoc(collection(db, "orders"), orderData);
+
+        alert("Checkout successful! Your order has been placed.");
+
+        // Clear the cart by deleting each item doc
+        for (const item of items) {
+          const itemRef = doc(db, "carts", item.cartDocId);
+          await deleteDoc(itemRef);
+        }
+
+        // Finally, redirect to your "checkout.html" page (adjust if needed)
+        window.location.href = "checkout.html";
+
+      } catch (error) {
+        console.error("Error during checkout:", error);
+        alert("Checkout failed. Please try again.");
       }
     });
   </script>

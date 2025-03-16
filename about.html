@@ -4,14 +4,40 @@
   <meta charset="UTF-8">
   <title>GroceryHub - About Us</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS CDN -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  <!-- Main CSS (Oxanium font and shared styles) -->
+  <!-- Main CSS -->
   <link rel="stylesheet" href="main.css">
   
   <style>
+    /* Global Styling */
+    body {
+      font-family: 'Oxanium', sans-serif;
+      background-color: #fff;
+      color: #343a40;
+      margin: 0;
+      padding: 0;
+    }
+    /* Navbar Customizations */
+    .navbar-custom {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .navbar-brand {
+      font-weight: bold;
+      color: #28a745 !important;
+    }
+    .navbar-nav .nav-link {
+      color: #343a40 !important;
+      margin: 0 0.5rem;
+    }
+    .navbar-nav .nav-link.active {
+      border-bottom: 2px solid #28a745;
+    }
+    /* About Page Styles */
     .about-container {
       margin-top: 2rem;
       margin-bottom: 2rem;
@@ -44,27 +70,40 @@
       color: var(--primary-color);
       margin-right: 0.5rem;
     }
+    @media (max-width: 576px) {
+      .icon-row {
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Navbar (consistent with landing page) -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light navbar-custom sticky-top">
     <div class="container">
-      <a class="navbar-brand text-success font-weight-bold" href="index.html">
-        <i class="bi bi-bag" style="font-size: 2rem;"></i>
-        GroceryHub
+      <a class="navbar-brand" href="index.html">
+        <i class="bi bi-bag-fill"></i> GroceryHub
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto align-items-center">
-          <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
-          <li class="nav-item active"><a class="nav-link text-dark" href="about.html">About</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html">Login</a>
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="product-catalog.html">Catalog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="about.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.html">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-secondary me-2" href="login.html">Login</a>
           </li>
           <li class="nav-item">
             <a class="btn btn-success" href="signup.html">Sign Up</a>
@@ -130,27 +169,27 @@
       </div>
     </div>
     
-    <!-- <div class="about-section text-center">
+    <!-- Optional: Team Section
+    <div class="about-section text-center">
       <h3>Meet Our Team</h3>
       <p>
         Our dedicated team of grocery experts, nutritionists, and delivery professionals work together to bring you the freshest products. We believe in transparency, trust, and the joy of a well-stocked kitchen.
       </p>
       <img src="https://via.placeholder.com/800x200?text=Team+Photo" alt="Team Photo" class="img-fluid rounded">
-    </div> -->
+    </div>
+    -->
   </div>
 
   <!-- Footer -->
-  <footer class="bg-light py-4 mt-5 mb-0">
+  <footer class="bg-light py-4 mt-5">
     <div class="container text-center">
       <p>&copy; 2025 GroceryHub. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- jQuery, Popper.js, Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+  <!-- Bootstrap 5 Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
   <!-- Firebase Config -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";

@@ -5,21 +5,45 @@
   <title>GroceryHub - Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Bootstrap CSS CDN -->
+  <!-- Bootstrap 5 CSS -->
   <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
   />
-  <!-- Bootstrap Icons (for using icon classes) -->
+  <!-- Bootstrap Icons -->
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
   />
-  <!-- Main CSS (Oxanium font and shared styles) -->
+  <!-- Main CSS -->
   <link rel="stylesheet" href="main.css" />
 
   <style>
-    /* Inline styles for any page-specific tweaks */
+    /* Global Styles */
+    body {
+      font-family: 'Oxanium', sans-serif;
+      background-color: #fff;
+      color: #343a40;
+      margin: 0;
+      padding: 0;
+    }
+    /* Navbar Customizations */
+    .navbar-custom {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .navbar-brand {
+      font-weight: bold;
+      color: #28a745 !important;
+    }
+    .navbar-nav .nav-link {
+      color: #343a40 !important;
+      margin: 0 0.5rem;
+    }
+    .navbar-nav .nav-link.active {
+      border-bottom: 2px solid #28a745;
+    }
+    /* Hero Section Styles */
     .hero-section {
       background-color: #f8f9fa;
       border-radius: 8px;
@@ -28,6 +52,7 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
+      margin-top: 1rem;
     }
     .hero-text {
       flex: 1 1 300px;
@@ -35,11 +60,13 @@
       margin-bottom: 1rem;
     }
     .hero-text h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
     }
     .hero-text p {
-      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      color: #555;
     }
     .hero-image {
       flex: 1 1 300px;
@@ -53,8 +80,8 @@
     .icon-row {
       display: flex;
       flex-wrap: wrap;
-      margin-top: 1.5rem;
       gap: 1.5rem;
+      margin-top: 2rem;
     }
     .icon-item {
       display: flex;
@@ -65,58 +92,51 @@
     }
     .icon-item i {
       font-size: 2rem;
-      color: var(--primary-color);
       margin-bottom: 0.5rem;
     }
-    /* Smaller screens adjustments */
+    /* Responsive Adjustments */
     @media (max-width: 576px) {
       .hero-section {
         flex-direction: column;
+        text-align: center;
       }
-      .hero-text,
-      .hero-image {
+      .hero-text, .hero-image {
         margin-right: 0;
         margin-bottom: 1rem;
+      }
+      .navbar-nav {
+        text-align: center;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light navbar-custom sticky-top">
     <div class="container">
-      <a class="navbar-brand text-success font-weight-bold" href="index.html">
-        <i class="bi bi-bag" style="font-size: 2rem;"></i>
-        GroceryHub
+      <a class="navbar-brand" href="index.html">
+        <i class="bi bi-bag-fill"></i> GroceryHub
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto align-items-center">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link text-dark" href="index.html">Home</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link text-dark" href="product-catalog.html"
-              >Catalog</a
-            >
+            <a class="nav-link" aria-current="page" href="index.html">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark" href="about.html">About</a>
+            <a class="nav-link active" href="product-catalog.html">Catalog</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark" href="contact.html">Contact</a>
+            <a class="nav-link" href="about.html">About</a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html"
-              >Login</a
-            >
+            <a class="nav-link" href="contact.html">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-secondary me-2" href="login.html">Login</a>
           </li>
           <li class="nav-item">
             <a class="btn btn-success" href="signup.html">Sign Up</a>
@@ -127,68 +147,51 @@
   </nav>
 
   <!-- Hero Section -->
-  <div class="container mt-4">
+  <div class="container">
     <div class="hero-section">
       <div class="hero-text">
         <h1>Fresh Groceries Delivered Daily</h1>
         <p>
-          Experience the charm of traditional markets reimagined for today's
-          fast-paced world. Enjoy organic produce and essential groceries
-          delivered right to your doorstep.
+          Experience the charm of traditional markets reimagined for today's fast-paced world.
+          Enjoy organic produce and essential groceries delivered right to your doorstep.
         </p>
-        <a href="./product-catalog.html" class="btn btn-primary">Shop Now</a>
+        <a href="product-catalog.html" class="btn btn-primary">Shop Now</a>
         <div class="icon-row">
           <div class="icon-item">
-            <i class="bi bi-truck" style="color: rgb(4, 241, 4); font-weight: bold;"></i>
+            <i class="bi bi-truck" style="color: #04f104;"></i>
             <p>Fast Delivery</p>
           </div>
           <div class="icon-item">
-            <i class="bi bi-bag-check" style="color: rgb(241, 146, 4); font-weight: bold;"></i>
+            <i class="bi bi-bag-check" style="color: #f19204;"></i>
             <p>Quality Products</p>
           </div>
           <div class="icon-item">
-            <i class="bi bi-credit-card-2-front" style="color: rgb(4, 241, 182); font-weight: bolder;"></i>
+            <i class="bi bi-credit-card-2-front" style="color: #04f1b6;"></i>
             <p>Easy Checkout</p>
           </div>
         </div>
       </div>
       <div class="hero-image">
-        <img
-          src="./images/landing.jpg"
-          alt="Basket of Groceries"
-        />
+        <img src="./images/landing.jpg" alt="Basket of Groceries">
       </div>
     </div>
   </div>
 
   <!-- Footer -->
-  <footer class="bg-light py-4 mt-5 mb-0 mb-0">
+  <footer class="bg-light py-4 mt-5">
     <div class="container text-center">
       <p class="mb-0">&copy; 2025 GroceryHub. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- jQuery, Popper.js, and Bootstrap JS -->
-  <script
-    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha256-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoF5W1Z4qU="
-    crossorigin="anonymous"
-  ></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-  ></script>
-  <script
-    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-  ></script>
+  <!-- Bootstrap 5 Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Firebase Config -->
   <script type="module">
-    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-
-    // Your web app's Firebase configuration
+    
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
       authDomain: "gofundz-5b149.firebaseapp.com",
@@ -200,7 +203,6 @@
       measurementId: "G-K9GV667K53"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
   </script>

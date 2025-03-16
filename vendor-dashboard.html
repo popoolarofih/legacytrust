@@ -96,20 +96,47 @@
             <label for="productImageURL">Product Image URL (Base64 or URL)</label>
             <input type="text" class="form-control" id="productImageURL" placeholder="Paste your 'data:image/jpeg;base64,...' or URL" required />
           </div>
+          <div class="form-group">
+            <label for="productDescriptionInput">Product Description</label>
+            <textarea class="form-control" id="productDescriptionInput" rows="3" placeholder="Enter product details here..." required></textarea>
+          </div>          
           <button type="submit" class="btn btn-primary">Add Product</button>
         </form>
-        <table class="table table-bordered" id="vendorProductTable">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Price (₦)</th>
-              <th>Category</th>
-              <th>Image</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody><!-- Products will be listed here --></tbody>
-        </table>
+        <div class="product mt-5">
+          <h5>Products</h5>
+          <table class="table table-bordered" id="vendorProductTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price (₦)</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Description</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody><!-- Products will be listed here --></tbody>
+          </table>
+        </div>
+        <div class="vendor">
+          <!-- Vendor Profile Edit Section -->
+        <h5 class="mt-4">Edit Vendor Profile</h5>
+        <form id="vendorProfileForm">
+          <div class="form-group">
+            <label for="vendorName">Store Name</label>
+            <input type="text" class="form-control" id="vendorName" required />
+          </div>
+          <div class="form-group">
+            <label for="vendorEmail">Email</label>
+            <input type="email" class="form-control" id="vendorEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="vendorAddress">Store Address</label>
+            <input type="text" class="form-control" id="vendorAddress" required />
+          </div>
+          <button type="submit" class="btn btn-success">Save Changes</button>
+        </form>
+        </div>
       </div>
 
       <!-- Right Column: Orders, Trust Score, Vendor Badge & Profile Edit -->
@@ -132,24 +159,8 @@
         <!-- Vendor Badge Section -->
         <h5 class="mt-4">Verification Badge</h5>
         <div id="vendorBadge"></div>
-
-        <!-- Vendor Profile Edit Section -->
-        <h5 class="mt-4">Edit Vendor Profile</h5>
-        <form id="vendorProfileForm">
-          <div class="form-group">
-            <label for="vendorName">Store Name</label>
-            <input type="text" class="form-control" id="vendorName" required />
-          </div>
-          <div class="form-group">
-            <label for="vendorEmail">Email</label>
-            <input type="email" class="form-control" id="vendorEmail" required />
-          </div>
-          <div class="form-group">
-            <label for="vendorAddress">Store Address</label>
-            <input type="text" class="form-control" id="vendorAddress" required />
-          </div>
-          <button type="submit" class="btn btn-success">Save Changes</button>
-        </form>
+        
+        
       </div>
     </div>
   </div>
@@ -217,6 +228,7 @@
           const price = parseFloat(document.getElementById("productPriceInput").value);
           const category = document.getElementById("productCategoryInput").value;
           const imageUrl = document.getElementById("productImageURL").value.trim();
+          const description = document.getElementById("productDescriptionInput").value.trim();
           // Save product to Firestore
           await addDoc(collection(db, "products"), {
             name,
@@ -224,6 +236,7 @@
             category,
             vendorId,
             imageUrl,
+            description,
             removed: false,
             createdAt: new Date()
           });
@@ -251,6 +264,7 @@
                 <td>
                   <img src="${data.imageUrl}" style="max-width:80px; height:auto;" alt="${data.name}" />
                 </td>
+                <td>${data.description || 'N/A'}</td>
                 <td>
                   <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">Delete</button>
                 </td>
