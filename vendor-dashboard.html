@@ -4,18 +4,44 @@
   <meta charset="UTF-8" />
   <title>GroceryHub - Vendor Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
   <!-- Main CSS (shared styles & Oxanium font) -->
   <link rel="stylesheet" href="main.css" />
-
   <style>
-    .dashboard-container { margin-top: 2rem; }
-    .dashboard-heading { margin-bottom: 1rem; }
-    .table thead th { background-color: #f8f9fa; }
+    .dashboard-container {
+      margin-top: 2rem;
+    }
+    .dashboard-heading {
+      margin-bottom: 1rem;
+    }
+    .table thead th {
+      background-color: #f8f9fa;
+    }
+    /* Basic responsive styling */
+    @media (max-width: 576px) {
+      .dashboard-container {
+        margin-top: 1rem;
+      }
+      .dashboard-heading {
+        font-size: 1.25rem;
+      }
+      table {
+        font-size: 0.9rem;
+      }
+    }
+    /* Style for the vendor badge container */
+    #vendorBadge {
+      margin-top: 0.5rem;
+      font-size: 1.5rem;
+    }
+    #vendorBadge span {
+      margin-left: 0.5rem;
+      font-size: 1rem;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
@@ -32,7 +58,7 @@
         <ul class="navbar-nav ml-auto align-items-center">
           <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
           <li class="nav-item">
             <a class="btn btn-outline-secondary mr-2" href="signup.html">Logout</a>
           </li>
@@ -54,16 +80,21 @@
             <input type="text" class="form-control" id="productNameInput" required />
           </div>
           <div class="form-group">
-            <label for="productPriceInput">Price</label>
-            <input type="number" class="form-control" id="productPriceInput" step="0.01" required />
+            <label for="productPriceInput">Price (₦)</label>
+            <input type="number" class="form-control" id="productPriceInput" step="1" required />
           </div>
           <div class="form-group">
             <label for="productCategoryInput">Category</label>
-            <input type="text" class="form-control" id="productCategoryInput" required />
+            <select class="form-control" id="productCategoryInput" required>
+              <option value="Fruits">Fruits</option>
+              <option value="Vegetables">Vegetables</option>
+              <option value="Dairy">Dairy</option>
+              <option value="Bakery">Bakery</option>
+            </select>
           </div>
           <div class="form-group">
-            <label for="productImageURL">Product Image URL</label>
-            <input type="url" class="form-control" id="productImageURL" placeholder="Enter image URL" required />
+            <label for="productImageURL">Product Image URL (Base64 or URL)</label>
+            <input type="text" class="form-control" id="productImageURL" placeholder="Paste your 'data:image/jpeg;base64,...' or URL" required />
           </div>
           <button type="submit" class="btn btn-primary">Add Product</button>
         </form>
@@ -71,7 +102,7 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Price</th>
+              <th>Price (₦)</th>
               <th>Category</th>
               <th>Image</th>
               <th>Action</th>
@@ -81,7 +112,7 @@
         </table>
       </div>
 
-      <!-- Right Column: Orders & Trust Score -->
+      <!-- Right Column: Orders, Trust Score, Vendor Badge & Profile Edit -->
       <div class="col-md-6">
         <h5>Order Tracking</h5>
         <table class="table table-bordered mb-4" id="vendorOrdersTable">
@@ -97,6 +128,28 @@
 
         <h5>Reputation / Trust Score</h5>
         <p>Your current trust score is: <span id="vendorTrustScore">Loading...</span></p>
+
+        <!-- Vendor Badge Section -->
+        <h5 class="mt-4">Verification Badge</h5>
+        <div id="vendorBadge"></div>
+
+        <!-- Vendor Profile Edit Section -->
+        <h5 class="mt-4">Edit Vendor Profile</h5>
+        <form id="vendorProfileForm">
+          <div class="form-group">
+            <label for="vendorName">Store Name</label>
+            <input type="text" class="form-control" id="vendorName" required />
+          </div>
+          <div class="form-group">
+            <label for="vendorEmail">Email</label>
+            <input type="email" class="form-control" id="vendorEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="vendorAddress">Store Address</label>
+            <input type="text" class="form-control" id="vendorAddress" required />
+          </div>
+          <button type="submit" class="btn btn-success">Save Changes</button>
+        </form>
       </div>
     </div>
   </div>
@@ -113,21 +166,10 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <!-- Firebase Config, Firestore, Auth (No Storage upload now) -->
+  <!-- Firebase Config, Firestore & Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      updateDoc,
-      doc,
-      onSnapshot,
-      query,
-      where
-    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, where, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -142,120 +184,192 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getFirestore(app);
     const auth = getAuth();
 
-    // Restrict access: if not authenticated, redirect to signup page.
+    // Ensure vendor is authenticated; if not, redirect to signup page.
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
       } else {
-        // Use authenticated vendor's UID
         const vendorId = user.uid;
+        loadVendorProducts(vendorId);
+        loadVendorOrders(vendorId);
+        loadVendorTrustScore(vendorId);
+        loadVendorProfile(vendorId);
+        loadVendorBadge(vendorId);
 
-        // --- Load Vendor's Products ---
-        async function loadVendorProducts() {
-          const qSnap = await getDocs(collection(db, "products"));
-          const vendorProductTableBody = document.querySelector("#vendorProductTable tbody");
-          vendorProductTableBody.innerHTML = "";
-          qSnap.forEach((docSnap) => {
-            const data = docSnap.data();
-            if (data.vendorId === vendorId && !data.removed) {
-              const tr = document.createElement("tr");
-              tr.innerHTML = `
-                <td>${data.name}</td>
-                <td>$${data.price.toFixed(2)}</td>
-                <td>${data.category}</td>
-                <td><img src="${data.imageUrl}" style="max-width:80px; height:auto;" alt="${data.name}" /></td>
-                <td>
-                  <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">Delete</button>
-                </td>
-              `;
-              vendorProductTableBody.appendChild(tr);
-            }
-          });
-        }
+        // Edit vendor profile handler
+        document.getElementById("vendorProfileForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const name = document.getElementById("vendorName").value;
+          const email = document.getElementById("vendorEmail").value;
+          const address = document.getElementById("vendorAddress").value;
+          // Update vendor profile in "users" collection
+          await updateDoc(doc(db, "users", vendorId), { name, email, address });
+          alert("Profile updated successfully!");
+        });
 
-        // --- Add Product (Using image URL input instead of upload) ---
-        const addProductForm = document.getElementById("addProductForm");
-        addProductForm.addEventListener("submit", async (e) => {
+        // Add product form handler
+        document.getElementById("addProductForm").addEventListener("submit", async (e) => {
           e.preventDefault();
           const name = document.getElementById("productNameInput").value;
           const price = parseFloat(document.getElementById("productPriceInput").value);
           const category = document.getElementById("productCategoryInput").value;
-          const imageUrl = document.getElementById("productImageURL").value;
-          
+          const imageUrl = document.getElementById("productImageURL").value.trim();
+          // Save product to Firestore
           await addDoc(collection(db, "products"), {
             name,
             price,
             category,
             vendorId,
             imageUrl,
+            removed: false,
             createdAt: new Date()
           });
           alert("Product added!");
-          addProductForm.reset();
-          loadVendorProducts();
+          e.target.reset();
         });
 
-        // --- Delete Product ---
+        // Real-time listener for vendor products
+        function loadVendorProducts(vendorId) {
+          const prodQuery = query(
+            collection(db, "products"),
+            where("vendorId", "==", vendorId),
+            where("removed", "==", false)
+          );
+          onSnapshot(prodQuery, (snapshot) => {
+            const tableBody = document.querySelector("#vendorProductTable tbody");
+            tableBody.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data();
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${data.name}</td>
+                <td>₦${data.price.toFixed(2)}</td>
+                <td>${data.category}</td>
+                <td>
+                  <img src="${data.imageUrl}" style="max-width:80px; height:auto;" alt="${data.name}" />
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">Delete</button>
+                </td>
+              `;
+              tableBody.appendChild(row);
+            });
+          });
+        }
+        loadVendorProducts(vendorId);
+
+        // Listen for delete button on products
         document.querySelector("#vendorProductTable tbody").addEventListener("click", async (e) => {
-          if (e.target.matches("button.btn-danger")) {
+          if (e.target.classList.contains("btn-danger")) {
             const docId = e.target.getAttribute("data-id");
             await updateDoc(doc(db, "products", docId), { removed: true });
             alert("Product flagged as removed!");
-            loadVendorProducts();
           }
         });
 
-        // --- Order Tracking ---
-        async function loadVendorOrders() {
-          const qSnap = await getDocs(collection(db, "orders"));
-          const vendorOrdersTableBody = document.querySelector("#vendorOrdersTable tbody");
-          vendorOrdersTableBody.innerHTML = "";
-          qSnap.forEach((docSnap) => {
-            const data = docSnap.data();
-            if (data.vendorId === vendorId) {
-              const tr = document.createElement("tr");
-              tr.innerHTML = `
+        // Real-time listener for vendor orders
+        function loadVendorOrders(vendorId) {
+          const ordersQuery = query(
+            collection(db, "orders"),
+            where("vendorId", "==", vendorId)
+          );
+          onSnapshot(ordersQuery, (snapshot) => {
+            const tableBody = document.querySelector("#vendorOrdersTable tbody");
+            tableBody.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data();
+              const row = document.createElement("tr");
+              row.innerHTML = `
                 <td>${docSnap.id}</td>
                 <td>${data.status || "Pending"}</td>
                 <td>
                   <button class="btn btn-sm btn-secondary" data-id="${docSnap.id}">Mark Shipped</button>
                 </td>
               `;
-              vendorOrdersTableBody.appendChild(tr);
-            }
+              tableBody.appendChild(row);
+            });
           });
         }
-        loadVendorOrders();
+        loadVendorOrders(vendorId);
 
         document.querySelector("#vendorOrdersTable tbody").addEventListener("click", async (e) => {
-          if (e.target.matches("button.btn-secondary")) {
+          if (e.target.classList.contains("btn-secondary")) {
             const orderId = e.target.getAttribute("data-id");
             await updateDoc(doc(db, "orders", orderId), { status: "Shipped" });
             alert("Order marked as shipped!");
-            loadVendorOrders();
           }
         });
 
-        // --- Trust/Rep Score ---
-        function loadVendorTrustScore() {
-          const docRef = doc(db, "vendors", vendorId);
+        // Load vendor trust score in realtime
+        function loadVendorTrustScore(vendorId) {
+          const docRef = doc(db, "users", vendorId);
           onSnapshot(docRef, (docSnap) => {
-            const vendorTrustScore = document.getElementById("vendorTrustScore");
+            const trustElem = document.getElementById("vendorTrustScore");
             if (docSnap.exists()) {
-              vendorTrustScore.textContent = docSnap.data().trustScore || "N/A";
+              trustElem.textContent = docSnap.data().trustScore || "N/A";
             } else {
-              vendorTrustScore.textContent = "No Score";
+              trustElem.textContent = "No Score";
             }
           });
         }
-        loadVendorTrustScore();
+        loadVendorTrustScore(vendorId);
 
-        // --- Load Products on page load ---
-        loadVendorProducts();
+        // Load vendor profile for editing from "users"
+        async function loadVendorProfile(vendorId) {
+          const docRef = doc(db, "users", vendorId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            document.getElementById("vendorName").value = data.name || "";
+            document.getElementById("vendorEmail").value = data.email || "";
+            document.getElementById("vendorAddress").value = data.address || "";
+          }
+        }
+        loadVendorProfile(vendorId);
+
+        // Calculate and display badge verification based on successful orders
+        function loadVendorBadge(vendorId) {
+          // Query orders where status is "Shipped"
+          const ordersQuery = query(
+            collection(db, "orders"),
+            where("vendorId", "==", vendorId),
+            where("status", "==", "Shipped")
+          );
+          onSnapshot(ordersQuery, (snapshot) => {
+            let successfulOrders = snapshot.size;
+            // Count distinct customers if available
+            let customers = new Set();
+            snapshot.forEach((docSnap) => {
+              let data = docSnap.data();
+              if (data.userId) {
+                customers.add(data.userId);
+              }
+            });
+            let customerCount = customers.size;
+            // Define thresholds for badge colors
+            let badgeColor = "";
+            if (successfulOrders < 5) {
+              badgeColor = "red";
+            } else if (successfulOrders < 10) {
+              badgeColor = "purple";
+            } else if (successfulOrders < 20) {
+              badgeColor = "blue";
+            } else if (successfulOrders < 50) {
+              badgeColor = "gold";
+            } else {
+              badgeColor = "green";
+            }
+            // Use a Bootstrap Icon to represent the badge with inline styling
+            document.getElementById("vendorBadge").innerHTML = `
+              <i class="bi bi-award-fill" style="color: ${badgeColor}; font-size: 1.5rem;"></i>
+              <span>${badgeColor.toUpperCase()} - ${successfulOrders} Orders / ${customerCount} Customers</span>
+            `;
+          });
+        }
+        loadVendorBadge(vendorId);
       }
     });
   </script>

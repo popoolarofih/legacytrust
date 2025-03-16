@@ -4,20 +4,12 @@
   <meta charset="UTF-8">
   <title>GroceryHub - Catalog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <!-- Bootstrap CSS -->
-  <link
-    rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-  />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <!-- Bootstrap Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
   <!-- Main CSS (Oxanium font and shared styles) -->
   <link rel="stylesheet" href="main.css" />
-
   <style>
     .product-card img {
       height: 200px;
@@ -26,22 +18,26 @@
     .sidebar {
       max-width: 250px;
     }
+    /* Basic responsive styling */
+    @media (max-width: 576px) {
+      .container { padding: 0 1rem; }
+    }
+    /* Styling for vendor badge */
+    .vendor-badge {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
-  <!-- Navigation Bar (same style as landing) -->
+  <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
       <a class="navbar-brand text-success font-weight-bold" href="index.html">
-        <i class="bi bi-bag" style="font-size: 2rem;"></i>
-        GroceryHub
+        <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-      >
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -50,9 +46,7 @@
             <a class="nav-link text-dark" href="index.html">Home</a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link text-dark" href="product-catalog.html"
-              >Catalog</a
-            >
+            <a class="nav-link text-dark" href="product-catalog.html">Catalog</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-dark" href="about.html">About</a>
@@ -61,9 +55,7 @@
             <a class="nav-link text-dark" href="contact.html">Contact</a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html"
-              >Login</a
-            >
+            <a class="btn btn-outline-secondary mr-2" href="signup.html">Login</a>
           </li>
           <li class="nav-item">
             <a class="btn btn-success" href="signup.html">Sign Up</a>
@@ -118,94 +110,7 @@
       <!-- Product Grid -->
       <main class="col-md-9">
         <div class="row" id="productCatalog">
-          <!-- Example static product cards -->
-          <div
-            class="col-md-4 mb-4 product-card"
-            data-category="fruits"
-            data-name="Apple"
-            data-price="800"
-          >
-            <div class="card">
-              <img
-                class="card-img-top"
-                src="./images/download.jpg"
-                alt="Apple"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Apple</h5>
-                <p class="card-text">
-                  Crisp, juicy apples perfect for a healthy snack!
-                </p>
-                <a href="product-details.html" class="btn btn-primary"
-                  >View Details</a
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="col-md-4 mb-4 product-card"
-            data-category="vegetables"
-            data-name="Carrot"
-            data-price="200"
-          >
-            <div class="card">
-              <img
-                class="card-img-top"
-                src="./images/carrot.jpg"
-                alt="Carrot"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Carrot</h5>
-                <p class="card-text">Fresh carrots from local farms.</p>
-                <a href="product-details.html" class="btn btn-primary"
-                  >View Details</a
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="col-md-4 mb-4 product-card"
-            data-category="dairy"
-            data-name="Organic Milk"
-            data-price="3.49"
-          >
-            <div class="card">
-              <img
-                class="card-img-top"
-                src="./images/milk.jpg"
-                alt="Organic Milk"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Organic Milk</h5>
-                <p class="card-text">Fresh organic milk from local farms.</p>
-                <a href="product-details.html" class="btn btn-primary"
-                  >View Details</a
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="col-md-4 mb-4 product-card"
-            data-category="Bakery"
-            data-name="Bread"
-            data-price="1500"
-          >
-            <div class="card">
-              <img
-                class="card-img-top"
-                src="./images/bread.jpg"
-                alt="bread"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Bread</h5>
-                <p class="card-text">Soft Local Bread.</p>
-                <a href="product-details.html" class="btn btn-primary"
-                  >View Details</a
-                >
-              </div>
-            </div>
-          </div>
-          <!-- More product cards or dynamic data... -->
+          <!-- Dynamic product cards will be appended here -->
         </div>
       </main>
     </div>
@@ -219,72 +124,134 @@
   </footer>
 
   <!-- jQuery, Popper.js, Bootstrap JS -->
-  <script
-    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    crossorigin="anonymous"
-  ></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-  ></script>
-  <script
-    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-  ></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <!-- Firebase Config -->
+  <!-- Firebase Config, Firestore & Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+    import { getFirestore, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     const firebaseConfig = {
-  apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
-  authDomain: "gofundz-5b149.firebaseapp.com",
-  databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
-  projectId: "gofundz-5b149",
-  storageBucket: "gofundz-5b149.firebasestorage.app",
-  messagingSenderId: "228985745417",
-  appId: "1:228985745417:web:e1d9f455196fd1684948d8",
-  measurementId: "G-K9GV667K53"
-};
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-  </script>
+      apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
+      authDomain: "gofundz-5b149.firebaseapp.com",
+      databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
+      projectId: "gofundz-5b149",
+      storageBucket: "gofundz-5b149.firebasestorage.app",
+      messagingSenderId: "228985745417",
+      appId: "1:228985745417:web:e1d9f455196fd1684948d8",
+      measurementId: "G-K9GV667K53"
+    };
 
-  <!-- JS for Filter/Sort -->
-  <script>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth();
+
+    // Load products dynamically from Firestore
+    function loadProducts() {
+      const prodQuery = query(collection(db, "products"), where("removed", "==", false));
+      onSnapshot(prodQuery, (snapshot) => {
+        const catalog = document.getElementById("productCatalog");
+        catalog.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          // Create a container for each product card
+          const colDiv = document.createElement("div");
+          colDiv.classList.add("col-md-4", "mb-4", "product-card");
+          // Add custom attributes for filtering/sorting (if needed)
+          colDiv.setAttribute("data-category", data.category.toLowerCase());
+          colDiv.setAttribute("data-name", data.name);
+          colDiv.setAttribute("data-price", data.price);
+          // Create the card with an extra vendor badge span
+          colDiv.innerHTML = `
+            <div class="card">
+              <img class="card-img-top" src="${data.imageUrl}" alt="${data.name}" />
+              <div class="card-body">
+                <h5 class="card-title">${data.name}</h5>
+                <p class="card-text">Price: ₦${data.price.toFixed(2)}</p>
+                <p class="card-text">Category: ${data.category}</p>
+                <div id="vendorBadge-${docSnap.id}" class="vendor-badge">Loading badge...</div>
+                <a href="product-details.html?id=${docSnap.id}" class="btn btn-primary mt-2">View Details</a>
+              </div>
+            </div>
+          `;
+          catalog.appendChild(colDiv);
+          // Load the vendor's badge for this product
+          loadVendorBadgeForProduct(data.vendorId, "vendorBadge-" + docSnap.id);
+        });
+      });
+    }
+
+    // Function to load vendor badge for a product
+    function loadVendorBadgeForProduct(vendorId, elementId) {
+      const ordersQuery = query(
+        collection(db, "orders"),
+        where("vendorId", "==", vendorId),
+        where("status", "==", "Shipped")
+      );
+      onSnapshot(ordersQuery, (snapshot) => {
+        let successfulOrders = snapshot.size;
+        let customers = new Set();
+        snapshot.forEach((docSnap) => {
+          let orderData = docSnap.data();
+          if (orderData.userId) {
+            customers.add(orderData.userId);
+          }
+        });
+        let customerCount = customers.size;
+        let badgeColor = "";
+        if (successfulOrders < 5) {
+          badgeColor = "red";
+        } else if (successfulOrders < 10) {
+          badgeColor = "purple";
+        } else if (successfulOrders < 20) {
+          badgeColor = "blue";
+        } else if (successfulOrders < 50) {
+          badgeColor = "gold";
+        } else {
+          badgeColor = "green";
+        }
+        document.getElementById(elementId).innerHTML = `
+          <i class="bi bi-award-fill" style="color:${badgeColor};"></i>
+          <span>${badgeColor.toUpperCase()} - ${successfulOrders} Orders / ${customerCount} Customers</span>
+        `;
+      });
+    }
+
+    // Basic search, filter, and sort functionality (if needed)
     const searchInput = document.getElementById('searchInput');
     const sortSelect = document.getElementById('sortSelect');
     const categoryItems = document.querySelectorAll('.category-item');
-    const productCards = Array.from(document.querySelectorAll('.product-card'));
     let currentCategory = "all";
 
     function filterProducts() {
       const searchText = searchInput.value.toLowerCase();
+      const productCards = document.querySelectorAll('.product-card');
       productCards.forEach((card) => {
         const name = card.getAttribute('data-name').toLowerCase();
         const cat = card.getAttribute('data-category');
         const matchesSearch = name.includes(searchText);
-        const matchesCat =
-          currentCategory === "all" || cat === currentCategory;
+        const matchesCat = currentCategory === "all" || cat === currentCategory;
         card.style.display = matchesSearch && matchesCat ? "block" : "none";
       });
     }
+    searchInput.addEventListener('input', filterProducts);
 
-    function sortProducts() {
+    sortSelect.addEventListener('change', () => {
       const sortValue = sortSelect.value;
       const catalog = document.getElementById('productCatalog');
+      const productCards = Array.from(document.querySelectorAll('.product-card'));
       let sortedCards = productCards.slice();
 
       if (sortValue === "price-asc") {
-        sortedCards.sort(
-          (a, b) =>
-            parseFloat(a.getAttribute('data-price')) -
-            parseFloat(b.getAttribute('data-price'))
+        sortedCards.sort((a, b) =>
+          parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price'))
         );
       } else if (sortValue === "price-desc") {
-        sortedCards.sort(
-          (a, b) =>
-            parseFloat(b.getAttribute('data-price')) -
-            parseFloat(a.getAttribute('data-price'))
+        sortedCards.sort((a, b) =>
+          parseFloat(b.getAttribute('data-price')) - parseFloat(a.getAttribute('data-price'))
         );
       } else if (sortValue === "name-asc") {
         sortedCards.sort((a, b) =>
@@ -295,13 +262,9 @@
           b.getAttribute('data-name').localeCompare(a.getAttribute('data-name'))
         );
       }
-      // Re-append
       catalog.innerHTML = "";
       sortedCards.forEach((card) => catalog.appendChild(card));
-    }
-
-    searchInput.addEventListener('input', filterProducts);
-    sortSelect.addEventListener('change', sortProducts);
+    });
 
     categoryItems.forEach((item) => {
       item.addEventListener('click', function () {
@@ -311,6 +274,9 @@
         filterProducts();
       });
     });
+
+    // Initialize product loading
+    loadProducts();
   </script>
 </body>
 </html>
