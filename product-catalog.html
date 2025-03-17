@@ -4,29 +4,55 @@
   <meta charset="UTF-8">
   <title>GroceryHub - Catalog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
   <!-- Main CSS (Oxanium font and shared styles) -->
   <link rel="stylesheet" href="main.css" />
   <style>
+    /* Product card image styling */
     .product-card img {
       height: 200px;
       object-fit: cover;
+      transition: transform 0.3s ease;
     }
+    .product-card img:hover {
+      transform: scale(1.05);
+    }
+    /* Sidebar styling */
     .sidebar {
       max-width: 250px;
+      padding: 1rem;
+      border-right: 1px solid #eaeaea;
     }
-    /* Basic responsive styling */
+    /* Responsive adjustments */
     @media (max-width: 576px) {
       .container { padding: 0 1rem; }
+      .sidebar { border-right: none; border-bottom: 1px solid #eaeaea; }
     }
-    /* Styling for vendor badge */
+    /* Vendor badge styling */
     .vendor-badge {
       font-size: 0.9rem;
       font-weight: bold;
       margin-top: 0.5rem;
+    }
+    /* Card styling enhancements */
+    .card {
+      border: none;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .card-text {
+      font-size: 0.95rem;
     }
   </style>
 </head>
@@ -34,14 +60,14 @@
   <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
-      <a class="navbar-brand text-success font-weight-bold" href="index.html">
+      <a class="navbar-brand text-success fw-bold" href="index.html">
         <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto align-items-center">
+        <ul class="navbar-nav ms-auto align-items-center">
           <li class="nav-item">
             <a class="nav-link text-dark" href="index.html">Home</a>
           </li>
@@ -55,7 +81,11 @@
             <a class="nav-link text-dark" href="contact.html">Contact</a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html">Login</a>
+            <a class="nav-link text-dark" href="shopping-cart.html">Cart</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="btn btn-outline-secondary me-2" href="signup.html">Login</a>
           </li>
           <li class="nav-item">
             <a class="btn btn-success" href="signup.html">Sign Up</a>
@@ -68,13 +98,13 @@
   <!-- Catalog Layout -->
   <div class="container mt-4">
     <div class="row">
-      <!-- Sidebar for filters & sorting -->
+      <!-- Sidebar for Filters & Sorting -->
       <aside class="col-md-3 sidebar">
-        <h5>Search</h5>
-        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search products..." />
+        <h5 class="mb-3">Search</h5>
+        <input type="text" id="searchInput" class="form-control mb-4" placeholder="Search products..." />
 
-        <h5>Categories</h5>
-        <ul class="list-group mb-3" id="categoryList">
+        <h5 class="mb-3">Categories</h5>
+        <ul class="list-group mb-4" id="categoryList">
           <li class="list-group-item category-item active" data-category="all">All</li>
           <li class="list-group-item category-item" data-category="fruits">Fruits</li>
           <li class="list-group-item category-item" data-category="vegetables">Vegetables</li>
@@ -82,8 +112,8 @@
           <li class="list-group-item category-item" data-category="bakery">Bakery</li>
         </ul>
 
-        <h5>Sort By</h5>
-        <select id="sortSelect" class="form-control">
+        <h5 class="mb-3">Sort By</h5>
+        <select id="sortSelect" class="form-select">
           <option value="default">Default</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
@@ -102,22 +132,19 @@
   </div>
 
   <!-- Footer -->
-  <footer class="bg-light py-4 mt-5 mb-0">
+  <footer class="bg-light py-4 mt-5">
     <div class="container text-center">
-      <p class="mb-0">&copy; 2025 GroceryHub. All rights reserved.</p>
+      <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- jQuery, Popper.js, Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <!-- Firebase Config, Firestore & Auth -->
+  <!-- Bootstrap 5 Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Firebase Config, Firestore -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-    // For this public catalog, auth is not required to load products and vendor info.
+
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
       authDomain: "gofundz-5b149.firebaseapp.com",
@@ -140,28 +167,28 @@
         catalog.innerHTML = "";
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
-          // Create a container for each product card
+          // Create product card container
           const colDiv = document.createElement("div");
           colDiv.classList.add("col-md-4", "mb-4", "product-card");
-          // Set attributes for filtering/sorting if needed
+          // Add data attributes for filtering/sorting
           colDiv.setAttribute("data-category", data.category.toLowerCase());
           colDiv.setAttribute("data-name", data.name);
           colDiv.setAttribute("data-price", data.price);
-          // Create the card HTML
+          // Create card HTML
           colDiv.innerHTML = `
-            <div class="card">
+            <div class="card h-100">
               <img class="card-img-top" src="${data.imageUrl}" alt="${data.name}" />
-              <div class="card-body">
+              <div class="card-body d-flex flex-column">
                 <h5 class="card-title">${data.name}</h5>
-                <p class="card-text">Price: ₦${data.price.toFixed(2)}</p>
-                <p class="card-text">Category: ${data.category}</p>
+                <p class="card-text mb-1">Price: ₦${data.price.toFixed(2)}</p>
+                <p class="card-text mb-1">Category: ${data.category}</p>
                 <div id="vendorBadge-${docSnap.id}" class="vendor-badge">Loading badge...</div>
-                <a href="product-details.html?id=${docSnap.id}" class="btn btn-primary mt-2">View Details</a>
+                <a href="product-details.html?id=${docSnap.id}" class="btn btn-primary mt-auto">View Details</a>
               </div>
             </div>
           `;
           catalog.appendChild(colDiv);
-          // Load vendor badge for this product using the vendorId stored in the product doc
+          // Load vendor badge for this product using its vendorId
           loadVendorBadgeForProduct(data.vendorId, "vendorBadge-" + docSnap.id);
         });
       });
@@ -179,27 +206,18 @@
         let customers = new Set();
         snapshot.forEach((docSnap) => {
           let orderData = docSnap.data();
-          if (orderData.userId) {
-            customers.add(orderData.userId);
-          }
+          if (orderData.userId) customers.add(orderData.userId);
         });
-        let customerCount = customers.size;
-        // Define badge color thresholds
         let badgeColor = "";
-        if (successfulOrders < 5) {
-          badgeColor = "red";
-        } else if (successfulOrders < 10) {
-          badgeColor = "purple";
-        } else if (successfulOrders < 20) {
-          badgeColor = "blue";
-        } else if (successfulOrders < 50) {
-          badgeColor = "gold";
-        } else {
-          badgeColor = "green";
-        }
+        if (successfulOrders < 5) badgeColor = "red";
+        else if (successfulOrders < 10) badgeColor = "purple";
+        else if (successfulOrders < 20) badgeColor = "blue";
+        else if (successfulOrders < 50) badgeColor = "gold";
+        else badgeColor = "green";
+
         document.getElementById(elementId).innerHTML = `
           <i class="bi bi-award-fill" style="color:${badgeColor};"></i>
-          <span>${badgeColor.toUpperCase()} - ${successfulOrders} Orders / ${customerCount} Customers</span>
+          <span>${badgeColor.toUpperCase()} - ${successfulOrders} Orders / ${customers.size} Customers</span>
         `;
       });
     }
@@ -230,21 +248,13 @@
       let sortedCards = productCards.slice();
 
       if (sortValue === "price-asc") {
-        sortedCards.sort((a, b) =>
-          parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price'))
-        );
+        sortedCards.sort((a, b) => parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price')));
       } else if (sortValue === "price-desc") {
-        sortedCards.sort((a, b) =>
-          parseFloat(b.getAttribute('data-price')) - parseFloat(a.getAttribute('data-price'))
-        );
+        sortedCards.sort((a, b) => parseFloat(b.getAttribute('data-price')) - parseFloat(a.getAttribute('data-price')));
       } else if (sortValue === "name-asc") {
-        sortedCards.sort((a, b) =>
-          a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'))
-        );
+        sortedCards.sort((a, b) => a.getAttribute('data-name').localeCompare(b.getAttribute('data-name')));
       } else if (sortValue === "name-desc") {
-        sortedCards.sort((a, b) =>
-          b.getAttribute('data-name').localeCompare(a.getAttribute('data-name'))
-        );
+        sortedCards.sort((a, b) => b.getAttribute('data-name').localeCompare(a.getAttribute('data-name')));
       }
       catalog.innerHTML = "";
       sortedCards.forEach((card) => catalog.appendChild(card));

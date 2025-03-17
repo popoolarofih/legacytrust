@@ -1,35 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>GroceryHub - Checkout</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>GroceryHub - Cart & Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- Bootstrap CSS -->
-  <link
-    rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-  />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <!-- Bootstrap Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  />
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="main.css" />
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
   <style>
+    .cart-item-img {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+    }
+    .cart-table td, .cart-table th {
+      vertical-align: middle;
+    }
     .step {
-      display: none;
-    }
-    .step.active {
-      display: block;
-    }
-    .progress {
-      height: 20px;
-      margin-bottom: 20px;
-    }
-    .progress-bar {
-      line-height: 20px;
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -38,147 +27,76 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
       <a class="navbar-brand text-success font-weight-bold" href="index.html">
-        <i class="bi bi-bag" style="font-size: 2rem;"></i>
-        GroceryHub
+        <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="product-catalog.html">Catalog</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="#">Contact</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-success" href="signup.html">Sign Up</a>
-          </li>
-        </ul>
-      </div>
     </div>
   </nav>
 
-  <!-- Checkout Flow -->
   <div class="container my-5">
-    <h2 class="text-center mb-4">Checkout</h2>
-    <div class="progress">
-      <div id="progressBar" class="progress-bar bg-success" style="width: 50%;">
-        Step 1 of 2
+    <h2 class="mb-4">Your Shopping Cart</h2>
+    <div id="cartContainer">
+      <table class="table table-bordered cart-table">
+        <thead class="thead-light">
+          <tr>
+            <th>Product</th>
+            <th>Price per Unit</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="cartTableBody"><!-- Filled dynamically --></tbody>
+      </table>
+      <div class="text-right">
+        <h4 id="totalPrice">Total: ₦0.00</h4>
       </div>
     </div>
-
-    <!-- Step 1: Shipping Details -->
-    <div id="step1" class="step active">
-      <h4>Shipping Details</h4>
-      <form id="shippingForm">
-        <div class="form-group">
-          <label for="fullName">Full Name</label>
-          <input type="text" class="form-control" id="fullName" required />
-        </div>
-        <div class="form-group">
-          <label for="address">Street Address</label>
-          <input type="text" class="form-control" id="address" required />
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="city">City</label>
-            <input type="text" class="form-control" id="city" required />
-          </div>
-          <div class="form-group col-md-4">
-            <label for="state">State</label>
-            <input type="text" class="form-control" id="state" required />
-          </div>
-          <div class="form-group col-md-2">
-            <label for="zip">Zip</label>
-            <input type="text" class="form-control" id="zip" required />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="phone">Phone Number</label>
-          <input type="tel" class="form-control" id="phone" required />
-        </div>
-        <!-- Next button: On click, fetch product details and store order -->
-        <button type="button" id="toStep2" class="btn btn-primary">Next</button>
-      </form>
+    <div id="emptyCart" class="text-center" style="display: none;">
+      <p>Your cart is empty. <a href="product-catalog.html">Browse products</a></p>
     </div>
 
-    <!-- Step 2: Order Review & Confirmation -->
-    <div id="step2" class="step">
-      <h4>Review Your Order</h4>
-      <div class="card mb-4">
-        <div class="card-header">Shipping Information</div>
-        <div class="card-body">
-          <p id="reviewName"></p>
-          <p id="reviewAddress"></p>
-          <p id="reviewCityStateZip"></p>
-          <p id="reviewPhone"></p>
-        </div>
+    <!-- Checkout Form -->
+    <h2 class="mt-5">Checkout</h2>
+    <form id="checkoutForm">
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" class="form-control" id="fullName" required>
       </div>
-
-      <div class="card mb-4">
-        <div class="card-header">Product Details</div>
-        <div class="card-body" id="productSummary">
-          <!-- Filled dynamically with product details and price info -->
-        </div>
+      <div class="form-group">
+        <label for="address">Shipping Address</label>
+        <textarea class="form-control" id="address" rows="3" required></textarea>
       </div>
-
-      <button type="button" id="backToStep1" class="btn btn-secondary">Back</button>
-      <button type="button" id="confirmOrder" class="btn btn-success">Confirm Order</button>
-    </div>
-
-    <!-- Final Confirmation -->
-    <div id="orderConfirmation" class="step text-center">
-      <h4>Thank You!</h4>
-      <p>Your order has been confirmed. You will receive an email shortly.</p>
-      <a href="product-catalog.html" class="btn btn-primary">Continue Shopping</a>
-    </div>
+      <div class="form-group">
+        <label for="paymentMethod">Payment Method</label>
+        <select class="form-control" id="paymentMethod">
+          <option value="card">Credit/Debit Card</option>
+          <option value="bank">Bank Transfer</option>
+          <option value="cod">Cash on Delivery</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success">Place Order</button>
+    </form>
   </div>
 
   <!-- Footer -->
   <footer class="bg-light py-4">
     <div class="container text-center">
-      <p class="mb-0">&copy; 2025 GroceryHub. All rights reserved.</p>
+      <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
     </div>
   </footer>
 
   <!-- jQuery, Popper.js, Bootstrap JS -->
-  <script
-    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    crossorigin="anonymous"
-  ></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-  ></script>
-  <script
-    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-  ></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <!-- Firebase Config, Firestore & Auth -->
+  <!-- Firebase Modules -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc,
-      addDoc
-    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, getDoc, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-    // Firebase configuration
+    // Firebase configuration – replace with your own credentials
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
       authDomain: "gofundz-5b149.firebaseapp.com",
@@ -192,136 +110,151 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getFirestore(app);
     const auth = getAuth();
 
-    // Optional: Ensure user is authenticated
+    let currentUser;
+
+    // Ensure the user is signed in
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        // Redirect to signup/login if not authenticated
         window.location.href = "signup.html";
+      } else {
+        currentUser = user;
+        loadCartItems(user.uid);
       }
     });
 
-    // Utility functions for progress and step display
-    function updateProgress(step) {
-      const progressBar = document.getElementById("progressBar");
-      if (step === 1) {
-        progressBar.style.width = "50%";
-        progressBar.textContent = "Step 1 of 2";
-      } else if (step === 2) {
-        progressBar.style.width = "100%";
-        progressBar.textContent = "Step 2 of 2";
-      }
-    }
-    function showStep(stepId) {
-      document.querySelectorAll(".step").forEach((step) => {
-        step.classList.remove("active");
-      });
-      document.getElementById(stepId).classList.add("active");
-    }
+    // Load cart items from the top-level "carts" collection filtered by userId
+    async function loadCartItems(uid) {
+      const cartQuery = query(collection(db, "carts"), where("userId", "==", uid));
+      const snapshot = await getDocs(cartQuery);
+      const tbody = document.getElementById("cartTableBody");
+      let total = 0;
+      tbody.innerHTML = "";
 
-    // Global variable to store created order details (if needed)
-    let createdOrder = null;
-
-    // Event listener for "Next" button on shipping details
-    document.getElementById("toStep2").addEventListener("click", async function () {
-      const form = document.getElementById("shippingForm");
-      if (!form.checkValidity()) {
-        form.reportValidity();
+      if (snapshot.empty) {
+        document.getElementById("cartContainer").style.display = "none";
+        document.getElementById("emptyCart").style.display = "block";
+        document.getElementById("totalPrice").textContent = "Total: ₦0.00";
         return;
       }
-      // Retrieve shipping details
+
+      document.getElementById("cartContainer").style.display = "block";
+      document.getElementById("emptyCart").style.display = "none";
+
+      // Loop through each cart document and fetch product details
+      for (const docSnap of snapshot.docs) {
+        const item = docSnap.data();
+        const productRef = doc(db, "products", item.productId);
+        const productSnap = await getDoc(productRef);
+        let name = "Unknown Product";
+        let price = 0;
+        let imageUrl = "placeholder.jpg";
+        if (productSnap.exists()) {
+          const productData = productSnap.data();
+          name = productData.name;
+          // Convert price to a number to prevent NaN issues
+          price = Number(productData.price) || 0;
+          imageUrl = productData.imageUrl;
+        }
+
+        const quantity = Number(item.quantity) || 1;
+        const subtotal = price * quantity;
+        total += subtotal;
+
+        // Build table row for the cart item
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><img src="${imageUrl}" class="cart-item-img mr-2" alt="${name}"> ${name}</td>
+          <td>₦${price.toFixed(2)}</td>
+          <td>${quantity}</td>
+          <td>₦${subtotal.toFixed(2)}</td>
+          <td>
+            <button class="btn btn-danger btn-sm remove-btn" data-cart-id="${docSnap.id}">Remove</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      }
+      document.getElementById("totalPrice").textContent = `Total: ₦${total.toFixed(2)}`;
+    }
+
+    // Listen for remove button clicks to delete the corresponding cart document
+    document.addEventListener("click", async (e) => {
+      if (e.target.classList.contains("remove-btn")) {
+        const cartId = e.target.getAttribute("data-cart-id");
+        await deleteDoc(doc(db, "carts", cartId));
+        loadCartItems(currentUser.uid);
+      }
+    });
+
+    // Checkout: Save the order to "orders" and then clear the cart, then redirect to thank-you page
+    document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Gather shipping details
       const fullName = document.getElementById("fullName").value;
       const address = document.getElementById("address").value;
-      const city = document.getElementById("city").value;
-      const state = document.getElementById("state").value;
-      const zip = document.getElementById("zip").value;
+      const city = document.getElementById("city").value || "";
+      const state = document.getElementById("state").value || "";
+      const zip = document.getElementById("zip").value || "";
       const phone = document.getElementById("phone").value;
+      const paymentMethod = document.getElementById("paymentMethod").value;
 
-      // For this example, assume the product ID is passed as a query parameter "productId"
-      const params = new URLSearchParams(window.location.search);
-      const productId = params.get("productId");
-      if (!productId) {
-        alert("No product selected!");
+      // Retrieve cart items for the current user
+      const cartQuery = query(collection(db, "carts"), where("userId", "==", currentUser.uid));
+      const cartSnapshot = await getDocs(cartQuery);
+
+      if (cartSnapshot.empty) {
+        alert("Your cart is empty.");
         return;
       }
 
-      // Fetch product details from Firestore
-      const productRef = doc(db, "products", productId);
-      const productSnap = await getDoc(productRef);
-      if (!productSnap.exists()) {
-        alert("Selected product not found!");
-        return;
+      const orderItems = [];
+      let total = 0;
+      // For each cart item, fetch the product details to get updated price, etc.
+      for (const docSnap of cartSnapshot.docs) {
+        const cartItem = docSnap.data();
+        const productRef = doc(db, "products", cartItem.productId);
+        const productSnap = await getDoc(productRef);
+        let price = 0;
+        if (productSnap.exists()) {
+          const productData = productSnap.data();
+          price = Number(productData.price) || 0;
+        }
+        const quantity = Number(cartItem.quantity) || 1;
+        const subtotal = price * quantity;
+        total += subtotal;
+        orderItems.push({
+          productId: cartItem.productId,
+          quantity: quantity,
+          price: price
+        });
       }
-      const productData = productSnap.data();
 
-      // Build the order data
+      // Build order object
       const orderData = {
-        productId: productId,
-        productName: productData.name || "Unnamed Product",
-        productPrice: productData.price || 0,
-        productImageUrl: productData.imageUrl || "placeholder.jpg",
-        shipping: {
-          fullName,
-          address,
-          city,
-          state,
-          zip,
-          phone
-        },
-        // For simplicity, set quantity to 1 (or retrieve from elsewhere)
-        quantity: 1,
-        total: (productData.price || 0) * 1,
-        createdAt: new Date(),
-        status: "Pending"
+        userId: currentUser.uid,
+        shipping: { fullName, address, city, state, zip, phone },
+        paymentMethod,
+        items: orderItems,
+        total: total,
+        status: "Pending",
+        createdAt: new Date()
       };
 
       try {
-        // Store the order in the "orders" collection
-        const orderDoc = await addDoc(collection(db, "orders"), orderData);
-        createdOrder = { id: orderDoc.id, ...orderData };
-        console.log("Order created with ID:", orderDoc.id);
+        await addDoc(collection(db, "orders"), orderData);
+        // Clear the cart
+        for (const docSnap of cartSnapshot.docs) {
+          await deleteDoc(doc(db, "carts", docSnap.id));
+        }
+        alert("Order placed successfully!");
+        window.location.href = "thankyou.html";
       } catch (error) {
-        console.error("Error creating order:", error);
-        alert("Failed to create order. Please try again.");
-        return;
+        console.error("Error during checkout:", error);
+        alert("Checkout failed. Please try again.");
       }
-
-      // Fill in the order review details
-      document.getElementById("reviewName").textContent = fullName;
-      document.getElementById("reviewAddress").textContent = address;
-      document.getElementById("reviewCityStateZip").textContent = `${city}, ${state} ${zip}`;
-      document.getElementById("reviewPhone").textContent = phone;
-      // Also fill in product summary
-      document.getElementById("productSummary").innerHTML = `
-        <p><strong>Product:</strong> ${productData.name}</p>
-        <p><strong>Price:</strong> ₦${(productData.price || 0).toFixed(2)}</p>
-        <p><strong>Quantity:</strong> 1</p>
-        <p><strong>Subtotal:</strong> ₦${(productData.price || 0).toFixed(2)}</p>
-      `;
-
-      updateProgress(2);
-      showStep("step2");
-    });
-
-    // Event listener for "Back" button
-    document.getElementById("backToStep1").addEventListener("click", function () {
-      updateProgress(1);
-      showStep("step1");
-    });
-
-    // Event listener for "Confirm Order" button
-    document.getElementById("confirmOrder").addEventListener("click", function () {
-      // In a real scenario you might update order status here.
-      // For now, we simply show the confirmation step and then redirect.
-      showStep("orderConfirmation");
-
-      // Redirect to a checkout/confirmation page after a short delay (or immediately)
-      setTimeout(() => {
-        window.location.href = "checkout.html"; // Adjust URL as needed
-      }, 2000);
     });
   </script>
 </body>

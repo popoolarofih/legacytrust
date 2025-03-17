@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>GroceryHub - Cart</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <meta charset="UTF-8">
+  <title>GroceryHub - Cart & Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS (v4.5.2 is replaced by Bootstrap 5 for improved responsiveness) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="main.css" />
   <style>
     .cart-item-img {
       width: 80px;
       height: 60px;
       object-fit: cover;
     }
-    .cart-table td,
-    .cart-table th {
+    .cart-table td, .cart-table th {
       vertical-align: middle;
     }
   </style>
@@ -26,38 +23,22 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
-      <a class="navbar-brand text-success font-weight-bold" href="index.html">
+      <a class="navbar-brand text-success fw-bold" href="index.html">
         <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto align-items-center">
-          <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="about.html">About</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
-          <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-success" href="signup.html">Sign Up</a>
-          </li>
-        </ul>
-      </div>
     </div>
   </nav>
 
-  <!-- Cart Content -->
   <div class="container my-5">
     <h2 class="mb-4">Your Shopping Cart</h2>
+    
+    <!-- Cart Table -->
     <div id="cartContainer">
       <table class="table table-bordered cart-table">
-        <thead class="thead-light">
+        <thead class="table-light">
           <tr>
             <th>Product</th>
-            <th>Price per Unit</th>
+            <th>Price</th>
             <th>Quantity</th>
             <th>Subtotal</th>
             <th>Actions</th>
@@ -65,50 +46,54 @@
         </thead>
         <tbody id="cartTableBody"><!-- Dynamically filled --></tbody>
       </table>
-      <div class="text-right">
+      <div class="text-end">
         <h4 id="totalPrice">Total: ₦0.00</h4>
       </div>
-      <div class="text-right mt-3">
-        <button id="checkoutBtn" class="btn btn-success">Checkout</button>
-      </div>
     </div>
+    
     <div id="emptyCart" class="text-center" style="display: none;">
       <p>Your cart is empty. <a href="product-catalog.html">Browse products</a></p>
     </div>
+
+    <!-- Checkout Form -->
+    <h2 class="mt-5">Checkout</h2>
+    <form id="checkoutForm">
+      <div class="mb-3">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="fullName" required>
+      </div>
+      <div class="mb-3">
+        <label for="address" class="form-label">Shipping Address</label>
+        <textarea class="form-control" id="address" rows="3" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="paymentMethod" class="form-label">Payment Method</label>
+        <select class="form-select" id="paymentMethod">
+          <option value="card">Credit/Debit Card</option>
+          <option value="bank">Bank Transfer</option>
+          <option value="cod">Cash on Delivery</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success">Place Order</button>
+    </form>
   </div>
 
   <!-- Footer -->
   <footer class="bg-light py-4">
     <div class="container text-center">
-      <p class="mb-0">&copy; 2025 GroceryHub. All rights reserved.</p>
+      <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- jQuery, Popper.js, Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <!-- Firebase Config, Firestore & Auth -->
+  <!-- Firebase SDK and Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-    import {
-      getFirestore,
-      collection,
-      onSnapshot,
-      doc,
-      updateDoc,
-      deleteDoc,
-      getDoc,
-      getDocs,
-      addDoc,
-      query,
-      where
+    import { 
+      getFirestore, collection, query, where, getDocs, getDoc, updateDoc, doc, deleteDoc, addDoc 
     } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
       authDomain: "gofundz-5b149.firebaseapp.com",
@@ -120,194 +105,145 @@
       measurementId: "G-K9GV667K53"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getFirestore(app);
     const auth = getAuth();
 
-    // Ensure user is authenticated before accessing cart
+    let currentUser;
+
+    // Ensure user is authenticated
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
       } else {
+        currentUser = user;
         loadCartItems(user.uid);
       }
     });
 
-    // Load cart items from top-level "carts" collection, filtered by userId
-    function loadCartItems(uid) {
+    // Load Cart Items
+    async function loadCartItems(uid) {
       const cartQuery = query(collection(db, "carts"), where("userId", "==", uid));
+      const cartSnapshot = await getDocs(cartQuery);
+      const tbody = document.getElementById("cartTableBody");
+      let total = 0;
+      tbody.innerHTML = "";
 
-      onSnapshot(cartQuery, async (snapshot) => {
-        const tbody = document.getElementById("cartTableBody");
-        let total = 0;
-        tbody.innerHTML = "";
-
-        if (snapshot.empty) {
-          // Cart is empty
-          document.getElementById("cartContainer").style.display = "none";
-          document.getElementById("emptyCart").style.display = "block";
-          document.getElementById("totalPrice").textContent = "Total: ₦0.00";
-        } else {
-          document.getElementById("cartContainer").style.display = "block";
-          document.getElementById("emptyCart").style.display = "none";
-
-          // We'll fetch product data for each cart item
-          for (const docSnap of snapshot.docs) {
-            const item = docSnap.data(); // e.g. { userId, productId, quantity, addedAt, ... }
-            const productRef = doc(db, "products", item.productId);
-            const productSnap = await getDoc(productRef);
-
-            let name = "Unnamed Product";
-            let price = 0;
-            let imageUrl = "placeholder.jpg";
-
-            if (productSnap.exists()) {
-              const productData = productSnap.data();
-              name = productData.name || "Unnamed Product";
-              price = productData.price || 0;
-              imageUrl = productData.imageUrl || "placeholder.jpg";
-            }
-
-            const quantity = item.quantity || 1;
-            const subtotal = price * quantity;
-            total += subtotal;
-
-            // Build the table row
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>
-                <img src="${imageUrl}" class="cart-item-img mr-2" alt="${name}">
-                ${name}
-              </td>
-              <td>₦${price.toFixed(2)}</td>
-              <td>
-                <input
-                  type="number"
-                  value="${quantity}"
-                  min="1"
-                  class="form-control quantity-input"
-                  data-cart-id="${docSnap.id}"
-                  style="width:80px;"
-                />
-              </td>
-              <td>₦${subtotal.toFixed(2)}</td>
-              <td>
-                <button class="btn btn-danger btn-sm remove-btn" data-cart-id="${docSnap.id}">
-                  Remove
-                </button>
-              </td>
-            `;
-            tbody.appendChild(row);
-          }
-
-          // Update total
-          document.getElementById("totalPrice").textContent = `Total: ₦${total.toFixed(2)}`;
-        }
-      });
-    }
-
-    // Listen for quantity changes -> update that cart doc's quantity
-    document.addEventListener("input", async (e) => {
-      if (e.target.classList.contains("quantity-input")) {
-        const cartId = e.target.getAttribute("data-cart-id");
-        const newQty = parseInt(e.target.value);
-        if (newQty > 0) {
-          const user = auth.currentUser;
-          if (user) {
-            const itemRef = doc(db, "carts", cartId);
-            await updateDoc(itemRef, { quantity: newQty });
-          }
-        }
-      }
-    });
-
-    // Listen for remove button -> delete that cart doc
-    document.addEventListener("click", async (e) => {
-      if (e.target.classList.contains("remove-btn")) {
-        const cartId = e.target.getAttribute("data-cart-id");
-        const user = auth.currentUser;
-        if (user) {
-          const itemRef = doc(db, "carts", cartId);
-          await deleteDoc(itemRef);
-        }
-      }
-    });
-
-    // Checkout: create an order & clear the user's cart, then redirect
-    document.getElementById("checkoutBtn").addEventListener("click", async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        alert("Please sign in to proceed with checkout!");
-        window.location.href = "signup.html";
+      if (cartSnapshot.empty) {
+        document.getElementById("cartContainer").style.display = "none";
+        document.getElementById("emptyCart").style.display = "block";
         return;
       }
-      try {
-        // Query all cart items for this user
-        const userCartQuery = query(collection(db, "carts"), where("userId", "==", user.uid));
-        const cartSnapshot = await getDocs(userCartQuery);
 
-        const items = [];
-        let total = 0;
+      document.getElementById("cartContainer").style.display = "block";
+      document.getElementById("emptyCart").style.display = "none";
 
-        for (const docSnap of cartSnapshot.docs) {
-          const cartItem = docSnap.data();
-          // fetch product details
-          const productRef = doc(db, "products", cartItem.productId);
-          const productSnap = await getDoc(productRef);
-
-          let price = 0;
-          let name = "Unnamed Product";
-          if (productSnap.exists()) {
-            const productData = productSnap.data();
-            price = productData.price || 0;
-            name = productData.name || "Unnamed Product";
-          }
-
-          const quantity = cartItem.quantity || 1;
-          const subtotal = price * quantity;
-          total += subtotal;
-
-          items.push({
-            cartDocId: docSnap.id,
-            productId: cartItem.productId,
-            quantity: quantity,
-            name: name,
-            price: price
-          });
+      for (const docSnap of cartSnapshot.docs) {
+        const item = docSnap.data();
+        const productRef = doc(db, "products", item.productId);
+        const productSnap = await getDoc(productRef);
+        
+        let name = "Unknown Product", price = 0, imageUrl = "placeholder.jpg";
+        if (productSnap.exists()) {
+          const productData = productSnap.data();
+          name = productData.name;
+          price = productData.price;
+          imageUrl = productData.imageUrl;
         }
 
-        if (items.length === 0) {
-          alert("Your cart is empty.");
-          return;
-        }
+        const quantity = item.quantity;
+        const subtotal = price * quantity;
+        total += subtotal;
 
-        // Create a new order in "orders"
-        const orderData = {
-          userId: user.uid,
-          items: items,
-          total: total,
-          createdAt: new Date(),
-          status: "Pending"
-        };
-        await addDoc(collection(db, "orders"), orderData);
-
-        alert("Checkout successful! Your order has been placed.");
-
-        // Clear the cart by deleting each item doc
-        for (const item of items) {
-          const itemRef = doc(db, "carts", item.cartDocId);
-          await deleteDoc(itemRef);
-        }
-
-        // Finally, redirect to your "checkout.html" page (adjust if needed)
-        window.location.href = "checkout.html";
-
-      } catch (error) {
-        console.error("Error during checkout:", error);
-        alert("Checkout failed. Please try again.");
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>
+            <img src="${imageUrl}" class="cart-item-img me-2" alt="${name}"> ${name}
+          </td>
+          <td>₦${price.toFixed(2)}</td>
+          <td>
+            <div class="d-flex align-items-center">
+              <button class="btn btn-sm btn-secondary me-2" onclick="updateQuantity('${docSnap.id}', ${quantity - 1})" ${quantity <= 1 ? 'disabled' : ''}>-</button>
+              <span>${quantity}</span>
+              <button class="btn btn-sm btn-secondary ms-2" onclick="updateQuantity('${docSnap.id}', ${quantity + 1})">+</button>
+            </div>
+          </td>
+          <td>₦${subtotal.toFixed(2)}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="removeCartItem('${docSnap.id}')">Remove</button>
+          </td>
+        `;
+        tbody.appendChild(row);
       }
+
+      document.getElementById("totalPrice").textContent = `Total: ₦${total.toFixed(2)}`;
+    }
+
+    // Update quantity function (ensures new quantity is at least 1)
+    window.updateQuantity = async function(cartId, newQuantity) {
+      if (newQuantity < 1) return;
+      const cartDocRef = doc(db, "carts", cartId);
+      await updateDoc(cartDocRef, { quantity: newQuantity });
+      loadCartItems(currentUser.uid);
+    };
+
+    // Remove cart item function
+    window.removeCartItem = async function(cartId) {
+      await deleteDoc(doc(db, "carts", cartId));
+      loadCartItems(currentUser.uid);
+    };
+
+    // Checkout: Save Order and Clear Cart
+    document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fullName = document.getElementById("fullName").value;
+      const address = document.getElementById("address").value;
+      const paymentMethod = document.getElementById("paymentMethod").value;
+
+      if (!currentUser) {
+        alert("Please sign in to place an order.");
+        return;
+      }
+
+      const userCartQuery = query(collection(db, "carts"), where("userId", "==", currentUser.uid));
+      const cartSnapshot = await getDocs(userCartQuery);
+
+      if (cartSnapshot.empty) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      const orderItems = [];
+      let total = 0;
+
+      for (const docSnap of cartSnapshot.docs) {
+        const item = docSnap.data();
+        const productRef = doc(db, "products", item.productId);
+        const productSnap = await getDoc(productRef);
+        let price = 0;
+        if (productSnap.exists()) {
+          price = productSnap.data().price;
+        }
+        orderItems.push({ productId: item.productId, quantity: item.quantity, price });
+        total += item.quantity * price;
+
+        await deleteDoc(doc(db, "carts", docSnap.id));
+      }
+
+      await addDoc(collection(db, "orders"), {
+        userId: currentUser.uid,
+        fullName,
+        address,
+        paymentMethod,
+        items: orderItems,
+        total,
+        status: "Pending",
+        createdAt: new Date()
+      });
+
+      alert("Order placed successfully!");
+      window.location.href = "thankyou.html";
     });
   </script>
 </body>

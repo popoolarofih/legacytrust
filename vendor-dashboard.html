@@ -4,27 +4,66 @@
   <meta charset="UTF-8" />
   <title>GroceryHub - Vendor Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <!-- Bootstrap 5 CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
   <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+  />
   <!-- Main CSS (shared styles & Oxanium font) -->
   <link rel="stylesheet" href="main.css" />
+
   <style>
+    /* Overall page spacing */
     .dashboard-container {
       margin-top: 2rem;
+      margin-bottom: 2rem;
     }
     .dashboard-heading {
       margin-bottom: 1rem;
+      font-weight: 700;
     }
+
+    /* Card spacing and styling */
+    .dashboard-card {
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .dashboard-card h5 {
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    /* Table styling */
     .table thead th {
       background-color: #f8f9fa;
     }
-    /* Basic responsive styling */
+    .product-image {
+      max-width: 60px;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    /* Vendor badge styling */
+    #vendorBadge i {
+      font-size: 1.75rem;
+    }
+    #vendorBadge span {
+      margin-left: 0.5rem;
+      font-size: 1rem;
+      vertical-align: middle;
+    }
+
+    /* Responsive adjustments */
     @media (max-width: 576px) {
-      .dashboard-container {
-        margin-top: 1rem;
-      }
       .dashboard-heading {
         font-size: 1.25rem;
       }
@@ -32,35 +71,40 @@
         font-size: 0.9rem;
       }
     }
-    /* Style for the vendor badge container */
-    #vendorBadge {
-      margin-top: 0.5rem;
-      font-size: 1.5rem;
-    }
-    #vendorBadge span {
-      margin-left: 0.5rem;
-      font-size: 1rem;
-      vertical-align: middle;
-    }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
-      <a class="navbar-brand text-success font-weight-bold" href="index.html">
+      <a class="navbar-brand text-success fw-bold" href="index.html">
         <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto align-items-center">
-          <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
+        <ul class="navbar-nav ms-auto align-items-center">
           <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html">Logout</a>
+            <a class="nav-link text-dark" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="product-catalog.html"
+              >Catalog</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="contact.html">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-secondary ms-2" href="signup.html"
+              >Logout</a
+            >
           </li>
         </ul>
       </div>
@@ -69,118 +113,174 @@
 
   <!-- Main Container -->
   <div class="container dashboard-container">
-    <h2 class="dashboard-heading">Vendor Dashboard</h2>
-    <div class="row">
-      <!-- Left Column: Manage Products -->
-      <div class="col-md-6 mb-4">
-        <h5>Manage Products</h5>
-        <form id="addProductForm" class="mb-3">
-          <div class="form-group">
-            <label for="productNameInput">Product Name</label>
-            <input type="text" class="form-control" id="productNameInput" required />
+    <h2 class="dashboard-heading text-center">Vendor Dashboard</h2>
+    <div class="row gx-4">
+      <!-- Left Column: Manage Products + Vendor Profile -->
+      <div class="col-md-6">
+        <!-- Manage Products Card -->
+        <div class="dashboard-card">
+          <h5>Manage Products</h5>
+          <form id="addProductForm" class="mb-4">
+            <div class="mb-3">
+              <label for="productNameInput" class="form-label">Product Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="productNameInput"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="productPriceInput" class="form-label">Price (₦)</label>
+              <input
+                type="number"
+                class="form-control"
+                id="productPriceInput"
+                step="1"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="productCategoryInput" class="form-label">Category</label>
+              <select class="form-select" id="productCategoryInput" required>
+                <option value="Fruits">Fruits</option>
+                <option value="Vegetables">Vegetables</option>
+                <option value="Dairy">Dairy</option>
+                <option value="Bakery">Bakery</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="productImageURL" class="form-label"
+                >Product Image URL (Base64 or standard URL)</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="productImageURL"
+                placeholder="data:image/jpeg;base64,... or https://example.com/img.jpg"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="productDescriptionInput" class="form-label"
+                >Product Description</label
+              >
+              <textarea
+                class="form-control"
+                id="productDescriptionInput"
+                rows="2"
+                placeholder="Enter product details here..."
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Add Product</button>
+          </form>
+
+          <h5>Your Products</h5>
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle" id="vendorProductTable">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Price (₦)</th>
+                  <th>Category</th>
+                  <th>Image</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody><!-- Vendor's products will be listed here --></tbody>
+            </table>
           </div>
-          <div class="form-group">
-            <label for="productPriceInput">Price (₦)</label>
-            <input type="number" class="form-control" id="productPriceInput" step="1" required />
-          </div>
-          <div class="form-group">
-            <label for="productCategoryInput">Category</label>
-            <select class="form-control" id="productCategoryInput" required>
-              <option value="Fruits">Fruits</option>
-              <option value="Vegetables">Vegetables</option>
-              <option value="Dairy">Dairy</option>
-              <option value="Bakery">Bakery</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="productImageURL">Product Image URL (Base64 or URL)</label>
-            <input type="text" class="form-control" id="productImageURL" placeholder="Paste your 'data:image/jpeg;base64,...' or URL" required />
-          </div>
-          <div class="form-group">
-            <label for="productDescriptionInput">Product Description</label>
-            <textarea class="form-control" id="productDescriptionInput" rows="3" placeholder="Enter product details here..." required></textarea>
-          </div>          
-          <button type="submit" class="btn btn-primary">Add Product</button>
-        </form>
-        <div class="product mt-5">
-          <h5>Products</h5>
-          <table class="table table-bordered" id="vendorProductTable">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Price (₦)</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Description</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody><!-- Products will be listed here --></tbody>
-          </table>
         </div>
-        <div class="vendor">
-          <!-- Vendor Profile Edit Section -->
-        <h5 class="mt-4">Edit Vendor Profile</h5>
-        <form id="vendorProfileForm">
-          <div class="form-group">
-            <label for="vendorName">Store Name</label>
-            <input type="text" class="form-control" id="vendorName" required />
-          </div>
-          <div class="form-group">
-            <label for="vendorEmail">Email</label>
-            <input type="email" class="form-control" id="vendorEmail" required />
-          </div>
-          <div class="form-group">
-            <label for="vendorAddress">Store Address</label>
-            <input type="text" class="form-control" id="vendorAddress" required />
-          </div>
-          <button type="submit" class="btn btn-success">Save Changes</button>
-        </form>
+
+        <!-- Vendor Profile Card -->
+        <div class="dashboard-card">
+          <h5>Edit Vendor Profile</h5>
+          <form id="vendorProfileForm">
+            <div class="mb-3">
+              <label for="vendorName" class="form-label">Store Name</label>
+              <input type="text" class="form-control" id="vendorName" required />
+            </div>
+            <div class="mb-3">
+              <label for="vendorEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="vendorEmail" required />
+            </div>
+            <div class="mb-3">
+              <label for="vendorAddress" class="form-label">Store Address</label>
+              <input
+                type="text"
+                class="form-control"
+                id="vendorAddress"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-success w-100">
+              Save Changes
+            </button>
+          </form>
         </div>
       </div>
 
-      <!-- Right Column: Orders, Trust Score, Vendor Badge & Profile Edit -->
+      <!-- Right Column: Orders, Trust Score, Vendor Badge -->
       <div class="col-md-6">
-        <h5>Order Tracking</h5>
-        <table class="table table-bordered mb-4" id="vendorOrdersTable">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody><!-- Orders will be listed here --></tbody>
-        </table>
+        <!-- Orders Card -->
+        <div class="dashboard-card">
+          <h5>Order Tracking</h5>
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle" id="vendorOrdersTable">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody><!-- Orders containing vendor's products --></tbody>
+            </table>
+          </div>
+        </div>
 
-        <h5>Reputation / Trust Score</h5>
-        <p>Your current trust score is: <span id="vendorTrustScore">Loading...</span></p>
-
-        <!-- Vendor Badge Section -->
-        <h5 class="mt-4">Verification Badge</h5>
-        <div id="vendorBadge"></div>
-        
-        
+        <!-- Trust Score & Badge Card -->
+        <div class="dashboard-card">
+          <!-- <h5>Reputation / Trust Score</h5> -->
+          <!-- <p class="mb-1">
+            Your current trust score is:
+            <span id="vendorTrustScore" class="fw-bold">Loading...</span>
+          </p> -->
+          
+          <h5>Verification Badge</h5>
+          <div id="vendorBadge" class="mt-2">
+            <!-- Dynamically updated with badge color & text -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Footer -->
-  <footer class="bg-light py-4 mt-5 mb-0">
+  <footer class="bg-light py-4">
     <div class="container text-center">
-      <p class="mb-0">&copy; 2025 GroceryHub. All rights reserved.</p>
+      <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- jQuery, Popper.js, Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <!-- Firebase Config, Firestore & Auth -->
+  <!-- Bootstrap 5 Bundle with Popper + Firebase SDKs -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, where, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { 
+      getFirestore,
+      collection,
+      addDoc,
+      updateDoc,
+      doc,
+      onSnapshot,
+      query,
+      where,
+      getDoc,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -198,38 +298,46 @@
     const db = getFirestore(app);
     const auth = getAuth();
 
-    // Ensure vendor is authenticated; if not, redirect to signup page.
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
       } else {
         const vendorId = user.uid;
-        loadVendorProducts(vendorId);
-        loadVendorOrders(vendorId);
-        loadVendorTrustScore(vendorId);
+
+        // 1) Load vendor profile
         loadVendorProfile(vendorId);
+
+        // 2) Load vendor products
+        loadVendorProducts(vendorId);
+
+        // 3) Load vendor orders
+        loadVendorOrders(vendorId);
+
+        // 4) Load vendor trust score
+        loadVendorTrustScore(vendorId);
+
+        // 5) Load vendor badge
         loadVendorBadge(vendorId);
 
-        // Edit vendor profile handler
+        // Handle vendor profile save
         document.getElementById("vendorProfileForm").addEventListener("submit", async (e) => {
           e.preventDefault();
           const name = document.getElementById("vendorName").value;
           const email = document.getElementById("vendorEmail").value;
           const address = document.getElementById("vendorAddress").value;
-          // Update vendor profile in "users" collection
           await updateDoc(doc(db, "users", vendorId), { name, email, address });
           alert("Profile updated successfully!");
         });
 
-        // Add product form handler
+        // Handle add product
         document.getElementById("addProductForm").addEventListener("submit", async (e) => {
           e.preventDefault();
-          const name = document.getElementById("productNameInput").value;
+          const name = document.getElementById("productNameInput").value.trim();
           const price = parseFloat(document.getElementById("productPriceInput").value);
           const category = document.getElementById("productCategoryInput").value;
           const imageUrl = document.getElementById("productImageURL").value.trim();
-          const description = document.getElementById("productDescriptionInput").value.trim();
-          // Save product to Firestore
+          const description = document.getElementById("productDescriptionInput").value.trim() || "";
+
           await addDoc(collection(db, "products"), {
             name,
             price,
@@ -238,44 +346,13 @@
             imageUrl,
             description,
             removed: false,
-            createdAt: new Date()
+            createdAt: new Date(),
           });
-          alert("Product added!");
+          alert("Product added successfully!");
           e.target.reset();
         });
 
-        // Real-time listener for vendor products
-        function loadVendorProducts(vendorId) {
-          const prodQuery = query(
-            collection(db, "products"),
-            where("vendorId", "==", vendorId),
-            where("removed", "==", false)
-          );
-          onSnapshot(prodQuery, (snapshot) => {
-            const tableBody = document.querySelector("#vendorProductTable tbody");
-            tableBody.innerHTML = "";
-            snapshot.forEach((docSnap) => {
-              const data = docSnap.data();
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td>${data.name}</td>
-                <td>₦${data.price.toFixed(2)}</td>
-                <td>${data.category}</td>
-                <td>
-                  <img src="${data.imageUrl}" style="max-width:80px; height:auto;" alt="${data.name}" />
-                </td>
-                <td>${data.description || 'N/A'}</td>
-                <td>
-                  <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">Delete</button>
-                </td>
-              `;
-              tableBody.appendChild(row);
-            });
-          });
-        }
-        loadVendorProducts(vendorId);
-
-        // Listen for delete button on products
+        // Listen for delete on vendor products table
         document.querySelector("#vendorProductTable tbody").addEventListener("click", async (e) => {
           if (e.target.classList.contains("btn-danger")) {
             const docId = e.target.getAttribute("data-id");
@@ -284,31 +361,7 @@
           }
         });
 
-        // Real-time listener for vendor orders
-        function loadVendorOrders(vendorId) {
-          const ordersQuery = query(
-            collection(db, "orders"),
-            where("vendorId", "==", vendorId)
-          );
-          onSnapshot(ordersQuery, (snapshot) => {
-            const tableBody = document.querySelector("#vendorOrdersTable tbody");
-            tableBody.innerHTML = "";
-            snapshot.forEach((docSnap) => {
-              const data = docSnap.data();
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td>${docSnap.id}</td>
-                <td>${data.status || "Pending"}</td>
-                <td>
-                  <button class="btn btn-sm btn-secondary" data-id="${docSnap.id}">Mark Shipped</button>
-                </td>
-              `;
-              tableBody.appendChild(row);
-            });
-          });
-        }
-        loadVendorOrders(vendorId);
-
+        // Listen for "Mark Shipped" on vendor orders table
         document.querySelector("#vendorOrdersTable tbody").addEventListener("click", async (e) => {
           if (e.target.classList.contains("btn-secondary")) {
             const orderId = e.target.getAttribute("data-id");
@@ -316,76 +369,176 @@
             alert("Order marked as shipped!");
           }
         });
+      }
+    });
 
-        // Load vendor trust score in realtime
-        function loadVendorTrustScore(vendorId) {
-          const docRef = doc(db, "users", vendorId);
-          onSnapshot(docRef, (docSnap) => {
-            const trustElem = document.getElementById("vendorTrustScore");
-            if (docSnap.exists()) {
-              trustElem.textContent = docSnap.data().trustScore || "N/A";
-            } else {
-              trustElem.textContent = "No Score";
+    // --------------------------------------
+    // LOAD VENDOR PROFILE
+    // --------------------------------------
+    async function loadVendorProfile(vendorId) {
+      const userDocRef = doc(db, "users", vendorId);
+      const userDocSnap = await getDoc(userDocRef);
+      if (userDocSnap.exists()) {
+        const data = userDocSnap.data();
+        document.getElementById("vendorName").value = data.name || "";
+        document.getElementById("vendorEmail").value = data.email || "";
+        document.getElementById("vendorAddress").value = data.address || "";
+      }
+    }
+
+    // --------------------------------------
+    // LOAD VENDOR PRODUCTS (REAL-TIME)
+    // --------------------------------------
+    function loadVendorProducts(vendorId) {
+      const prodQuery = query(
+        collection(db, "products"),
+        where("vendorId", "==", vendorId),
+        where("removed", "==", false)
+      );
+      onSnapshot(prodQuery, (snapshot) => {
+        const tableBody = document.querySelector("#vendorProductTable tbody");
+        tableBody.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.name}</td>
+            <td>₦${data.price.toFixed(2)}</td>
+            <td>${data.category}</td>
+            <td>
+              <img
+                src="${data.imageUrl}"
+                class="product-image"
+                alt="${data.name}"
+              />
+            </td>
+            <td>${data.description}</td>
+            <td>
+              <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">
+                Delete
+              </button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      });
+    }
+
+    // --------------------------------------
+    // LOAD VENDOR ORDERS (REAL-TIME, using product IDs)
+    // --------------------------------------
+    function loadVendorOrders(vendorId) {
+      const ordersRef = collection(db, "orders");
+      onSnapshot(ordersRef, async (snapshot) => {
+        const tableBody = document.querySelector("#vendorOrdersTable tbody");
+        tableBody.innerHTML = "";
+
+        const ordersToDisplay = [];
+
+        for (const orderDoc of snapshot.docs) {
+          const orderData = orderDoc.data();
+          const items = orderData.items || [];
+          let orderHasVendorProduct = false;
+
+          for (const item of items) {
+            const productRef = doc(db, "products", item.productId);
+            const productSnap = await getDoc(productRef);
+            if (productSnap.exists() && productSnap.data().vendorId === vendorId) {
+              orderHasVendorProduct = true;
+              break;
             }
-          });
-        }
-        loadVendorTrustScore(vendorId);
-
-        // Load vendor profile for editing from "users"
-        async function loadVendorProfile(vendorId) {
-          const docRef = doc(db, "users", vendorId);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            document.getElementById("vendorName").value = data.name || "";
-            document.getElementById("vendorEmail").value = data.email || "";
-            document.getElementById("vendorAddress").value = data.address || "";
+          }
+          if (orderHasVendorProduct) {
+            ordersToDisplay.push({ id: orderDoc.id, data: orderData });
           }
         }
-        loadVendorProfile(vendorId);
 
-        // Calculate and display badge verification based on successful orders
-        function loadVendorBadge(vendorId) {
-          // Query orders where status is "Shipped"
-          const ordersQuery = query(
-            collection(db, "orders"),
-            where("vendorId", "==", vendorId),
-            where("status", "==", "Shipped")
-          );
-          onSnapshot(ordersQuery, (snapshot) => {
-            let successfulOrders = snapshot.size;
-            // Count distinct customers if available
-            let customers = new Set();
-            snapshot.forEach((docSnap) => {
-              let data = docSnap.data();
+        for (const order of ordersToDisplay) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${order.id}</td>
+            <td>${order.data.status || "Pending"}</td>
+            <td>
+              <button class="btn btn-sm btn-secondary" data-id="${order.id}">
+                Mark Shipped
+              </button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        }
+      });
+    }
+
+    // --------------------------------------
+    // LOAD VENDOR TRUST SCORE
+    // --------------------------------------
+    function loadVendorTrustScore(vendorId) {
+      const userDocRef = doc(db, "users", vendorId);
+      onSnapshot(userDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById("vendorTrustScore").textContent =
+            data.trustScore || "N/A";
+        } else {
+          document.getElementById("vendorTrustScore").textContent = "N/A";
+        }
+      });
+    }
+
+    // --------------------------------------
+    // LOAD VENDOR BADGE (Orders => Shipped)
+    // --------------------------------------
+    function loadVendorBadge(vendorId) {
+      const ordersRef = collection(db, "orders");
+      onSnapshot(ordersRef, async (snapshot) => {
+        let shippedCount = 0;
+        const customers = new Set();
+
+        for (const orderDoc of snapshot.docs) {
+          const data = orderDoc.data();
+          if (data.status === "Shipped") {
+            const items = data.items || [];
+            let hasVendorProduct = false;
+            for (const item of items) {
+              const productRef = doc(db, "products", item.productId);
+              const productSnap = await getDoc(productRef);
+              if (productSnap.exists() && productSnap.data().vendorId === vendorId) {
+                hasVendorProduct = true;
+                break;
+              }
+            }
+            if (hasVendorProduct) {
+              shippedCount++;
               if (data.userId) {
                 customers.add(data.userId);
               }
-            });
-            let customerCount = customers.size;
-            // Define thresholds for badge colors
-            let badgeColor = "";
-            if (successfulOrders < 5) {
-              badgeColor = "red";
-            } else if (successfulOrders < 10) {
-              badgeColor = "purple";
-            } else if (successfulOrders < 20) {
-              badgeColor = "blue";
-            } else if (successfulOrders < 50) {
-              badgeColor = "gold";
-            } else {
-              badgeColor = "green";
             }
-            // Use a Bootstrap Icon to represent the badge with inline styling
-            document.getElementById("vendorBadge").innerHTML = `
-              <i class="bi bi-award-fill" style="color: ${badgeColor}; font-size: 1.5rem;"></i>
-              <span>${badgeColor.toUpperCase()} - ${successfulOrders} Orders / ${customerCount} Customers</span>
-            `;
-          });
+          }
         }
-        loadVendorBadge(vendorId);
-      }
-    });
+
+        let badgeColor = "";
+        if (shippedCount < 5) {
+          badgeColor = "red";
+        } else if (shippedCount < 10) {
+          badgeColor = "purple";
+        } else if (shippedCount < 20) {
+          badgeColor = "blue";
+        } else if (shippedCount < 50) {
+          badgeColor = "gold";
+        } else {
+          badgeColor = "green";
+        }
+
+        const badgeDiv = document.getElementById("vendorBadge");
+        badgeDiv.innerHTML = `
+          <i class="bi bi-award-fill" style="color: ${badgeColor};"></i>
+          <span>
+            ${badgeColor.toUpperCase()} - ${shippedCount} Shipped Orders /
+            ${customers.size} Distinct Customers
+          </span>
+        `;
+      });
+    }
   </script>
 </body>
 </html>

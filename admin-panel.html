@@ -4,24 +4,23 @@
   <meta charset="UTF-8" />
   <title>GroceryHub - Admin Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
   <!-- Main CSS -->
   <link rel="stylesheet" href="main.css" />
-
   <style>
     .admin-container { margin-top: 2rem; }
-    .admin-heading { margin-bottom: 1rem; }
+    .admin-heading { margin-bottom: 1rem; text-align: center; font-weight: 700; }
+    .card { box-shadow: 0 2px 6px rgba(0,0,0,0.1); border: none; border-radius: 0.5rem; margin-bottom: 1.5rem; }
+    .card-header { background-color: #f8f9fa; font-weight: 600; }
     .table thead th { background-color: #f8f9fa; }
-    .link-trust { margin-bottom: 1.5rem; }
-    .admin-details {
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
+    .admin-details { padding: 1.5rem; }
+    .link-trust { margin-bottom: 1.5rem; text-align: end; }
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+      .admin-container { padding: 0 1rem; }
     }
   </style>
 </head>
@@ -29,19 +28,19 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
-      <a class="navbar-brand text-success font-weight-bold" href="index.html">
+      <a class="navbar-brand text-success fw-bold" href="index.html">
         <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto align-items-center">
+        <ul class="navbar-nav ms-auto align-items-center">
           <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
           <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
           <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html">Logout</a>
+            <a class="btn btn-outline-secondary ms-2" href="signup.html">Logout</a>
           </li>
         </ul>
       </div>
@@ -52,96 +51,112 @@
   <div class="container admin-container">
     <h2 class="admin-heading">Admin Panel</h2>
     <!-- Link to Trust Management Dashboard -->
-    <div class="link-trust text-right mb-3">
+    <div class="link-trust mb-3">
       <a href="trust-management.html" class="btn btn-info">
         Go to Trust Management Dashboard <i class="bi bi-arrow-right"></i>
       </a>
     </div>
-    
+
     <!-- Admin Details Section -->
-    <div class="admin-details" id="adminDetails">
-      <h5>Admin Details</h5>
-      <p><strong>Name:</strong> <span id="adminName">Loading...</span></p>
-      <p><strong>Email:</strong> <span id="adminEmail">Loading...</span></p>
-      <p><strong>Role:</strong> <span id="adminRole">Loading...</span></p>
-      <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editAdminModal">
-        Edit Admin Profile
-      </button>
+    <div class="card">
+      <div class="card-header">Admin Details</div>
+      <div class="card-body admin-details" id="adminDetails">
+        <p><strong>Name:</strong> <span id="adminName">Loading...</span></p>
+        <p><strong>Email:</strong> <span id="adminEmail">Loading...</span></p>
+        <p><strong>Role:</strong> <span id="adminRole">Loading...</span></p>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editAdminModal">
+          Edit Admin Profile
+        </button>
+      </div>
     </div>
-    
-    <div class="row">
+
+    <div class="row g-4">
       <!-- Left Column: Users & Vendors Management -->
-      <div class="col-md-6 mb-4">
-        <h5>User/Vendor Management</h5>
-        <table class="table table-bordered" id="usersTable">
-          <thead>
-            <tr>
-              <th>User ID</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody><!-- Dynamically filled --></tbody>
-        </table>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">User/Vendor Management</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="usersTable">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamically filled --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Right Column: Product Curation & Order Processing -->
       <div class="col-md-6">
-        <h5>Product Curation</h5>
-        <table class="table table-bordered mb-4" id="adminProductTable">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Vendor</th>
-              <th>Price</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody><!-- Dynamically filled --></tbody>
-        </table>
+        <div class="card mb-4">
+          <div class="card-header">Product Curation</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="adminProductTable">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Vendor</th>
+                    <th>Price (₦)</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamically filled --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 
-        <h5>Order Processing</h5>
-        <table class="table table-bordered" id="adminOrdersTable">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>User</th>
-              <th>Total</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody><!-- Dynamically filled --></tbody>
-        </table>
+        <div class="card">
+          <div class="card-header">Order Processing</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="adminOrdersTable">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>User</th>
+                    <th>Total (₦)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamically filled --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Edit Admin Modal -->
-  <div class="modal fade" id="editAdminModal" tabindex="-1" role="dialog" aria-labelledby="editAdminModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+  <div class="modal fade" id="editAdminModal" tabindex="-1" aria-labelledby="editAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
       <div class="modal-content">
         <form id="editAdminForm">
           <div class="modal-header">
             <h5 class="modal-title" id="editAdminModalLabel">Edit Admin Profile</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <div class="form-group">
-              <label for="editAdminName">Name</label>
+            <div class="mb-3">
+              <label for="editAdminName" class="form-label">Name</label>
               <input type="text" class="form-control" id="editAdminName" required>
             </div>
-            <div class="form-group">
-              <label for="editAdminEmail">Email</label>
+            <div class="mb-3">
+              <label for="editAdminEmail" class="form-label">Email</label>
               <input type="email" class="form-control" id="editAdminEmail" required>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Cancel
-            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-primary">Save Changes</button>
           </div>
         </form>
@@ -150,18 +165,15 @@
   </div>
 
   <!-- Footer -->
-  <footer class="bg-light py-4 mt-5 mb-0">
+  <footer class="bg-light py-4">
     <div class="container text-center">
-      <p class="mb-0">&copy; 2025 GroceryHub. All rights reserved.</p>
+      <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- jQuery, Popper.js, Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <!-- Firebase Config, Firestore & Auth -->
+  <!-- Bootstrap 5 Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
@@ -191,7 +203,7 @@
     const db = getFirestore(app);
     const auth = getAuth();
 
-    // Restrict access: only allow admins to view this page.
+    // Restrict access: Only allow admin users
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
@@ -218,23 +230,22 @@
       }
     });
 
-    // ---- Admin Details Editing ----
+    // ---- Edit Admin Details ----
     const editAdminForm = document.getElementById("editAdminForm");
     editAdminForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const newName = document.getElementById("editAdminName").value;
       const newEmail = document.getElementById("editAdminEmail").value;
       const userId = auth.currentUser.uid;
-      await updateDoc(doc(db, "users", userId), {
-        name: newName,
-        email: newEmail
-      });
+      await updateDoc(doc(db, "users", userId), { name: newName, email: newEmail });
       alert("Admin details updated successfully!");
-      $('#editAdminModal').modal('hide');
+      const modalEl = document.getElementById("editAdminModal");
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal.hide();
     });
-
-    // Pre-fill admin edit form when modal is shown.
-    $('#editAdminModal').on('show.bs.modal', () => {
+    // Pre-fill edit form when modal opens
+    const editAdminModalEl = document.getElementById("editAdminModal");
+    editAdminModalEl.addEventListener("show.bs.modal", () => {
       document.getElementById("editAdminName").value = document.getElementById("adminName").textContent;
       document.getElementById("editAdminEmail").value = document.getElementById("adminEmail").textContent;
     });
@@ -290,7 +301,7 @@
             tr.innerHTML = `
               <td>${data.name}</td>
               <td>${data.vendorId || "N/A"}</td>
-              <td>$${data.price.toFixed(2)}</td>
+              <td>₦${data.price.toFixed(2)}</td>
               <td>
                 <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">
                   Remove
@@ -329,7 +340,7 @@
           tr.innerHTML = `
             <td>${orderDoc.id}</td>
             <td>${data.userId || "Unknown"}</td>
-            <td>$${data.total || "0.00"}</td>
+            <td>₦${data.total ? data.total.toFixed(2) : "0.00"}</td>
             <td>${data.status || "Pending"}</td>
           `;
           adminOrdersTableBody.appendChild(tr);

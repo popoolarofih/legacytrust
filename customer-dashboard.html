@@ -5,9 +5,15 @@
   <title>GroceryHub - Customer Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
   <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+  />
   <!-- Main CSS (Oxanium font, shared styles) -->
   <link rel="stylesheet" href="main.css" />
 
@@ -27,29 +33,55 @@
       padding: 1rem;
       margin-bottom: 1.5rem;
     }
+    /* Cart table styling */
+    #cartTable th, #cartTable td {
+      vertical-align: middle;
+    }
+    .cart-item-img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      margin-right: 0.5rem;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
-      <a class="navbar-brand text-success font-weight-bold" href="index.html">
+      <a class="navbar-brand text-success fw-bold" href="index.html">
         <i class="bi bi-bag" style="font-size: 2rem;"></i>
         GroceryHub
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto align-items-center">
-          <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="product-catalog.html"
+              >Catalog</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="contact.html">Contact</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link text-dark" href="about.html">About</a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-outline-secondary mr-2" href="signup.html">Logout</a>
+            <a class="btn btn-outline-secondary me-2" href="signup.html"
+              >Logout</a
+            >
           </li>
         </ul>
       </div>
@@ -60,22 +92,53 @@
   <div class="container dashboard-container">
     <h2 class="dashboard-heading">Customer Dashboard</h2>
     <div class="row">
-      <!-- Left Column: Profile Info & Saved Carts -->
+      <!-- Left Column: Profile Info & Cart Items -->
       <div class="col-md-4">
         <div class="profile-card" id="profileSection">
           <h5>Profile Information</h5>
-          <p><strong>Name:</strong> <span id="customerName">Loading...</span></p>
-          <p><strong>Email:</strong> <span id="customerEmail">Loading...</span></p>
-          <p><strong>Address:</strong> <span id="customerAddress">Loading...</span></p>
-          <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateProfileModal">
+          <p>
+            <strong>Name:</strong>
+            <span id="customerName">Loading...</span>
+          </p>
+          <p>
+            <strong>Email:</strong>
+            <span id="customerEmail">Loading...</span>
+          </p>
+          <p>
+            <strong>Address:</strong>
+            <span id="customerAddress">Loading...</span>
+          </p>
+          <button
+            class="btn btn-primary btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#updateProfileModal"
+          >
             Update Profile
           </button>
         </div>
+
         <div class="profile-card">
-          <h5>Saved Carts</h5>
-          <ul id="savedCartsList" class="list-group">
-            <!-- Saved carts will be loaded here -->
-          </ul>
+          <h5>Current Cart</h5>
+          <div id="cartSection">
+            <table class="table table-sm" id="cartTable">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Qty</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody id="cartBody">
+                <!-- Cart items go here -->
+              </tbody>
+            </table>
+            <div class="text-end">
+              <strong id="cartTotal">Total: ₦0</strong>
+            </div>
+          </div>
+          <div id="emptyCartMsg" class="text-muted" style="display: none;">
+            No items in cart.
+          </div>
         </div>
       </div>
 
@@ -83,12 +146,12 @@
       <div class="col-md-8">
         <div class="mb-4">
           <h5>Order History</h5>
-          <table class="table table-bordered">
+          <table class="table table-bordered table-sm">
             <thead>
               <tr>
                 <th>Order ID</th>
                 <th>Date</th>
-                <th>Total</th>
+                <th>Total (₦)</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -100,17 +163,37 @@
         <div>
           <h5>Submit a Review</h5>
           <form id="reviewForm">
-            <div class="form-group">
-              <label for="reviewProduct">Product ID</label>
-              <input type="text" class="form-control" id="reviewProduct" placeholder="e.g. prod123" required />
+            <div class="mb-3">
+              <label for="reviewProduct" class="form-label">Product ID</label>
+              <input
+                type="text"
+                class="form-control"
+                id="reviewProduct"
+                placeholder="e.g. prod123"
+                required
+              />
             </div>
-            <div class="form-group">
-              <label for="reviewRating">Rating (1-5)</label>
-              <input type="number" class="form-control" id="reviewRating" min="1" max="5" required />
+            <div class="mb-3">
+              <label for="reviewRating" class="form-label"
+                >Rating (1-5)</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="reviewRating"
+                min="1"
+                max="5"
+                required
+              />
             </div>
-            <div class="form-group">
-              <label for="reviewText">Review</label>
-              <textarea class="form-control" id="reviewText" rows="2" required></textarea>
+            <div class="mb-3">
+              <label for="reviewText" class="form-label">Review</label>
+              <textarea
+                class="form-control"
+                id="reviewText"
+                rows="2"
+                required
+              ></textarea>
             </div>
             <button type="submit" class="btn btn-success">Submit Review</button>
           </form>
@@ -120,35 +203,67 @@
   </div>
 
   <!-- Update Profile Modal -->
-  <div class="modal fade" id="updateProfileModal" tabindex="-1" role="dialog" aria-labelledby="updateProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+  <div
+    class="modal fade"
+    id="updateProfileModal"
+    tabindex="-1"
+    aria-labelledby="updateProfileModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
       <div class="modal-content">
         <form id="updateProfileForm">
           <div class="modal-header">
-            <h5 class="modal-title" id="updateProfileModalLabel">Update Profile</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <h5 class="modal-title" id="updateProfileModalLabel">
+              Update Profile
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
           <div class="modal-body">
-            <div class="form-group">
-              <label for="updateName">Full Name</label>
-              <input type="text" class="form-control" id="updateName" required />
+            <div class="mb-3">
+              <label for="updateName" class="form-label">Full Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="updateName"
+                required
+              />
             </div>
-            <div class="form-group">
-              <label for="updateEmail">Email</label>
-              <input type="email" class="form-control" id="updateEmail" required />
+            <div class="mb-3">
+              <label for="updateEmail" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="updateEmail"
+                required
+              />
             </div>
-            <div class="form-group">
-              <label for="updateAddress">Address</label>
-              <input type="text" class="form-control" id="updateAddress" required />
+            <div class="mb-3">
+              <label for="updateAddress" class="form-label">Address</label>
+              <input
+                type="text"
+                class="form-control"
+                id="updateAddress"
+                required
+              />
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
               Close
             </button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="submit" class="btn btn-primary">
+              Save Changes
+            </button>
           </div>
         </form>
       </div>
@@ -158,16 +273,12 @@
   <!-- Footer -->
   <footer class="bg-light py-4 mt-5 mb-0">
     <div class="container text-center">
-      <p class="mb-0">&copy; 2025 GroceryHub. All rights reserved.</p>
+      <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- jQuery, Popper.js, Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <!-- Firebase & Firestore & Auth -->
+  <!-- Bootstrap 5 Bundle with Popper, plus Firebase SDKs -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
@@ -178,7 +289,10 @@
       updateDoc,
       collection,
       getDocs,
-      addDoc
+      addDoc,
+      where,
+      query,
+      getDoc
     } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
@@ -198,101 +312,171 @@
     const db = getFirestore(app);
     const auth = getAuth();
 
+    let currentUserId = null;
+
     // Ensure the user is authenticated. If not, redirect to signup page.
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
       } else {
-        // Use authenticated user's UID
-        const userId = user.uid;
-
-        // Real-time Profile Listener
-        const profileDoc = doc(db, "users", userId);
-        onSnapshot(profileDoc, (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            document.getElementById("customerName").textContent = data.name || "No Name";
-            document.getElementById("customerEmail").textContent = data.email || "No Email";
-            document.getElementById("customerAddress").textContent = data.address || "No Address";
-            // Pre-fill update form fields
-            document.getElementById("updateName").value = data.name || "";
-            document.getElementById("updateEmail").value = data.email || "";
-            document.getElementById("updateAddress").value = data.address || "";
-          }
-        });
-
-        // Update Profile Form Submission
-        const updateProfileForm = document.getElementById("updateProfileForm");
-        updateProfileForm.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const updatedName = document.getElementById("updateName").value;
-          const updatedEmail = document.getElementById("updateEmail").value;
-          const updatedAddress = document.getElementById("updateAddress").value;
-          await updateDoc(profileDoc, {
-            name: updatedName,
-            email: updatedEmail,
-            address: updatedAddress,
-          });
-          alert("Profile updated successfully!");
-          $('#updateProfileModal').modal('hide');
-        });
-
-        // Load Saved Carts
-        async function loadSavedCarts() {
-          const cartsRef = collection(db, "users", userId, "savedCarts");
-          const qSnap = await getDocs(cartsRef);
-          const savedCartsList = document.getElementById("savedCartsList");
-          savedCartsList.innerHTML = "";
-          qSnap.forEach((cartDoc) => {
-            const li = document.createElement("li");
-            li.classList.add("list-group-item");
-            li.textContent = `Cart: ${cartDoc.id} - Items: ${JSON.stringify(cartDoc.data().items)}`;
-            savedCartsList.appendChild(li);
-          });
-        }
-        loadSavedCarts();
-
-        // Load Order History
-        async function loadOrderHistory() {
-          const ordersRef = collection(db, "orders");
-          const qSnap = await getDocs(ordersRef);
-          const orderHistoryBody = document.getElementById("orderHistoryBody");
-          orderHistoryBody.innerHTML = "";
-          qSnap.forEach((orderDoc) => {
-            const data = orderDoc.data();
-            if (data.userId === userId) {
-              const tr = document.createElement("tr");
-              tr.innerHTML = `
-                <td>${orderDoc.id}</td>
-                <td>${data.date || "N/A"}</td>
-                <td>$${data.total || "0.00"}</td>
-                <td>${data.status || "Pending"}</td>
-              `;
-              orderHistoryBody.appendChild(tr);
-            }
-          });
-        }
+        currentUserId = user.uid;
+        loadProfileData();
+        loadCart();
         loadOrderHistory();
-
-        // Review Submission
-        const reviewForm = document.getElementById("reviewForm");
-        reviewForm.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const productId = document.getElementById("reviewProduct").value;
-          const rating = parseInt(document.getElementById("reviewRating").value);
-          const text = document.getElementById("reviewText").value;
-          const reviewData = {
-            productId,
-            rating,
-            text,
-            userId,
-            timestamp: new Date(),
-          };
-          await addDoc(collection(db, "reviews"), reviewData);
-          alert("Review submitted successfully!");
-          reviewForm.reset();
-        });
       }
+    });
+
+    // -------------------------
+    // 1. Load & Update Profile
+    // -------------------------
+    async function loadProfileData() {
+      const profileDocRef = doc(db, "users", currentUserId);
+      onSnapshot(profileDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById("customerName").textContent =
+            data.name || "No Name";
+          document.getElementById("customerEmail").textContent =
+            data.email || "No Email";
+          document.getElementById("customerAddress").textContent =
+            data.address || "No Address";
+
+          // Pre-fill update form
+          document.getElementById("updateName").value = data.name || "";
+          document.getElementById("updateEmail").value = data.email || "";
+          document.getElementById("updateAddress").value = data.address || "";
+        }
+      });
+    }
+
+    const updateProfileForm = document.getElementById("updateProfileForm");
+    updateProfileForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const updatedName = document.getElementById("updateName").value;
+      const updatedEmail = document.getElementById("updateEmail").value;
+      const updatedAddress = document.getElementById("updateAddress").value;
+
+      await updateDoc(doc(db, "users", currentUserId), {
+        name: updatedName,
+        email: updatedEmail,
+        address: updatedAddress,
+      });
+      alert("Profile updated successfully!");
+      const modal = document.getElementById("updateProfileModal");
+      const modalInstance = bootstrap.Modal.getInstance(modal);
+      modalInstance.hide();
+    });
+
+    // -------------------------
+    // 2. Load Current Cart
+    // -------------------------
+    async function loadCart() {
+      const cartBody = document.getElementById("cartBody");
+      const cartTotalEl = document.getElementById("cartTotal");
+      const emptyCartMsg = document.getElementById("emptyCartMsg");
+
+      // Query the "carts" collection in root, filtering by userId
+      const cartsRef = collection(db, "carts");
+      const q = query(cartsRef, where("userId", "==", currentUserId));
+      const snapshot = await getDocs(q);
+
+      let total = 0;
+      cartBody.innerHTML = "";
+
+      if (snapshot.empty) {
+        emptyCartMsg.style.display = "block";
+        cartTotalEl.textContent = "Total: ₦0";
+        return;
+      } else {
+        emptyCartMsg.style.display = "none";
+      }
+
+      for (const docSnap of snapshot.docs) {
+        const item = docSnap.data();
+        const productRef = doc(db, "products", item.productId);
+        const productSnap = await getDoc(productRef);
+
+        let productName = "Unknown Product";
+        let productPrice = 0;
+        let productImg = "https://via.placeholder.com/50";
+
+        if (productSnap.exists()) {
+          const pd = productSnap.data();
+          productName = pd.name;
+          productPrice = pd.price;
+          productImg = pd.imageUrl || productImg;
+        }
+
+        const subtotal = productPrice * item.quantity;
+        total += subtotal;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <img src="${productImg}" class="cart-item-img" alt="Product Image">
+            ${productName}
+          </td>
+          <td>${item.quantity}</td>
+          <td>₦${subtotal.toFixed(2)}</td>
+        `;
+        cartBody.appendChild(tr);
+      }
+      cartTotalEl.textContent = `Total: ₦${total.toFixed(2)}`;
+    }
+
+    // -------------------------
+    // 3. Load Order History
+    // -------------------------
+    async function loadOrderHistory() {
+      const ordersRef = collection(db, "orders");
+      const snapshot = await getDocs( query(ordersRef) );
+      const orderHistoryBody = document.getElementById("orderHistoryBody");
+      orderHistoryBody.innerHTML = "";
+
+      snapshot.forEach((orderDoc) => {
+        const data = orderDoc.data();
+        if (data.userId === currentUserId) {
+          // If there's a createdAt date, format it; otherwise use "N/A"
+          let dateString = "N/A";
+          if (data.createdAt && data.createdAt.toDate) {
+            // Firestore Timestamp object => toDate()
+            const dateObj = data.createdAt.toDate();
+            dateString = dateObj.toLocaleString(); // or .toLocaleDateString()
+          }
+          const total = data.total ? data.total.toFixed(2) : "0.00";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${orderDoc.id}</td>
+            <td>${dateString}</td>
+            <td>${total}</td>
+            <td>${data.status || "Pending"}</td>
+          `;
+          orderHistoryBody.appendChild(tr);
+        }
+      });
+    }
+
+    // -------------------------
+    // 4. Submit a Review
+    // -------------------------
+    const reviewForm = document.getElementById("reviewForm");
+    reviewForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const productId = document.getElementById("reviewProduct").value;
+      const rating = parseInt(document.getElementById("reviewRating").value);
+      const text = document.getElementById("reviewText").value;
+
+      const reviewData = {
+        productId,
+        rating,
+        text,
+        userId: currentUserId,
+        timestamp: new Date(),
+      };
+      await addDoc(collection(db, "reviews"), reviewData);
+      alert("Review submitted successfully!");
+      reviewForm.reset();
     });
   </script>
 </body>
