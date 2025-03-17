@@ -1,32 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>GroceryHub - Customer Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Bootstrap CSS -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
   <!-- Bootstrap Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  />
-  <!-- Main CSS (Oxanium font, shared styles) -->
-  <link rel="stylesheet" href="main.css" />
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"/>
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="main.css"/>
   <style>
-    .dashboard-container {
-      margin-top: 2rem;
-    }
-    .dashboard-heading {
-      margin-bottom: 1rem;
-    }
-    .table thead th {
-      background-color: #f8f9fa;
-    }
+    .dashboard-container { margin-top: 2rem; }
+    .dashboard-heading { margin-bottom: 1rem; }
+    .table thead th { background-color: #f8f9fa; }
     .profile-card {
       border: 1px solid #ddd;
       border-radius: 6px;
@@ -51,38 +38,18 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
       <a class="navbar-brand text-success fw-bold" href="index.html">
-        <i class="bi bi-bag" style="font-size: 2rem;"></i>
-        GroceryHub
+        <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="product-catalog.html"
-              >Catalog</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="contact.html">Contact</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="about.html">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-outline-secondary me-2" href="signup.html"
-              >Logout</a
-            >
-          </li>
+          <li class="nav-item"><a class="nav-link text-dark" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="product-catalog.html">Catalog</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="about.html">About</a></li>
+          <li class="nav-item"><a class="btn btn-outline-secondary me-2" href="signup.html">Logout</a></li>
         </ul>
       </div>
     </div>
@@ -96,25 +63,10 @@
       <div class="col-md-4">
         <div class="profile-card" id="profileSection">
           <h5>Profile Information</h5>
-          <p>
-            <strong>Name:</strong>
-            <span id="customerName">Loading...</span>
-          </p>
-          <p>
-            <strong>Email:</strong>
-            <span id="customerEmail">Loading...</span>
-          </p>
-          <p>
-            <strong>Address:</strong>
-            <span id="customerAddress">Loading...</span>
-          </p>
-          <button
-            class="btn btn-primary btn-sm"
-            data-bs-toggle="modal"
-            data-bs-target="#updateProfileModal"
-          >
-            Update Profile
-          </button>
+          <p><strong>Name:</strong> <span id="customerName">Loading...</span></p>
+          <p><strong>Email:</strong> <span id="customerEmail">Loading...</span></p>
+          <p><strong>Address:</strong> <span id="customerAddress">Loading...</span></p>
+          <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateProfileModal">Update Profile</button>
         </div>
 
         <div class="profile-card">
@@ -136,9 +88,7 @@
               <strong id="cartTotal">Total: ₦0</strong>
             </div>
           </div>
-          <div id="emptyCartMsg" class="text-muted" style="display: none;">
-            No items in cart.
-          </div>
+          <div id="emptyCartMsg" class="text-muted" style="display: none;">No items in cart.</div>
         </div>
       </div>
 
@@ -165,35 +115,15 @@
           <form id="reviewForm">
             <div class="mb-3">
               <label for="reviewProduct" class="form-label">Product ID</label>
-              <input
-                type="text"
-                class="form-control"
-                id="reviewProduct"
-                placeholder="e.g. prod123"
-                required
-              />
+              <input type="text" class="form-control" id="reviewProduct" placeholder="e.g. prod123" required>
             </div>
             <div class="mb-3">
-              <label for="reviewRating" class="form-label"
-                >Rating (1-5)</label
-              >
-              <input
-                type="number"
-                class="form-control"
-                id="reviewRating"
-                min="1"
-                max="5"
-                required
-              />
+              <label for="reviewRating" class="form-label">Rating (1-5)</label>
+              <input type="number" class="form-control" id="reviewRating" min="1" max="5" required>
             </div>
             <div class="mb-3">
               <label for="reviewText" class="form-label">Review</label>
-              <textarea
-                class="form-control"
-                id="reviewText"
-                rows="2"
-                required
-              ></textarea>
+              <textarea class="form-control" id="reviewText" rows="2" required></textarea>
             </div>
             <button type="submit" class="btn btn-success">Submit Review</button>
           </form>
@@ -203,67 +133,31 @@
   </div>
 
   <!-- Update Profile Modal -->
-  <div
-    class="modal fade"
-    id="updateProfileModal"
-    tabindex="-1"
-    aria-labelledby="updateProfileModalLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <form id="updateProfileForm">
           <div class="modal-header">
-            <h5 class="modal-title" id="updateProfileModalLabel">
-              Update Profile
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <h5 class="modal-title" id="updateProfileModalLabel">Update Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
               <label for="updateName" class="form-label">Full Name</label>
-              <input
-                type="text"
-                class="form-control"
-                id="updateName"
-                required
-              />
+              <input type="text" class="form-control" id="updateName" required>
             </div>
             <div class="mb-3">
               <label for="updateEmail" class="form-label">Email</label>
-              <input
-                type="email"
-                class="form-control"
-                id="updateEmail"
-                required
-              />
+              <input type="email" class="form-control" id="updateEmail" required>
             </div>
             <div class="mb-3">
               <label for="updateAddress" class="form-label">Address</label>
-              <input
-                type="text"
-                class="form-control"
-                id="updateAddress"
-                required
-              />
+              <input type="text" class="form-control" id="updateAddress" required>
             </div>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="submit" class="btn btn-primary">
-              Save Changes
-            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
           </div>
         </form>
       </div>
@@ -271,29 +165,17 @@
   </div>
 
   <!-- Footer -->
-  <footer class="bg-light py-4 mt-5 mb-0">
+  <footer class="bg-light py-4 mt-5">
     <div class="container text-center">
       <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- Bootstrap 5 Bundle with Popper, plus Firebase SDKs -->
+  <!-- Bootstrap 5 Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-    import {
-      getFirestore,
-      doc,
-      onSnapshot,
-      updateDoc,
-      collection,
-      getDocs,
-      addDoc,
-      where,
-      query,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, updateDoc, addDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -308,13 +190,13 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getFirestore(app);
     const auth = getAuth();
 
     let currentUserId = null;
+    let orderCount = 0; // global variable to store order count
 
-    // Ensure the user is authenticated. If not, redirect to signup page.
+    // Restrict access: only allow authenticated users
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
@@ -326,20 +208,15 @@
       }
     });
 
-    // -------------------------
     // 1. Load & Update Profile
-    // -------------------------
     async function loadProfileData() {
       const profileDocRef = doc(db, "users", currentUserId);
       onSnapshot(profileDocRef, (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
-          document.getElementById("customerName").textContent =
-            data.name || "No Name";
-          document.getElementById("customerEmail").textContent =
-            data.email || "No Email";
-          document.getElementById("customerAddress").textContent =
-            data.address || "No Address";
+          document.getElementById("customerName").textContent = data.name || "No Name";
+          document.getElementById("customerEmail").textContent = data.email || "No Email";
+          document.getElementById("customerAddress").textContent = data.address || "No Address";
 
           // Pre-fill update form
           document.getElementById("updateName").value = data.name || "";
@@ -355,7 +232,6 @@
       const updatedName = document.getElementById("updateName").value;
       const updatedEmail = document.getElementById("updateEmail").value;
       const updatedAddress = document.getElementById("updateAddress").value;
-
       await updateDoc(doc(db, "users", currentUserId), {
         name: updatedName,
         email: updatedEmail,
@@ -367,15 +243,12 @@
       modalInstance.hide();
     });
 
-    // -------------------------
     // 2. Load Current Cart
-    // -------------------------
     async function loadCart() {
       const cartBody = document.getElementById("cartBody");
       const cartTotalEl = document.getElementById("cartTotal");
       const emptyCartMsg = document.getElementById("emptyCartMsg");
 
-      // Query the "carts" collection in root, filtering by userId
       const cartsRef = collection(db, "carts");
       const q = query(cartsRef, where("userId", "==", currentUserId));
       const snapshot = await getDocs(q);
@@ -424,27 +297,24 @@
       cartTotalEl.textContent = `Total: ₦${total.toFixed(2)}`;
     }
 
-    // -------------------------
     // 3. Load Order History
-    // -------------------------
     async function loadOrderHistory() {
       const ordersRef = collection(db, "orders");
-      const snapshot = await getDocs( query(ordersRef) );
+      const snapshot = await getDocs(query(ordersRef));
       const orderHistoryBody = document.getElementById("orderHistoryBody");
       orderHistoryBody.innerHTML = "";
+      orderCount = 0; // reset order count
 
       snapshot.forEach((orderDoc) => {
         const data = orderDoc.data();
         if (data.userId === currentUserId) {
-          // If there's a createdAt date, format it; otherwise use "N/A"
+          orderCount++;
           let dateString = "N/A";
           if (data.createdAt && data.createdAt.toDate) {
-            // Firestore Timestamp object => toDate()
             const dateObj = data.createdAt.toDate();
-            dateString = dateObj.toLocaleString(); // or .toLocaleDateString()
+            dateString = dateObj.toLocaleString();
           }
           const total = data.total ? data.total.toFixed(2) : "0.00";
-
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td>${orderDoc.id}</td>
@@ -457,16 +327,17 @@
       });
     }
 
-    // -------------------------
-    // 4. Submit a Review
-    // -------------------------
+    // 4. Submit a Review (Only if the customer has at least one order)
     const reviewForm = document.getElementById("reviewForm");
     reviewForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (orderCount === 0) {
+        alert("You must place an order before submitting a review.");
+        return;
+      }
       const productId = document.getElementById("reviewProduct").value;
       const rating = parseInt(document.getElementById("reviewRating").value);
       const text = document.getElementById("reviewText").value;
-
       const reviewData = {
         productId,
         rating,
