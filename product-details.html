@@ -203,7 +203,7 @@
             ? `Location: ${vendorData.address}`
             : "";
 
-          // Load vendor badge
+          // Load vendor badge using the updated logic
           loadVendorBadge(vendorId);
         } else {
           console.log("Vendor document not found for ID:", vendorId);
@@ -249,39 +249,45 @@
       });
     }
 
-    // Display vendor badge based on shipped orders
+    // Load vendor badge using the same logic as in the vendor dashboard
     function loadVendorBadge(vendorId) {
-      const ordersQuery = query(
-        collection(db, "orders"),
-        where("vendorId", "==", vendorId),
-        where("status", "==", "Shipped")
-      );
+      const ordersRef = collection(db, "orders");
+      onSnapshot(ordersRef, async (snapshot) => {
+        let shippedCount = 0;
+        const customers = new Set();
 
-      onSnapshot(ordersQuery, (snapshot) => {
-        let successfulOrders = snapshot.size;
-        let customers = new Set();
-        snapshot.forEach((docSnap) => {
-          const orderData = docSnap.data();
-          if (orderData.userId) {
-            customers.add(orderData.userId);
+        for (const orderDoc of snapshot.docs) {
+          const data = orderDoc.data();
+          if (data.status === "Shipped") {
+            const items = data.items || [];
+            for (const item of items) {
+              const productRef = doc(db, "products", item.productId);
+              const productSnap = await getDoc(productRef);
+              if (productSnap.exists() && productSnap.data().vendorId === vendorId) {
+                shippedCount++;
+                if (data.userId) customers.add(data.userId);
+                break; // Move to the next order once a matching item is found.
+              }
+            }
           }
-        });
-        let customerCount = customers.size;
+        }
+
         let badgeColor = "";
-        if (successfulOrders < 5) {
+        if (shippedCount < 5) {
           badgeColor = "red";
-        } else if (successfulOrders < 10) {
+        } else if (shippedCount < 10) {
           badgeColor = "purple";
-        } else if (successfulOrders < 20) {
+        } else if (shippedCount < 20) {
           badgeColor = "blue";
-        } else if (successfulOrders < 50) {
+        } else if (shippedCount < 50) {
           badgeColor = "gold";
         } else {
           badgeColor = "green";
         }
+
         document.getElementById("vendorBadge").innerHTML = `
           <i class="bi bi-award-fill" style="color: ${badgeColor};"></i>
-          <span>${badgeColor.toUpperCase()} - ${successfulOrders} Orders / ${customerCount} Customers</span>
+          <span>${badgeColor.toUpperCase()} - ${shippedCount} Shipped Orders / ${customers.size} Distinct Customers</span>
         `;
       });
     }
@@ -292,7 +298,7 @@
       // Check if user is signed in
       if (!auth.currentUser) {
         alert("Please sign in to add product to cart!");
-        window.location.href = "login.html";
+        window.location.href = "signup.html";
         return;
       }
       try {

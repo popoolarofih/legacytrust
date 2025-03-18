@@ -83,7 +83,6 @@
           <li class="nav-item">
             <a class="nav-link text-dark" href="shopping-cart.html">Cart</a>
           </li>
-
           <li class="nav-item">
             <a class="btn btn-outline-secondary me-2" href="signup.html">Login</a>
           </li>
@@ -143,7 +142,7 @@
   <!-- Firebase Config, Firestore -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getFirestore, collection, doc, getDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
@@ -174,7 +173,7 @@
           colDiv.setAttribute("data-category", data.category.toLowerCase());
           colDiv.setAttribute("data-name", data.name);
           colDiv.setAttribute("data-price", data.price);
-          // Create card HTML
+          // Create card HTML with a unique vendor badge element
           colDiv.innerHTML = `
             <div class="card h-100">
               <img class="card-img-top" src="${data.imageUrl}" alt="${data.name}" />
@@ -195,29 +194,50 @@
     }
 
     // Function to load vendor badge for a product
+    // This mirrors the dashboard logic by iterating over all orders,
+    // checking each shipped order for items linked to the vendor,
+    // and then assigning a badge color based on performance.
     function loadVendorBadgeForProduct(vendorId, elementId) {
-      const ordersQuery = query(
-        collection(db, "orders"),
-        where("vendorId", "==", vendorId),
-        where("status", "==", "Shipped")
-      );
-      onSnapshot(ordersQuery, (snapshot) => {
-        let successfulOrders = snapshot.size;
-        let customers = new Set();
-        snapshot.forEach((docSnap) => {
-          let orderData = docSnap.data();
-          if (orderData.userId) customers.add(orderData.userId);
-        });
-        let badgeColor = "";
-        if (successfulOrders < 5) badgeColor = "red";
-        else if (successfulOrders < 10) badgeColor = "purple";
-        else if (successfulOrders < 20) badgeColor = "blue";
-        else if (successfulOrders < 50) badgeColor = "gold";
-        else badgeColor = "green";
+      const ordersRef = collection(db, "orders");
+      onSnapshot(ordersRef, async (snapshot) => {
+        let shippedCount = 0;
+        const customers = new Set();
 
+        for (const orderDoc of snapshot.docs) {
+          const data = orderDoc.data();
+          // Only consider orders with status "Shipped"
+          if (data.status === "Shipped") {
+            const items = data.items || [];
+            for (const item of items) {
+              const productRef = doc(db, "products", item.productId);
+              const productSnap = await getDoc(productRef);
+              if (productSnap.exists() && productSnap.data().vendorId === vendorId) {
+                shippedCount++;
+                if (data.userId) customers.add(data.userId);
+                break; // Found a matching product in this order; move to the next order.
+              }
+            }
+          }
+        }
+
+        // Determine badge color based on shipped count
+        let badgeColor = "";
+        if (shippedCount < 5) {
+          badgeColor = "red";
+        } else if (shippedCount < 10) {
+          badgeColor = "purple";
+        } else if (shippedCount < 20) {
+          badgeColor = "blue";
+        } else if (shippedCount < 50) {
+          badgeColor = "gold";
+        } else {
+          badgeColor = "green";
+        }
+
+        // Update the badge element in the product card
         document.getElementById(elementId).innerHTML = `
-          <i class="bi bi-award-fill" style="color:${badgeColor};"></i>
-          <span>${badgeColor.toUpperCase()} - ${successfulOrders} Orders / ${customers.size} Customers</span>
+          <i class="bi bi-award-fill" style="color: ${badgeColor};"></i>
+          <span>${badgeColor.toUpperCase()} - ${shippedCount} Shipped Orders / ${customers.size} Distinct Customers</span>
         `;
       });
     }
@@ -239,6 +259,7 @@
         card.style.display = matchesSearch && matchesCat ? "block" : "none";
       });
     }
+
     searchInput.addEventListener('input', filterProducts);
 
     sortSelect.addEventListener('change', () => {
@@ -256,6 +277,7 @@
       } else if (sortValue === "name-desc") {
         sortedCards.sort((a, b) => b.getAttribute('data-name').localeCompare(a.getAttribute('data-name')));
       }
+
       catalog.innerHTML = "";
       sortedCards.forEach((card) => catalog.appendChild(card));
     });
