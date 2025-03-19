@@ -29,6 +29,29 @@
       font-size: 1.5rem;
       margin-top: 0.5rem;
     }
+    /* Legend styling */
+    .badge-legend {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #e9ecef;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .badge-legend h5 {
+      margin-bottom: 0.5rem;
+    }
+    .badge-legend ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .badge-legend li {
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+    }
+    .badge-legend li i {
+      margin-right: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -78,6 +101,17 @@
           <p id="vendorLocation"></p>
           <!-- Vendor Badge using Font Icon -->
           <div id="vendorBadge" class="vendor-badge">Loading badge...</div>
+          <!-- Badge Legend -->
+          <div id="badgeLegend" class="badge-legend">
+            <h5>Badge Legend</h5>
+            <ul>
+              <li><i class="bi bi-award-fill" style="color: red;"></i> Red: Fewer than 5 shipped orders</li>
+              <li><i class="bi bi-award-fill" style="color: purple;"></i> Purple: 5 - 9 shipped orders</li>
+              <li><i class="bi bi-award-fill" style="color: blue;"></i> Blue: 10 - 19 shipped orders</li>
+              <li><i class="bi bi-award-fill" style="color: gold;"></i> Gold: 20 - 49 shipped orders</li>
+              <li><i class="bi bi-award-fill" style="color: green;"></i> Green: 50 or more shipped orders</li>
+            </ul>
+          </div>
         </div>
 
         <!-- Add to Cart Button -->

@@ -54,6 +54,30 @@
     .card-text {
       font-size: 0.95rem;
     }
+    /* Legend card styling */
+    .legend-card {
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-top: 2rem;
+    }
+    .legend-card h5 {
+      margin-bottom: 1rem;
+    }
+    .legend-card ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .legend-card li {
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    .legend-card li i {
+      margin-right: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -119,6 +143,33 @@
           <option value="name-asc">Name: A-Z</option>
           <option value="name-desc">Name: Z-A</option>
         </select>
+
+        <!-- Badge Legend Section -->
+        <div class="legend-card">
+          <h5>Badge Legend</h5>
+          <ul>
+            <li>
+              <i class="bi bi-award-fill" style="color: red;"></i>
+              Red: Fewer than 5 shipped orders
+            </li>
+            <li>
+              <i class="bi bi-award-fill" style="color: purple;"></i>
+              Purple: 5 - 9 shipped orders
+            </li>
+            <li>
+              <i class="bi bi-award-fill" style="color: blue;"></i>
+              Blue: 10 - 19 shipped orders
+            </li>
+            <li>
+              <i class="bi bi-award-fill" style="color: gold;"></i>
+              Gold: 20 - 49 shipped orders
+            </li>
+            <li>
+              <i class="bi bi-award-fill" style="color: green;"></i>
+              Green: 50 or more shipped orders
+            </li>
+          </ul>
+        </div>
       </aside>
 
       <!-- Product Grid -->
@@ -126,6 +177,8 @@
         <div class="row" id="productCatalog">
           <!-- Dynamic product cards will be appended here -->
         </div>
+
+        
       </main>
     </div>
   </div>

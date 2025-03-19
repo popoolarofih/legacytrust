@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ABACSTORE</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+
+  <!-- Google Font: Tektur -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tektur:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css" />
+  <style>/* Global font */
+    body {
+      font-family: 'Tektur', sans-serif;
+    }
+    
+    /* Top Nav */
+    .bg-light.text-dark.text-center {
+      font-size: 0.9rem;
+    }
+    
+    /* Navbar brand override */
+    .navbar-brand {
+      letter-spacing: 1px;
+    }
+    
+    /* Hero Section */
+    .hero-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-img {
+      object-fit: cover;
+      max-height: 75vh;
+    }
+    .hero-content {
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+    }
+    
+    /* Card Hover Effect */
+    .card-hover:hover {
+      transform: translateY(-5px);
+      transition: 0.3s ease;
+    }
+    
+    /* Apparel / Essentials images */
+    img.rounded.shadow-sm {
+      max-height: 400px;
+      object-fit: cover;
+    }
+    
+    /* Media queries for smaller devices */
+    @media (max-width: 576px) {
+      .hero-content h1 {
+        font-size: 1.75rem;
+      }
+      .hero-content h3 {
+        font-size: 1.1rem;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+    }
+    </style>
+</head>
+<body>
+  <!-- Top Nav (Announcement Bar) -->
+  <div class="bg-light text-dark text-center py-2 small">
+    All New Apparel - Comfortable and adventure-proof.
+    <a href="#" class="fw-bold text-decoration-underline">Shop now</a>
+  </div>
+
+  <!-- Main Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <!-- Brand Logo -->
+      <a
+        class="navbar-brand fw-bold"
+        href="#"
+        style="font-family: 'Tektur', sans-serif; font-size: 1.5rem;"
+      >
+        ABACSTORE
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#nomadNavbar"
+        aria-controls="nomadNavbar"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="nomadNavbar">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#">Cases</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Apple Watch</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Chargers</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Lifestyle Gear</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Explore</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Sale</a></li>
+          <!-- Icons -->
+          <li class="nav-item ms-3">
+            <a class="nav-link" href="#">
+              <i class="bi bi-person"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="bi bi-cart"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section position-relative text-white">
+    <!-- Full-width, height-auto, object-cover for responsiveness -->
+    <div class="hero-wrapper">
+      <img
+        src="assets/hero-bg.jpg"
+        class="hero-img img-fluid w-100"
+        alt="Hero Background"
+      />
+      <div
+        class="hero-content position-absolute top-50 start-50 translate-middle text-center p-3"
+      >
+        <h3 class="fw-bold" style="font-family: 'Tektur', sans-serif;">Back In Stock</h3>
+        <h1 class="display-4" style="font-family: 'Tektur', sans-serif;">Base One</h1>
+        <a href="#" class="btn btn-light btn-lg fw-bold mt-3">Shop Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Collections -->
+  <section class="py-5 text-center">
+    <div class="container">
+      <h4
+        class="text-uppercase text-muted"
+        style="font-family: 'Tektur', sans-serif;"
+      >
+        Some of Our Favorites
+      </h4>
+      <h2 class="fw-bold" style="font-family: 'Tektur', sans-serif;">
+        Featured Collections
+      </h2>
+
+      <div class="row mt-4 g-4 justify-content-center">
+        <div class="col-6 col-md-3">
+          <a href="#" class="text-decoration-none text-dark">
+            <div class="card border-0 shadow-sm card-hover">
+              <img
+                src="assets/collection1.jpg"
+                class="card-img-top"
+                alt="New Gear"
+              />
+              <div class="card-body text-center">
+                <h6 class="fw-bold">New Gear</h6>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-md-3">
+          <a href="#" class="text-decoration-none text-dark">
+            <div class="card border-0 shadow-sm card-hover">
+              <img
+                src="assets/collection2.jpg"
+                class="card-img-top"
+                alt="Cases"
+              />
+              <div class="card-body text-center">
+                <h6 class="fw-bold">Cases</h6>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-md-3">
+          <a href="#" class="text-decoration-none text-dark">
+            <div class="card border-0 shadow-sm card-hover">
+              <img
+                src="assets/collection3.jpg"
+                class="card-img-top"
+                alt="Sport Bands"
+              />
+              <div class="card-body text-center">
+                <h6 class="fw-bold">Sport Bands</h6>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-6 col-md-3">
+          <a href="#" class="text-decoration-none text-dark">
+            <div class="card border-0 shadow-sm card-hover">
+              <img
+                src="assets/collection4.jpg"
+                class="card-img-top"
+                alt="Power"
+              />
+              <div class="card-body text-center">
+                <h6 class="fw-bold">Power</h6>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Apparel Highlight -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-md-6">
+          <img
+            src="assets/apparel.jpg"
+            class="img-fluid rounded shadow-sm"
+            alt="Apparel"
+          />
+        </div>
+        <div class="col-md-6 text-center text-md-start">
+          <h3
+            class="fw-bold"
+            style="font-family: 'Tektur', sans-serif;"
+          >
+            All New Apparel
+          </h3>
+          <p class="text-muted">
+            Base Layers for Your Next Adventure
+          </p>
+          <div class="mt-3">
+            <a href="#" class="btn btn-dark fw-bold me-2">Shop T-Shirt</a>
+            <a href="#" class="btn btn-outline-dark fw-bold">Shop Sweatshirt</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nomad Essentials -->
+  <section class="py-5 text-center">
+    <div class="container">
+      <h5 class="text-muted" style="font-family: 'Tektur', sans-serif;">
+        Reliable Classics
+      </h5>
+      <h2 class="fw-bold" style="font-family: 'Tektur', sans-serif;">
+        Nomad Essentials
+      </h2>
+      <div class="row g-4 mt-4 justify-content-center">
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm card-hover">
+            <img
+              src="assets/remote-cover.jpg"
+              class="card-img-top"
+              alt="Leather Cover"
+            />
+            <div class="card-body">
+              <h6>Leather Cover</h6>
+              <p class="small text-muted">For Siri Remote &amp; AirTag</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm card-hover">
+            <img
+              src="assets/sport-band.jpg"
+              class="card-img-top"
+              alt="Sport Band"
+            />
+            <div class="card-body">
+              <h6>Sport Band</h6>
+              <p class="small text-muted">Waterproof</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm card-hover position-relative">
+            <span
+              class="badge bg-info position-absolute top-0 end-0 mt-2 me-2"
+              >Back in Stock</span
+            >
+            <img
+              src="assets/pen.jpg"
+              class="card-img-top"
+              alt="Pen"
+            />
+            <div class="card-body">
+              <h6>Pen</h6>
+              <p class="small text-muted">Titanium</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a href="#" class="btn btn-dark mt-4 fw-bold">Shop Essentials</a>
+    </div>
+  </section>
+
+  <!-- Shop iPhone Cases -->
+  <section class="py-5">
+    <div class="container text-center">
+      <div class="row">
+        <div class="col-12 mb-4 position-relative">
+          <img
+            src="assets/iphone-cases-bg.jpg"
+            class="img-fluid w-100 shadow-sm"
+            alt="iPhone Cases BG"
+          />
+          <div
+            class="position-absolute top-50 start-50 translate-middle text-white"
+          >
+            <h2
+              class="fw-bold"
+              style="font-family: 'Tektur', sans-serif;"
+            >
+              Shop iPhone Cases
+            </h2>
+            <a href="#" class="btn btn-dark fw-bold mt-2">Shop Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 justify-content-center">
+        <div class="col-6 col-md-3">
+          <div class="card border-0 card-hover shadow-sm">
+            <div class="card-body text-center">
+              <h5>iPhone 13</h5>
+              <p class="small text-muted">Shop Cases</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card border-0 card-hover shadow-sm">
+            <div class="card-body text-center">
+              <h5>iPhone 12</h5>
+              <p class="small text-muted">Shop Cases</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card border-0 card-hover shadow-sm">
+            <div class="card-body text-center">
+              <h5>iPhone 11 &amp; Older</h5>
+              <p class="small text-muted">Shop Cases</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote -->
+  <section class="py-5 bg-light text-center">
+    <div class="container">
+      <blockquote class="blockquote">
+        <p class="mb-0 fst-italic" style="max-width: 700px; margin: 0 auto;">
+          "Our goal has always been to design and build gear that stands the test of time, performs at the highest caliber, and does so in a beautiful yet subtle way."
+        </p>
+        <footer class="blockquote-footer mt-2">
+          Nick Walden, Creative Director
+        </footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- About Nomad -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-md-6 text-center text-md-start">
+          <h3 style="font-family: 'Tektur', sans-serif;">About Nomad</h3>
+          <p class="text-muted">10 Years of Quality Goods</p>
+          <a href="#" class="btn btn-dark fw-bold">Learn More</a>
+        </div>
+        <div class="col-md-6">
+          <img
+            src="assets/about-nomad.jpg"
+            class="img-fluid rounded shadow-sm"
+            alt="About Nomad"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Environment Commitment -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-md-6">
+          <img
+            src="assets/environment.jpg"
+            class="img-fluid rounded shadow-sm"
+            alt="Environment"
+          />
+        </div>
+        <div class="col-md-6 text-center text-md-start">
+          <h3 style="font-family: 'Tektur', sans-serif;">
+            Our Commitment to the<br/>Environment
+          </h3>
+          <p class="text-muted">
+            A big part of our mission going forward is to minimize our impact while building fewer, better, more sustainable items.
+          </p>
+          <a href="#" class="btn btn-dark fw-bold">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark text-white">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-6 col-md-3">
+          <h6 class="fw-bold" style="font-family: 'Tektur', sans-serif;">
+            Support
+          </h6>
+          <ul class="list-unstyled">
+            <li>
+              <a href="#" class="text-decoration-none text-white-50">Live Chat</a>
+            </li>
+            <li>
+              <a href="#" class="text-decoration-none text-white-50">Shipping</a>
+            </li>
+            <li>
+              <a href="#" class="text-decoration-none text-white-50">Returns</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3">
+          <h6 class="fw-bold" style="font-family: 'Tektur', sans-serif;">
+            About
+          </h6>
+          <ul class="list-unstyled">
+            <li>
+              <a href="#" class="text-decoration-none text-white-50">About Us</a>
+            </li>
+            <li>
+              <a href="#" class="text-decoration-none text-white-50">Sustainability</a>
+            </li>
+            <li>
+              <a href="#" class="text-decoration-none text-white-50"
+                >Showroom Locator</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3">
+          <h6 class="fw-bold" style="font-family: 'Tektur', sans-serif;">
+            Saves
+          </h6>
+          <ul class="list-unstyled">
+            <li>
+              <a href="#" class="text-decoration-none text-white-50"
+                >Press &amp; Articles</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-decoration-none text-white-50"
+                >Where We Sell</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-decoration-none text-white-50"
+                >Wholesale</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3">
+          <h6 class="fw-bold" style="font-family: 'Tektur', sans-serif;">
+            Explore
+          </h6>
+          <ul class="list-unstyled">
+            <li>
+              <a href="#" class="text-decoration-none text-white-50"
+                >The Nomad Blog</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-decoration-none text-white-50"
+                >Workshops</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-decoration-none text-white-50"
+                >Plastic Be Good</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+      <hr class="bg-white-50 my-4" />
+      <div
+        class="d-flex flex-column flex-md-row align-items-center justify-content-between"
+      >
+        <p class="mb-2 mb-md-0 text-white-50 small">
+          © 2025 Nomad Goods, Inc. All rights reserved.
+        </p>
+        <div class="d-flex gap-3">
+          <a href="#" class="text-white-50 small text-decoration-none"
+            >Manage Cookies</a
+          >
+          <a href="#" class="text-white-50 small text-decoration-none"
+            >Privacy</a
+          >
+          <a href="#" class="text-white-50 small text-decoration-none"
+            >Terms</a
+          >
+          <a href="#" class="text-white-50 small text-decoration-none"
+            >Returns</a
+          >
+          <a href="#" class="text-white-50 small text-decoration-none"
+            >Accessibility</a
+          >
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase + Script -->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_OKecRD3bFiZBFikhNauAPZRdz-FKp9w",
+      authDomain: "ecommerce-fbaa8.firebaseapp.com",
+      projectId: "ecommerce-fbaa8",
+      storageBucket: "ecommerce-fbaa8.firebasestorage.app",
+      messagingSenderId: "296693502804",
+      appId: "1:296693502804:web:d90e69e72e8983b753aec1",
+      measurementId: "G-NJWZ20S9RM"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    console.log('Firebase Initialized');
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <!-- Optional icons from Bootstrap Icons -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"
+  ></script>
+</body>
+</html>

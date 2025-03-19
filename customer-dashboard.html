@@ -21,9 +21,7 @@
       margin-bottom: 1.5rem;
     }
     /* Cart table styling */
-    #cartTable th, #cartTable td {
-      vertical-align: middle;
-    }
+    #cartTable th, #cartTable td { vertical-align: middle; }
     .cart-item-img {
       width: 50px;
       height: 50px;
@@ -31,6 +29,10 @@
       margin-right: 0.5rem;
       border-radius: 4px;
     }
+    /* Return policy section styling */
+    .return-section { margin-top: 2rem; }
+    .return-section .section-title { font-weight: 600; margin-bottom: 0.5rem; }
+    .return-policy { border: 1px solid #ccc; padding: 1rem; border-radius: 6px; background: #f9f9f9; }
   </style>
 </head>
 <body>
@@ -59,7 +61,7 @@
   <div class="container dashboard-container">
     <h2 class="dashboard-heading">Customer Dashboard</h2>
     <div class="row">
-      <!-- Left Column: Profile Info & Cart Items -->
+      <!-- Left Column: Profile & Cart -->
       <div class="col-md-4">
         <div class="profile-card" id="profileSection">
           <h5>Profile Information</h5>
@@ -92,7 +94,7 @@
         </div>
       </div>
 
-      <!-- Right Column: Order History & Review Submission -->
+      <!-- Right Column: Order History, Reviews & Return Requests -->
       <div class="col-md-8">
         <div class="mb-4">
           <h5>Order History</h5>
@@ -110,7 +112,31 @@
             </tbody>
           </table>
         </div>
-        <div>
+
+        <!-- Return Policy Section -->
+        <div class="return-section">
+          <h5 class="section-title">Return Policy</h5>
+          <div id="returnPolicyContent" class="return-policy">Loading return policy...</div>
+        </div>
+
+        <!-- Request a Return Section -->
+        <div class="return-section">
+          <h5 class="section-title">Request a Return</h5>
+          <form id="returnRequestForm">
+            <div class="mb-3">
+              <label for="returnOrderId" class="form-label">Order ID</label>
+              <input type="text" class="form-control" id="returnOrderId" placeholder="Enter your Order ID" required>
+            </div>
+            <div class="mb-3">
+              <label for="returnReason" class="form-label">Reason for Return</label>
+              <textarea class="form-control" id="returnReason" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning">Submit Return Request</button>
+          </form>
+        </div>
+
+        <!-- Review Submission Section -->
+        <div class="mt-4">
           <h5>Submit a Review</h5>
           <form id="reviewForm">
             <div class="mb-3">
@@ -165,7 +191,7 @@
   </div>
 
   <!-- Footer -->
-  <footer class="bg-light py-4 mt-5">
+  <footer class="bg-light py-4">
     <div class="container text-center">
       <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
     </div>
@@ -175,7 +201,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, updateDoc, addDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, getDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -192,11 +218,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth();
-
     let currentUserId = null;
-    let orderCount = 0; // global variable to store order count
+    let orderCount = 0;
 
-    // Restrict access: only allow authenticated users
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "signup.html";
@@ -205,6 +229,7 @@
         loadProfileData();
         loadCart();
         loadOrderHistory();
+        loadReturnPolicy();
       }
     });
 
@@ -217,26 +242,19 @@
           document.getElementById("customerName").textContent = data.name || "No Name";
           document.getElementById("customerEmail").textContent = data.email || "No Email";
           document.getElementById("customerAddress").textContent = data.address || "No Address";
-
-          // Pre-fill update form
           document.getElementById("updateName").value = data.name || "";
           document.getElementById("updateEmail").value = data.email || "";
           document.getElementById("updateAddress").value = data.address || "";
         }
       });
     }
-
     const updateProfileForm = document.getElementById("updateProfileForm");
     updateProfileForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const updatedName = document.getElementById("updateName").value;
       const updatedEmail = document.getElementById("updateEmail").value;
       const updatedAddress = document.getElementById("updateAddress").value;
-      await updateDoc(doc(db, "users", currentUserId), {
-        name: updatedName,
-        email: updatedEmail,
-        address: updatedAddress,
-      });
+      await updateDoc(doc(db, "users", currentUserId), { name: updatedName, email: updatedEmail, address: updatedAddress });
       alert("Profile updated successfully!");
       const modal = document.getElementById("updateProfileModal");
       const modalInstance = bootstrap.Modal.getInstance(modal);
@@ -248,14 +266,11 @@
       const cartBody = document.getElementById("cartBody");
       const cartTotalEl = document.getElementById("cartTotal");
       const emptyCartMsg = document.getElementById("emptyCartMsg");
-
       const cartsRef = collection(db, "carts");
       const q = query(cartsRef, where("userId", "==", currentUserId));
       const snapshot = await getDocs(q);
-
       let total = 0;
       cartBody.innerHTML = "";
-
       if (snapshot.empty) {
         emptyCartMsg.style.display = "block";
         cartTotalEl.textContent = "Total: ₦0";
@@ -263,26 +278,21 @@
       } else {
         emptyCartMsg.style.display = "none";
       }
-
       for (const docSnap of snapshot.docs) {
         const item = docSnap.data();
         const productRef = doc(db, "products", item.productId);
         const productSnap = await getDoc(productRef);
-
         let productName = "Unknown Product";
         let productPrice = 0;
         let productImg = "https://via.placeholder.com/50";
-
         if (productSnap.exists()) {
           const pd = productSnap.data();
           productName = pd.name;
           productPrice = pd.price;
           productImg = pd.imageUrl || productImg;
         }
-
         const subtotal = productPrice * item.quantity;
         total += subtotal;
-
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>
@@ -297,14 +307,13 @@
       cartTotalEl.textContent = `Total: ₦${total.toFixed(2)}`;
     }
 
-    // 3. Load Order History
+    // 3. Load Order History & update orderCount
     async function loadOrderHistory() {
       const ordersRef = collection(db, "orders");
-      const snapshot = await getDocs(query(ordersRef));
+      const snapshot = await getDocs(ordersRef);
       const orderHistoryBody = document.getElementById("orderHistoryBody");
       orderHistoryBody.innerHTML = "";
-      orderCount = 0; // reset order count
-
+      orderCount = 0;
       snapshot.forEach((orderDoc) => {
         const data = orderDoc.data();
         if (data.userId === currentUserId) {
@@ -319,7 +328,7 @@
           tr.innerHTML = `
             <td>${orderDoc.id}</td>
             <td>${dateString}</td>
-            <td>${total}</td>
+            <td>₦${total}</td>
             <td>${data.status || "Pending"}</td>
           `;
           orderHistoryBody.appendChild(tr);
@@ -327,7 +336,40 @@
       });
     }
 
-    // 4. Submit a Review (Only if the customer has at least one order)
+    // 4. Load Return Policy from Firestore
+    async function loadReturnPolicy() {
+      const policyDocRef = doc(db, "returnPolicy", "defaultPolicy");
+      const policySnap = await getDoc(policyDocRef);
+      if (policySnap.exists()) {
+        document.getElementById("returnPolicyContent").textContent = policySnap.data().text;
+      } else {
+        document.getElementById("returnPolicyContent").textContent = "No return policy defined.";
+      }
+    }
+    loadReturnPolicy();
+
+    // 5. Submit a Return Request (only if customer has orders)
+    const returnRequestForm = document.getElementById("returnRequestForm");
+    returnRequestForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (orderCount === 0) {
+        alert("You must place an order before submitting a return request.");
+        return;
+      }
+      const orderId = document.getElementById("returnOrderId").value;
+      const reason = document.getElementById("returnReason").value;
+      await addDoc(collection(db, "returnRequests"), {
+        userId: currentUserId,
+        orderId: orderId,
+        reason: reason,
+        status: "Pending",
+        timestamp: new Date()
+      });
+      alert("Return request submitted!");
+      returnRequestForm.reset();
+    });
+
+    // 6. Submit a Review (only if the customer has orders)
     const reviewForm = document.getElementById("reviewForm");
     reviewForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -349,6 +391,66 @@
       alert("Review submitted successfully!");
       reviewForm.reset();
     });
+
+    // 7. Initialize product loading, filtering, and sorting
+    function loadProducts() {
+      const prodQuery = query(collection(db, "products"), where("removed", "==", false));
+      onSnapshot(prodQuery, (snapshot) => {
+        const catalog = document.getElementById("productCatalog");
+        catalog.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const colDiv = document.createElement("div");
+          colDiv.classList.add("col-md-4", "mb-4", "product-card");
+          colDiv.setAttribute("data-category", data.category.toLowerCase());
+          colDiv.setAttribute("data-name", data.name);
+          colDiv.setAttribute("data-price", data.price);
+          colDiv.innerHTML = `
+            <div class="card h-100">
+              <img class="card-img-top" src="${data.imageUrl}" alt="${data.name}" />
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">${data.name}</h5>
+                <p class="card-text mb-1">Price: ₦${data.price.toFixed(2)}</p>
+                <p class="card-text mb-1">Category: ${data.category}</p>
+                <div id="vendorBadge-${docSnap.id}" class="vendor-badge">Loading badge...</div>
+                <a href="product-details.html?id=${docSnap.id}" class="btn btn-primary mt-auto">View Details</a>
+              </div>
+            </div>
+          `;
+          catalog.appendChild(colDiv);
+          loadVendorBadgeForProduct(data.vendorId, "vendorBadge-" + docSnap.id);
+        });
+      });
+    }
+    loadProducts();
+
+    // 8. Load vendor badge for a product from the vendor's document (using vendor's order stats)
+    async function loadVendorBadgeForProduct(vendorId, elementId) {
+      // Query orders with matching vendorId and "Shipped" status
+      const ordersQuery = query(
+        collection(db, "orders"),
+        where("vendorId", "==", vendorId),
+        where("status", "==", "Shipped")
+      );
+      onSnapshot(ordersQuery, (snapshot) => {
+        let successfulOrders = snapshot.size;
+        let customers = new Set();
+        snapshot.forEach((docSnap) => {
+          let orderData = docSnap.data();
+          if (orderData.userId) customers.add(orderData.userId);
+        });
+        let badgeColor = "";
+        if (successfulOrders < 5) badgeColor = "red";
+        else if (successfulOrders < 10) badgeColor = "purple";
+        else if (successfulOrders < 20) badgeColor = "blue";
+        else if (successfulOrders < 50) badgeColor = "gold";
+        else badgeColor = "green";
+        document.getElementById(elementId).innerHTML = `
+          <i class="bi bi-award-fill" style="color:${badgeColor};"></i>
+          <span>${badgeColor.toUpperCase()} - ${successfulOrders} Orders / ${customers.size} Customers</span>
+        `;
+      });
+    }
   </script>
 </body>
 </html>

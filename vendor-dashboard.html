@@ -1,544 +1,674 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>GroceryHub - Vendor Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Bootstrap 5 CSS -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-  />
-  <!-- Bootstrap Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  />
-  <!-- Main CSS (shared styles & Oxanium font) -->
-  <link rel="stylesheet" href="main.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>GroceryHub - Vendor Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <!-- Main CSS (shared styles & Oxanium font) -->
+    <link rel="stylesheet" href="main.css" />
 
-  <style>
-    /* Overall page spacing */
-    .dashboard-container {
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-    }
-    .dashboard-heading {
-      margin-bottom: 1rem;
-      font-weight: 700;
-    }
-
-    /* Card spacing and styling */
-    .dashboard-card {
-      border: 1px solid #ddd;
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .dashboard-card h5 {
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    /* Table styling */
-    .table thead th {
-      background-color: #f8f9fa;
-    }
-    .product-image {
-      max-width: 60px;
-      height: auto;
-      border-radius: 4px;
-    }
-
-    /* Vendor badge styling */
-    #vendorBadge i {
-      font-size: 1.75rem;
-    }
-    #vendorBadge span {
-      margin-left: 0.5rem;
-      font-size: 1rem;
-      vertical-align: middle;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 576px) {
+    <style>
+      /* Overall page spacing */
+      .dashboard-container {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+      }
       .dashboard-heading {
-        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
       }
-      table {
-        font-size: 0.9rem;
+      /* Card spacing and styling */
+      .dashboard-card {
+        border: 1px solid #ddd;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
-    }
-  </style>
-</head>
-<body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-    <div class="container">
-      <a class="navbar-brand text-success fw-bold" href="index.html">
-        <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="product-catalog.html"
-              >Catalog</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="contact.html">Contact</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-outline-secondary ms-2" href="signup.html"
-              >Logout</a
-            >
-          </li>
-        </ul>
+      .dashboard-card h5 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      /* Table styling */
+      .table thead th {
+        background-color: #f8f9fa;
+      }
+      .product-image {
+        max-width: 60px;
+        height: auto;
+        border-radius: 4px;
+      }
+      /* Vendor badge styling */
+      #vendorBadge i {
+        font-size: 1.75rem;
+      }
+      #vendorBadge span {
+        margin-left: 0.5rem;
+        font-size: 1rem;
+        vertical-align: middle;
+      }
+      /* Added vendor trust score element */
+      #vendorTrustScore {
+        font-weight: bold;
+        margin-top: 0.5rem;
+      }
+      /* Return Policy & Requests card styling */
+      .return-card {
+        border: 1px solid #ddd;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      @media (max-width: 576px) {
+        .dashboard-heading {
+          font-size: 1.25rem;
+        }
+        table {
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+      <div class="container">
+        <a class="navbar-brand text-success fw-bold" href="index.html">
+          <i class="bi bi-bag" style="font-size: 2rem;"></i> GroceryHub
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item">
+              <a class="nav-link text-dark" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark" href="product-catalog.html">Catalog</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark" href="contact.html">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-outline-secondary ms-2" href="signup.html">Logout</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <!-- Main Container -->
-  <div class="container dashboard-container">
-    <h2 class="dashboard-heading text-center">Vendor Dashboard</h2>
-    <div class="row gx-4">
-      <!-- Left Column: Manage Products + Vendor Profile -->
-      <div class="col-md-6">
-        <!-- Manage Products Card -->
-        <div class="dashboard-card">
-          <h5>Manage Products</h5>
-          <form id="addProductForm" class="mb-4">
-            <div class="mb-3">
-              <label for="productNameInput" class="form-label">Product Name</label>
-              <input
-                type="text"
-                class="form-control"
-                id="productNameInput"
-                required
-              />
-            </div>
-            <div class="mb-3">
-              <label for="productPriceInput" class="form-label">Price (₦)</label>
-              <input
-                type="number"
-                class="form-control"
-                id="productPriceInput"
-                step="1"
-                required
-              />
-            </div>
-            <div class="mb-3">
-              <label for="productCategoryInput" class="form-label">Category</label>
-              <select class="form-select" id="productCategoryInput" required>
-                <option value="Fruits">Fruits</option>
-                <option value="Vegetables">Vegetables</option>
-                <option value="Dairy">Dairy</option>
-                <option value="Bakery">Bakery</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="productImageURL" class="form-label"
-                >Product Image URL (Base64 or standard URL)</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="productImageURL"
-                placeholder="data:image/jpeg;base64,... or https://example.com/img.jpg"
-                required
-              />
-            </div>
-            <div class="mb-3">
-              <label for="productDescriptionInput" class="form-label"
-                >Product Description</label
-              >
-              <textarea
-                class="form-control"
-                id="productDescriptionInput"
-                rows="2"
-                placeholder="Enter product details here..."
-                required
-              ></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Add Product</button>
-          </form>
+    <!-- Main Container -->
+    <div class="container dashboard-container">
+      <h2 class="dashboard-heading text-center">Vendor Dashboard</h2>
+      <div class="row gx-4">
+        <!-- Left Column: Manage Products + Vendor Profile -->
+        <div class="col-md-6">
+          <!-- Manage Products Card -->
+          <div class="dashboard-card">
+            <h5>Manage Products</h5>
+            <form id="addProductForm" class="mb-4">
+              <div class="mb-3">
+                <label for="productNameInput" class="form-label">Product Name</label>
+                <input type="text" class="form-control" id="productNameInput" required />
+              </div>
+              <div class="mb-3">
+                <label for="productPriceInput" class="form-label">Price (₦)</label>
+                <input type="number" class="form-control" id="productPriceInput" step="1" required />
+              </div>
+              <div class="mb-3">
+                <label for="productCategoryInput" class="form-label">Category</label>
+                <select class="form-select" id="productCategoryInput" required>
+                  <option value="Fruits">Fruits</option>
+                  <option value="Vegetables">Vegetables</option>
+                  <option value="Dairy">Dairy</option>
+                  <option value="Bakery">Bakery</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="productImageURL" class="form-label">Product Image URL (Base64 or standard URL)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="productImageURL"
+                  placeholder="data:image/jpeg;base64,... or https://example.com/img.jpg"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="productDescriptionInput" class="form-label">Product Description</label>
+                <textarea
+                  class="form-control"
+                  id="productDescriptionInput"
+                  rows="2"
+                  placeholder="Enter product details here..."
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Add Product</button>
+            </form>
 
-          <h5>Your Products</h5>
-          <div class="table-responsive">
-            <table class="table table-bordered align-middle" id="vendorProductTable">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Price (₦)</th>
-                  <th>Category</th>
-                  <th>Image</th>
-                  <th>Description</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody><!-- Vendor's products will be listed here --></tbody>
-            </table>
+            <h5>Your Products</h5>
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle" id="vendorProductTable">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Price (₦)</th>
+                    <th>Category</th>
+                    <th>Image</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Vendor's products will be listed here --></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Vendor Profile Card -->
+          <div class="dashboard-card">
+            <h5>Edit Vendor Profile</h5>
+            <form id="vendorProfileForm">
+              <div class="mb-3">
+                <label for="vendorName" class="form-label">Store Name</label>
+                <input type="text" class="form-control" id="vendorName" required />
+              </div>
+              <div class="mb-3">
+                <label for="vendorEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="vendorEmail" required />
+              </div>
+              <div class="mb-3">
+                <label for="vendorAddress" class="form-label">Store Address</label>
+                <input type="text" class="form-control" id="vendorAddress" required />
+              </div>
+              <button type="submit" class="btn btn-success w-100">Save Changes</button>
+            </form>
           </div>
         </div>
 
-        <!-- Vendor Profile Card -->
-        <div class="dashboard-card">
-          <h5>Edit Vendor Profile</h5>
-          <form id="vendorProfileForm">
-            <div class="mb-3">
-              <label for="vendorName" class="form-label">Store Name</label>
-              <input type="text" class="form-control" id="vendorName" required />
+        <!-- Right Column: Orders, Trust Score, Vendor Badge, Return Policy & Requests -->
+        <div class="col-md-6">
+          <!-- Orders Card -->
+          <div class="dashboard-card">
+            <h5>Order Tracking</h5>
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle" id="vendorOrdersTable">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Orders containing vendor's products --></tbody>
+              </table>
             </div>
-            <div class="mb-3">
-              <label for="vendorEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="vendorEmail" required />
-            </div>
-            <div class="mb-3">
-              <label for="vendorAddress" class="form-label">Store Address</label>
-              <input
-                type="text"
-                class="form-control"
-                id="vendorAddress"
-                required
-              />
-            </div>
-            <button type="submit" class="btn btn-success w-100">
-              Save Changes
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Right Column: Orders, Trust Score, Vendor Badge -->
-      <div class="col-md-6">
-        <!-- Orders Card -->
-        <div class="dashboard-card">
-          <h5>Order Tracking</h5>
-          <div class="table-responsive">
-            <table class="table table-bordered align-middle" id="vendorOrdersTable">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody><!-- Orders containing vendor's products --></tbody>
-            </table>
           </div>
-        </div>
 
-        <!-- Trust Score & Badge Card -->
-        <div class="dashboard-card">
-          <!-- <h5>Reputation / Trust Score</h5> -->
-          <!-- <p class="mb-1">
-            Your current trust score is:
-            <span id="vendorTrustScore" class="fw-bold">Loading...</span>
-          </p> -->
-          
-          <h5>Verification Badge</h5>
-          <div id="vendorBadge" class="mt-2">
-            <!-- Dynamically updated with badge color & text -->
+          <!-- Trust Score & Badge Card -->
+          <div class="dashboard-card">
+            <h5>Verification Badge</h5>
+            <!-- Trust score element added for vendor badge info -->
+            <p id="vendorTrustScore">N/A</p>
+            <div id="vendorBadge" class="mt-2">
+              <!-- Dynamically updated with badge color & text -->
+            </div>
+          </div>
+
+          <!-- Return Policy & Requests Card -->
+          <div class="return-card">
+            <h5>Return Policy & Requests</h5>
+            <!-- Return Policy Form -->
+            <form id="returnPolicyForm" class="mb-3">
+              <div class="mb-3">
+                <label for="returnPolicyInput" class="form-label">Return Policy</label>
+                <textarea
+                  class="form-control"
+                  id="returnPolicyInput"
+                  rows="3"
+                  placeholder="Enter your return policy"
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Save Return Policy</button>
+            </form>
+            <!-- Return Requests Table -->
+            <h6>Pending Return Requests</h6>
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle" id="returnRequestsTable">
+                <thead>
+                  <tr>
+                    <th>Request ID</th>
+                    <th>Order ID</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Return requests will be appended here -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Footer -->
-  <footer class="bg-light py-4">
-    <div class="container text-center">
-      <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
-    </div>
-  </footer>
+    <!-- Footer -->
+    <footer class="bg-light py-4">
+      <div class="container text-center">
+        <p class="mb-0">&copy; 2025 GroceryHub powered by Executive Tech. All rights reserved.</p>
+      </div>
+    </footer>
 
-  <!-- Bootstrap 5 Bundle with Popper + Firebase SDKs -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { 
-      getFirestore,
-      collection,
-      addDoc,
-      updateDoc,
-      doc,
-      onSnapshot,
-      query,
-      where,
-      getDoc,
-      getDocs
-    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    <!-- Bootstrap 5 Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
-      authDomain: "gofundz-5b149.firebaseapp.com",
-      databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
-      projectId: "gofundz-5b149",
-      storageBucket: "gofundz-5b149.firebasestorage.app",
-      messagingSenderId: "228985745417",
-      appId: "1:228985745417:web:e1d9f455196fd1684948d8",
-      measurementId: "G-K9GV667K53"
-    };
+    <!-- Firebase SDKs -->
+    <script type="module">
+      "use strict";
+      // Top-level imports
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+      import { 
+        getFirestore,
+        collection,
+        addDoc,
+        updateDoc,
+        doc,
+        onSnapshot,
+        query,
+        where,
+        getDoc,
+        getDocs,
+        setDoc
+      } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth();
+      document.addEventListener("DOMContentLoaded", () => {
+        // Your Firebase config
+        const firebaseConfig = {
+          apiKey: "AIzaSyD6Mw4Ugdj8bWA1Uz8LECt3sUt3m3Kfgsw",
+          authDomain: "gofundz-5b149.firebaseapp.com",
+          databaseURL: "https://gofundz-5b149-default-rtdb.firebaseio.com",
+          projectId: "gofundz-5b149",
+          storageBucket: "gofundz-5b149.firebasestorage.app",
+          messagingSenderId: "228985745417",
+          appId: "1:228985745417:web:e1d9f455196fd1684948d8",
+          measurementId: "G-K9GV667K53"
+        };
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "signup.html";
-      } else {
-        const vendorId = user.uid;
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth();
+        let vendorId;
 
-        // 1) Load vendor profile
-        loadVendorProfile(vendorId);
+        onAuthStateChanged(auth, async (user) => {
+          if (!user) {
+            window.location.href = "signup.html";
+            return;
+          }
+          vendorId = user.uid;
+          try {
+            // Load vendor data and set up dashboard
+            await loadVendorProfile(vendorId);
+            loadVendorProducts(vendorId);
+            loadVendorOrders(vendorId);
+            loadVendorTrustScore(vendorId);
+            loadVendorBadge(vendorId);
+            loadReturnPolicy(vendorId);
+            loadReturnRequests(vendorId);
+          } catch (error) {
+            console.error("Error during dashboard initialization:", error);
+          }
 
-        // 2) Load vendor products
-        loadVendorProducts(vendorId);
-
-        // 3) Load vendor orders
-        loadVendorOrders(vendorId);
-
-        // 4) Load vendor trust score
-        loadVendorTrustScore(vendorId);
-
-        // 5) Load vendor badge
-        loadVendorBadge(vendorId);
-
-        // Handle vendor profile save
-        document.getElementById("vendorProfileForm").addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const name = document.getElementById("vendorName").value;
-          const email = document.getElementById("vendorEmail").value;
-          const address = document.getElementById("vendorAddress").value;
-          await updateDoc(doc(db, "users", vendorId), { name, email, address });
-          alert("Profile updated successfully!");
-        });
-
-        // Handle add product
-        document.getElementById("addProductForm").addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const name = document.getElementById("productNameInput").value.trim();
-          const price = parseFloat(document.getElementById("productPriceInput").value);
-          const category = document.getElementById("productCategoryInput").value;
-          const imageUrl = document.getElementById("productImageURL").value.trim();
-          const description = document.getElementById("productDescriptionInput").value.trim() || "";
-
-          await addDoc(collection(db, "products"), {
-            name,
-            price,
-            category,
-            vendorId,
-            imageUrl,
-            description,
-            removed: false,
-            createdAt: new Date(),
+          // Handle vendor profile save
+          document.getElementById("vendorProfileForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+              const name = document.getElementById("vendorName").value;
+              const email = document.getElementById("vendorEmail").value;
+              const address = document.getElementById("vendorAddress").value;
+              await updateDoc(doc(db, "users", vendorId), { name, email, address });
+              alert("Profile updated successfully!");
+            } catch (error) {
+              console.error("Error updating profile:", error);
+              alert("Failed to update profile.");
+            }
           });
-          alert("Product added successfully!");
-          e.target.reset();
-        });
 
-        // Listen for delete on vendor products table
-        document.querySelector("#vendorProductTable tbody").addEventListener("click", async (e) => {
-          if (e.target.classList.contains("btn-danger")) {
-            const docId = e.target.getAttribute("data-id");
-            await updateDoc(doc(db, "products", docId), { removed: true });
-            alert("Product flagged as removed!");
-          }
-        });
-
-        // Listen for "Mark Shipped" on vendor orders table
-        document.querySelector("#vendorOrdersTable tbody").addEventListener("click", async (e) => {
-          if (e.target.classList.contains("btn-secondary")) {
-            const orderId = e.target.getAttribute("data-id");
-            await updateDoc(doc(db, "orders", orderId), { status: "Shipped" });
-            alert("Order marked as shipped!");
-          }
-        });
-      }
-    });
-
-    // --------------------------------------
-    // LOAD VENDOR PROFILE
-    // --------------------------------------
-    async function loadVendorProfile(vendorId) {
-      const userDocRef = doc(db, "users", vendorId);
-      const userDocSnap = await getDoc(userDocRef);
-      if (userDocSnap.exists()) {
-        const data = userDocSnap.data();
-        document.getElementById("vendorName").value = data.name || "";
-        document.getElementById("vendorEmail").value = data.email || "";
-        document.getElementById("vendorAddress").value = data.address || "";
-      }
-    }
-
-    // --------------------------------------
-    // LOAD VENDOR PRODUCTS (REAL-TIME)
-    // --------------------------------------
-    function loadVendorProducts(vendorId) {
-      const prodQuery = query(
-        collection(db, "products"),
-        where("vendorId", "==", vendorId),
-        where("removed", "==", false)
-      );
-      onSnapshot(prodQuery, (snapshot) => {
-        const tableBody = document.querySelector("#vendorProductTable tbody");
-        tableBody.innerHTML = "";
-        snapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${data.name}</td>
-            <td>₦${data.price.toFixed(2)}</td>
-            <td>${data.category}</td>
-            <td>
-              <img
-                src="${data.imageUrl}"
-                class="product-image"
-                alt="${data.name}"
-              />
-            </td>
-            <td>${data.description}</td>
-            <td>
-              <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">
-                Delete
-              </button>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        });
-      });
-    }
-
-    // --------------------------------------
-    // LOAD VENDOR ORDERS (REAL-TIME, using product IDs)
-    // --------------------------------------
-    function loadVendorOrders(vendorId) {
-      const ordersRef = collection(db, "orders");
-      onSnapshot(ordersRef, async (snapshot) => {
-        const tableBody = document.querySelector("#vendorOrdersTable tbody");
-        tableBody.innerHTML = "";
-
-        const ordersToDisplay = [];
-
-        for (const orderDoc of snapshot.docs) {
-          const orderData = orderDoc.data();
-          const items = orderData.items || [];
-          let orderHasVendorProduct = false;
-
-          for (const item of items) {
-            const productRef = doc(db, "products", item.productId);
-            const productSnap = await getDoc(productRef);
-            if (productSnap.exists() && productSnap.data().vendorId === vendorId) {
-              orderHasVendorProduct = true;
-              break;
+          // Handle add product
+          document.getElementById("addProductForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+              const name = document.getElementById("productNameInput").value.trim();
+              const price = parseFloat(document.getElementById("productPriceInput").value);
+              const category = document.getElementById("productCategoryInput").value;
+              const imageUrl = document.getElementById("productImageURL").value.trim();
+              const description = document.getElementById("productDescriptionInput").value.trim() || "";
+              await addDoc(collection(db, "products"), {
+                name,
+                price,
+                category,
+                vendorId,
+                imageUrl,
+                description,
+                removed: false,
+                createdAt: new Date(),
+              });
+              alert("Product added successfully!");
+              e.target.reset();
+            } catch (error) {
+              console.error("Error adding product:", error);
+              alert("Failed to add product.");
             }
-          }
-          if (orderHasVendorProduct) {
-            ordersToDisplay.push({ id: orderDoc.id, data: orderData });
-          }
-        }
+          });
 
-        for (const order of ordersToDisplay) {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${order.id}</td>
-            <td>${order.data.status || "Pending"}</td>
-            <td>
-              <button class="btn btn-sm btn-secondary" data-id="${order.id}">
-                Mark Shipped
-              </button>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        }
-      });
-    }
-
-    // --------------------------------------
-    // LOAD VENDOR TRUST SCORE
-    // --------------------------------------
-    function loadVendorTrustScore(vendorId) {
-      const userDocRef = doc(db, "users", vendorId);
-      onSnapshot(userDocRef, (docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          document.getElementById("vendorTrustScore").textContent =
-            data.trustScore || "N/A";
-        } else {
-          document.getElementById("vendorTrustScore").textContent = "N/A";
-        }
-      });
-    }
-
-    // --------------------------------------
-    // LOAD VENDOR BADGE (Orders => Shipped)
-    // --------------------------------------
-    function loadVendorBadge(vendorId) {
-      const ordersRef = collection(db, "orders");
-      onSnapshot(ordersRef, async (snapshot) => {
-        let shippedCount = 0;
-        const customers = new Set();
-
-        for (const orderDoc of snapshot.docs) {
-          const data = orderDoc.data();
-          if (data.status === "Shipped") {
-            const items = data.items || [];
-            let hasVendorProduct = false;
-            for (const item of items) {
-              const productRef = doc(db, "products", item.productId);
-              const productSnap = await getDoc(productRef);
-              if (productSnap.exists() && productSnap.data().vendorId === vendorId) {
-                hasVendorProduct = true;
-                break;
+          // Listen for delete on vendor products table
+          document.querySelector("#vendorProductTable tbody").addEventListener("click", async (e) => {
+            if (e.target.classList.contains("btn-danger")) {
+              try {
+                const docId = e.target.getAttribute("data-id");
+                await updateDoc(doc(db, "products", docId), { removed: true });
+                alert("Product flagged as removed!");
+              } catch (error) {
+                console.error("Error deleting product:", error);
+                alert("Failed to delete product.");
               }
             }
-            if (hasVendorProduct) {
-              shippedCount++;
-              if (data.userId) {
-                customers.add(data.userId);
+          });
+
+          // Listen for "Mark Shipped" on vendor orders table
+          document.querySelector("#vendorOrdersTable tbody").addEventListener("click", async (e) => {
+            if (e.target.classList.contains("btn-secondary")) {
+              try {
+                const orderId = e.target.getAttribute("data-id");
+                await updateDoc(doc(db, "orders", orderId), { status: "Shipped" });
+                alert("Order marked as shipped!");
+              } catch (error) {
+                console.error("Error updating order:", error);
+                alert("Failed to mark order as shipped.");
               }
             }
+          });
+
+          // Handle return policy save (moved inside auth callback to ensure vendorId is defined)
+          document.getElementById("returnPolicyForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+              const policyText = document.getElementById("returnPolicyInput").value;
+              await setDoc(doc(db, "returnPolicy", vendorId), { policy: policyText, updatedAt: new Date() }, { merge: true });
+              alert("Return policy updated!");
+            } catch (error) {
+              console.error("Error updating return policy:", error);
+              alert("Failed to update return policy.");
+            }
+          });
+        });
+
+        // --------------------------------------
+        // LOAD VENDOR PROFILE
+        // --------------------------------------
+        async function loadVendorProfile(vendorId) {
+          try {
+            const userDocRef = doc(db, "users", vendorId);
+            const userDocSnap = await getDoc(userDocRef);
+            if (userDocSnap.exists()) {
+              const data = userDocSnap.data();
+              document.getElementById("vendorName").value = data.name || "";
+              document.getElementById("vendorEmail").value = data.email || "";
+              document.getElementById("vendorAddress").value = data.address || "";
+            }
+          } catch (error) {
+            console.error("Error loading vendor profile:", error);
           }
         }
 
-        let badgeColor = "";
-        if (shippedCount < 5) {
-          badgeColor = "red";
-        } else if (shippedCount < 10) {
-          badgeColor = "purple";
-        } else if (shippedCount < 20) {
-          badgeColor = "blue";
-        } else if (shippedCount < 50) {
-          badgeColor = "gold";
-        } else {
-          badgeColor = "green";
+        // --------------------------------------
+        // LOAD VENDOR PRODUCTS (REAL-TIME)
+        // --------------------------------------
+        function loadVendorProducts(vendorId) {
+          const prodQuery = query(
+            collection(db, "products"),
+            where("vendorId", "==", vendorId),
+            where("removed", "==", false)
+          );
+          onSnapshot(prodQuery, (snapshot) => {
+            const tableBody = document.querySelector("#vendorProductTable tbody");
+            tableBody.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data();
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${data.name}</td>
+                <td>₦${data.price.toFixed(2)}</td>
+                <td>${data.category}</td>
+                <td>
+                  <img src="${data.imageUrl}" class="product-image" alt="${data.name}" />
+                </td>
+                <td>${data.description}</td>
+                <td>
+                  <button class="btn btn-sm btn-danger" data-id="${docSnap.id}">
+                    Delete
+                  </button>
+                </td>
+              `;
+              tableBody.appendChild(row);
+            });
+          });
         }
 
-        const badgeDiv = document.getElementById("vendorBadge");
-        badgeDiv.innerHTML = `
-          <i class="bi bi-award-fill" style="color: ${badgeColor};"></i>
-          <span>
-            ${badgeColor.toUpperCase()} - ${shippedCount} Shipped Orders /
-            ${customers.size} Distinct Customers
-          </span>
-        `;
+        // --------------------------------------
+        // LOAD VENDOR ORDERS (REAL-TIME)
+        // --------------------------------------
+        function loadVendorOrders(vendorId) {
+          const ordersRef = collection(db, "orders");
+          onSnapshot(ordersRef, async (snapshot) => {
+            const tableBody = document.querySelector("#vendorOrdersTable tbody");
+            tableBody.innerHTML = "";
+            const ordersToDisplay = [];
+            for (const orderDoc of snapshot.docs) {
+              const orderData = orderDoc.data();
+              const items = orderData.items || [];
+              let orderHasVendorProduct = false;
+              for (const item of items) {
+                const productRef = doc(db, "products", item.productId);
+                const productSnap = await getDoc(productRef);
+                if (productSnap.exists() && productSnap.data().vendorId === vendorId) {
+                  orderHasVendorProduct = true;
+                  break;
+                }
+              }
+              if (orderHasVendorProduct) {
+                ordersToDisplay.push({ id: orderDoc.id, data: orderData });
+              }
+            }
+            ordersToDisplay.forEach((order) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${order.id}</td>
+                <td>${order.data.status || "Pending"}</td>
+                <td>
+                  <button class="btn btn-sm btn-secondary" data-id="${order.id}">
+                    Mark Shipped
+                  </button>
+                </td>
+              `;
+              tableBody.appendChild(row);
+            });
+          });
+        }
+
+        // --------------------------------------
+        // LOAD VENDOR TRUST SCORE
+        // --------------------------------------
+        function loadVendorTrustScore(vendorId) {
+          const userDocRef = doc(db, "users", vendorId);
+          onSnapshot(userDocRef, (docSnap) => {
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              document.getElementById("vendorTrustScore").textContent = data.trustScore || "N/A";
+            } else {
+              document.getElementById("vendorTrustScore").textContent = "N/A";
+            }
+          });
+        }
+
+        // --------------------------------------
+        // COMMON FUNCTION: CALCULATE AND UPDATE VENDOR BADGE
+        // --------------------------------------
+        async function updateVendorBadge(vendorId, updateElement) {
+          try {
+            const ordersRef = collection(db, "orders");
+            const snapshot = await getDocs(ordersRef);
+            let shippedCount = 0;
+            const customers = new Set();
+            for (const orderDoc of snapshot.docs) {
+              const data = orderDoc.data();
+              if (data.status === "Shipped") {
+                const items = data.items || [];
+                for (const item of items) {
+                  const productRef = doc(db, "products", item.productId);
+                  const productSnap = await getDoc(productRef);
+                  if (productSnap.exists() && productSnap.data().vendorId === vendorId) {
+                    shippedCount++;
+                    if (data.userId) customers.add(data.userId);
+                    break;
+                  }
+                }
+              }
+            }
+            let badgeColor = "";
+            if (shippedCount < 5) badgeColor = "red";
+            else if (shippedCount < 10) badgeColor = "purple";
+            else if (shippedCount < 20) badgeColor = "blue";
+            else if (shippedCount < 50) badgeColor = "gold";
+            else badgeColor = "green";
+            updateElement.innerHTML = `
+              <i class="bi bi-award-fill" style="color:${badgeColor};"></i>
+              <span>${badgeColor.toUpperCase()} - ${shippedCount} Shipped Orders / ${customers.size} Distinct Customers</span>
+            `;
+          } catch (error) {
+            console.error("Error updating vendor badge:", error);
+          }
+        }
+
+        // --------------------------------------
+        // LOAD VENDOR BADGE (for dashboard)
+        // --------------------------------------
+        function loadVendorBadge(vendorId) {
+          const badgeDiv = document.getElementById("vendorBadge");
+          onSnapshot(collection(db, "orders"), () => {
+            updateVendorBadge(vendorId, badgeDiv);
+          });
+        }
+
+        // --------------------------------------
+        // LOAD & UPDATE RETURN POLICY
+        // --------------------------------------
+        function loadReturnPolicy(vendorId) {
+          const policyDocRef = doc(db, "returnPolicy", vendorId);
+          onSnapshot(policyDocRef, (docSnap) => {
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              document.getElementById("returnPolicyInput").value = data.policy || "";
+            }
+          });
+        }
+
+        // --------------------------------------
+        // LOAD & HANDLE RETURN REQUESTS
+        // --------------------------------------
+        function loadReturnRequests(vendorId) {
+          const requestsQuery = query(
+            collection(db, "returnRequests"),
+            where("vendorId", "==", vendorId),
+            where("status", "==", "Pending")
+          );
+          onSnapshot(requestsQuery, (snapshot) => {
+            const tbody = document.querySelector("#returnRequestsTable tbody");
+            tbody.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data();
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${docSnap.id}</td>
+                <td>${data.orderId || "N/A"}</td>
+                <td>${data.reason || ""}</td>
+                <td>${data.status || "Pending"}</td>
+                <td>
+                  <button class="btn btn-sm btn-success accept-return" data-id="${docSnap.id}">Accept</button>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+          });
+        }
+
+        document.querySelector("#returnRequestsTable tbody").addEventListener("click", async (e) => {
+          if (e.target.classList.contains("accept-return")) {
+            try {
+              const requestId = e.target.getAttribute("data-id");
+              await updateDoc(doc(db, "returnRequests", requestId), { status: "Accepted" });
+              alert("Return request accepted!");
+            } catch (error) {
+              console.error("Error accepting return request:", error);
+              alert("Failed to accept return request.");
+            }
+          }
+        });
+
+        // --------------------------------------
+        // Optional: If productCatalog element exists, load products (for dashboard & catalog)
+        // --------------------------------------
+        const productCatalogElement = document.getElementById("productCatalog");
+        if (productCatalogElement) {
+          function loadProducts() {
+            const prodQuery = query(collection(db, "products"), where("removed", "==", false));
+            onSnapshot(prodQuery, (snapshot) => {
+              const catalog = document.getElementById("productCatalog");
+              if (catalog) {
+                catalog.innerHTML = "";
+                snapshot.forEach((docSnap) => {
+                  const data = docSnap.data();
+                  // Create product card container
+                  const colDiv = document.createElement("div");
+                  colDiv.classList.add("col-md-4", "mb-4", "product-card");
+                  colDiv.setAttribute("data-category", data.category.toLowerCase());
+                  colDiv.setAttribute("data-name", data.name);
+                  colDiv.setAttribute("data-price", data.price);
+                  colDiv.innerHTML = `
+                    <div class="card h-100">
+                      <img class="card-img-top" src="${data.imageUrl}" alt="${data.name}" />
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">${data.name}</h5>
+                        <p class="card-text mb-1">Price: ₦${data.price.toFixed(2)}</p>
+                        <p class="card-text mb-1">Category: ${data.category}</p>
+                        <div id="vendorBadge-${docSnap.id}" class="vendor-badge">Loading badge...</div>
+                        <a href="product-details.html?id=${docSnap.id}" class="btn btn-primary mt-auto">View Details</a>
+                      </div>
+                    </div>
+                  `;
+                  catalog.appendChild(colDiv);
+                  // Load vendor badge for this product using its vendorId
+                  onSnapshot(collection(db, "orders"), () => {
+                    const badgeElem = document.getElementById("vendorBadge-" + docSnap.id);
+                    updateVendorBadge(data.vendorId, badgeElem);
+                  });
+                });
+              }
+            });
+          }
+          loadProducts();
+        }
       });
-    }
-  </script>
-</body>
+    </script>
+  </body>
 </html>
